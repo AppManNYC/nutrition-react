@@ -20,6 +20,25 @@
 
 .App-intro {
   font-size: large;
+  max-height: 500px;
+}
+
+.scrollable{
+  overflow-y: scroll;
+}
+
+.scrollable::-webkit-scrollbar {
+    width: 12px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
 @keyframes App-logo-spin {
