@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import FoodItem from "./components/FoodItem";
 import './App.css';
 
 /*global fetch*/
@@ -9,23 +9,6 @@ import './App.css';
 // Usage example:
 // https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf&location=Denver+CO
 
-const showFoodItems = (foodList) => {
-  console.log(foodList);
-  let foodItems = [];
-  let inner = [];
-  for (let i = 0; i < foodList.length; i++) {
-    let info = foodList[i].name;
-    if (!info.includes('\"\"') && !info.includes("!")) {
-      info = info.slice(0, info.indexOf("UPC") - 2);
-      let item = ((<li key = {foodList[i].id}>{info}</li>));
-      inner.push(item);
-    }
-  }
-  foodItems.push(<ul key = "wassup">{inner}</ul>);
-  return foodItems;
-}
-
-
 
 class App extends Component {
 
@@ -34,13 +17,15 @@ class App extends Component {
 
     this.state = {
         key: "U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf",
-        error: null,
-        isLoaded: false,
-        foodComponents: [],
-        search: ""
+        foodComponents: {error: null, isLoaded: false, list: []},
+        search: "",
+        focus: {error: null, isLoaded: false, info: null}
       };
 
   }
+
+
+
 
   updateSearch(event) {
     this.setState({
@@ -49,37 +34,73 @@ class App extends Component {
   }
 
 
-  componentDidMount = () => {
-    let listType = "f"; // food
-    let url = "https://api.nal.usda.gov/ndb/list?" +
-      "format=json" +
-      "&lt=" + listType +
-      "&max=" + 100 +
-      "&api_key=" + this.state.key;
+  findFood = (id) => {
+    this.setState({
+      focus: id
+    });
+  }
 
-    fetch(url)
-      .then( (response) => {
-        return response.json();
-      })
-      .then( (jsonRes) =>  {
-        let newFoodComponents = showFoodItems(jsonRes.list.item);
-        this.setState({
-          isLoaded: true,
-          foodComponents: newFoodComponents
-        });
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
+  showFoodItems = (foodList) => {
+    let foodItems = [];
+    let inner = [];
+    for (let i = 0; i < foodList.length; i++) {
+      let info = foodList[i].name;
+      if (!info.includes('\"\"') && !info.includes("!")) {
+        info = info.slice(0, info.indexOf("UPC") - 2);
+        let item = ((<FoodItem
+           click= {this.findFood.bind(this)}
+           id = {foodList[i].id}
+           key = {foodList[i].id}>{info}</FoodItem>
+         ));
+        inner.push(item);
       }
-    )
+    }
+    foodItems.push(<ul key = "wassup">{inner}</ul>);
+    return foodItems;
+  }
+
+
+
+
+  componentDidMount = () => {
+    if (this.state.foodComponents.list === []) {
+      let listType = "f"; // food
+      let url = "https://api.nal.usda.gov/ndb/list?" +
+        "format=json" +
+        "&lt=" + listType +
+        "&max=" + 100 +
+        "&api_key=" + this.state.key;
+
+      fetch(url)
+        .then( (response) => {
+          return response.json();
+        })
+        .then( (jsonRes) =>  {
+          let newFoodComponents = this.showFoodItems(jsonRes.list.item);
+          let newState = this.state.foodComponents;
+          newState.isLoaded = true;
+          newState.list = newFoodComponents
+          this.setState({
+            foodComponents: newState
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
+    } else if (this.state.focus) {
+
+    }
+
+
   }
 
 
   render() {
-    const {error, isLoaded, foodComponents} = this.state;
+    const {error, isLoaded, list} = this.state.foodComponents;
     let section;
 
     if (error) {
@@ -89,14 +110,14 @@ class App extends Component {
       } else {
           let filteredFood = [];
           if(this.state.search !== ""){
-            filteredFood.push(foodComponents[0].props.children.filter(
+            filteredFood.push(list[0].props.children.filter(
               (food) => {
                 return food.props.children.includes(this.state.search.toUpperCase());
               }
             ));
             section = (<ul>{filteredFood}</ul>);
           } else {
-            section = foodComponents;
+            section = list;
           }
       }
 
@@ -104,15 +125,14 @@ class App extends Component {
 
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">nutrition-react</h1>
         </header>
         <br/>
         <input type= "text" value = {this.state.search}
           onChange = {this.updateSearch.bind(this)}
         />
         <br/>
-        <div className="App-intro scrollable">
+        <div className="App-intro scrollable"   >
           {section}
         </div>
       </div>
