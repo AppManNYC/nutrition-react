@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 const FoodItem = (props) => {
 
   const handleClick = () => {
-    props.click(props.id);
+    props.click(props.id, props.children);
   }
 
   return (

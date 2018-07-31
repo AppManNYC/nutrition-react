@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import FoodItem from "./components/FoodItem";
+import FoodFocus from "./components/FoodFocus";
 import './App.css';
 
 /*global fetch*/
@@ -19,24 +20,28 @@ class App extends Component {
         key: "U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf",
         foodComponents: {error: null, isLoaded: false, list: []},
         search: "",
-        focus: {error: null, isLoaded: false, info: null}
+        focus: {id: "", name: ""},
+        test: null
       };
 
   }
 
-
-
-
   updateSearch(event) {
+
+    let test = 2;
     this.setState({
-      search: event.target.value
+      search: event.target.value,
+      test
     });
   }
 
 
-  findFood = (id) => {
+  findFood = (id, name) => {
+    let newState = this.state.focus;
+    newState.id = id;
+    newState.name = name;
     this.setState({
-      focus: id
+      focus: newState
     });
   }
 
@@ -60,10 +65,8 @@ class App extends Component {
   }
 
 
-
-
   componentDidMount = () => {
-    if (this.state.foodComponents.list === []) {
+    if (this.state.foodComponents.list.length === 0) {
       let listType = "f"; // food
       let url = "https://api.nal.usda.gov/ndb/list?" +
         "format=json" +
@@ -85,28 +88,30 @@ class App extends Component {
           });
         },
         (error) => {
+          let newState = this.state.foodComponents;
+          newState.isLoaded = true;
+          newState.error = error;
           this.setState({
-            isLoaded: true,
-            error
+            foodComponents: newState
           });
         }
       )
-    } else if (this.state.focus) {
-
     }
-
 
   }
 
 
   render() {
-    const {error, isLoaded, list} = this.state.foodComponents;
     let section;
 
-    if (error) {
-        section = ("Sorry there was a problem connecting to the web!")
+    const buildFoodList = () => {
+      let {error, isLoaded, list} = this.state.foodComponents;
+
+
+      if (error) {
+          section = ("Sorry there was a problem connecting to the web!");
       } else if (!isLoaded) {
-        section = ("Loading, please wait...")
+        section = ("Loading, please wait...");
       } else {
           let filteredFood = [];
           if(this.state.search !== ""){
@@ -120,16 +125,30 @@ class App extends Component {
             section = list;
           }
       }
+      return section;
+    }
+
+    section = buildFoodList();
+
+    let section2;
+
+
+    section2 = ((this.state.focus.id !== "") ?
+      <FoodFocus
+        name = {this.state.focus.name}
+        id = {this.state.focus.id}/> : undefined);
+
 
     return (
 
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">nutrition-react</h1>
+          {section2}
         </header>
         <br/>
         <input type= "text" value = {this.state.search}
-          onChange = {this.updateSearch.bind(this)}
+            onChange = {this.updateSearch.bind(this)}
         />
         <br/>
         <div className="App-intro scrollable"   >
