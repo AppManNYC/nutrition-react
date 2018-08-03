@@ -50,7 +50,7 @@ class App extends Component {
     let inner = [];
     for (let i = 0; i < foodList.length; i++) {
       let info = foodList[i].name;
-      if (!info.includes('\"\"') && !info.includes("!")) {
+      if (!info.includes('\\') && !info.includes("!")) {
         info = info.slice(0, info.indexOf("UPC") - 2);
         let item = ((<FoodItem
            click= {this.findFood.bind(this)}
@@ -132,7 +132,6 @@ class App extends Component {
 
     let section2;
 
-
     section2 = ((this.state.focus.id !== "") ?
       <FoodFocus
         name = {this.state.focus.name}
@@ -142,18 +141,19 @@ class App extends Component {
     return (
 
       <div className="App">
-        <header className="App-header">
+        <header>
           <h1 className="App-title">nutrition-react</h1>
-          {section2}
         </header>
         <br/>
         <input type= "text" value = {this.state.search}
             onChange = {this.updateSearch.bind(this)}
         />
         <br/>
-        <div className="App-intro scrollable"   >
+        <section className="food-list scrollable"   >
           {section}
-        </div>
+        </section>
+        <br/>
+        {section2}
       </div>
     );
   }

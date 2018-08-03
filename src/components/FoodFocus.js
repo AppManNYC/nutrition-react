@@ -12,13 +12,20 @@ class FoodFocus  extends Component {
       };
 
   }
+  componentWillReceiveProps() {
+  this.setState({
+    name: this.props.name,
+    focus: {error: null, isLoaded: false, info: null}
+  });
+  this.fetchFocus();
+}
 
 
-  componentDidMount = () => {
+  fetchFocus = () => {
     let url = "https://api.nal.usda.gov/ndb/V2/reports?" +
-      "format=" + "json" +
+      "format=json" +
       "&ndbno=" + this.props.id +
-      "&type=" + "f" +
+      "&type=f" +
       "&api_key=" + this.state.key;
 
     fetch(url)
@@ -45,19 +52,140 @@ class FoodFocus  extends Component {
     )
   }
 
+
+  componentDidMount = () => {
+    this.fetchFocus();
+  }
+
+
+  processListHelper = (stringArray, string, componentArray) => {
+    let newArray;
+    while(array.includes(string[0]){
+      let pos1 = array.indexOf(" " + string[0]);
+      let pos2 = array.indexOf(string[1] + ", ");
+      let subIngredients = array.substring(pos1 + 2, pos2);
+      let group = array.substring(0, pos1);
+      let pieces = group.split(", ");
+      for (let i = 0; i < pieces.length; i++) {
+        if (i < pieces.length - 1) {
+          componentArray.push((<li key = {pieces[i]}>{pieces[i].trim()}</li>));
+        } else {
+          let subSection = [];
+          let subPieces = subIngredients.split(", ");
+          for (let i = 0; i < subPieces.length; i++) {
+            subSection.push((<li key = {subPieces[i]}>{subPieces[i].trim()}</li>)
+            );
+          }
+          componentArray.push((<li key = {pieces[i]}>
+            {pieces[i]} <ul>{subSection}</ul></li>)
+          );
+        }
+      }
+      array = array.substr(pos2 + 3);
+    }
+
+  }
+
+  processIngredients = (ingredients) => {
+    let innerSection = [];
+    while (ingredients.includes(", ")){
+      while(ingredients.includes("(")){
+        let pos1 = ingredients.indexOf(" (");
+        let pos2 = ingredients.indexOf("), ");
+        let subIngredients = ingredients.substring(pos1 + 2, pos2);
+        let group = ingredients.substring(0, pos1);
+        let pieces = group.split(", ");
+        for (let i = 0; i < pieces.length; i++) {
+          if (i < pieces.length - 1) {
+            innerSection.push((<li key = {pieces[i]}>{pieces[i].trim()}</li>));
+          } else {
+            let subSection = [];
+
+            // Recursion begins
+            while (subIngredients.includes("[")) {
+              let pos1 = subIngredients.indexOf(" [");
+              let pos2 = subingredients.indexOf("], ");
+              let subIngredients2 = subIngredients.substring(pos1 + 2, pos2);
+              let group2 = subIngredients.substring(0, pos1);
+              let pieces = group2.split(", ");
+              for (let i = 0; i <pieces2.length; i++) {
+                if (i < pieces.length -1) {
+                  subSection.push((<li key = {pieces2[i]}>{pieces2[i].trim()}</li>));
+                } else {
+                  let subSubSection = [];
+                  let subPieces2 = subIngredients2.split(", ")
+                  for (let i = 0; i < subPieces2.length; i++){
+                    subSubSection.push((<li key={subPieces2[i]}>{subPieces2[i].trim()}</li>));
+                  }
+                  subSection.push((<li key = {pieces2[i]}>
+                    {pieces2[i]} <ul>{subSubSection}</ul></li>)
+                  );
+                }
+              }
+              subIngredients = subIngredients.substr(pos2 + 3);
+            }
+            //recursion ends
+
+            let subPieces = subIngredients.split(", ");
+            for (let i = 0; i < subPieces.length; i++) {
+              subSection.push((<li key = {subPieces[i]}>{subPieces[i].trim()}</li>)
+              );
+            }
+            innerSection.push((<li key = {pieces[i]}>
+              {pieces[i]} <ul>{subSection}</ul></li>)
+            );
+          }
+        }
+        ingredients = ingredients.substr(pos2 + 3);
+      }
+
+      if (ingredients.includes(", ")) {
+        let pieces = ingredients.split(", ");
+        for (let i = 0; i < pieces.length; i++) {
+          innerSection.push((<li key = {pieces[i]}>{pieces[i].replace(".", " ").trim()}</li>));
+        }
+        ingredients = "";
+      } else if (ingredients.length !== 0) {
+        innerSection.push((<li key = {ingredients}>{ingredients.replace(".", " ").trim()}</li>));
+        ingredients = "";
+      }
+    }
+
+    return innerSection;
+  }
+
+
   processFood = () => {
-    let section;
-    console.log(this.state.focus.info);
-    let name = this.state.name;
+    let name = this.state.name.trim();
     let food = this.state.focus.info.foods[0].food;
-    let ingredients = food.ing.desc
+    console.log(food);
+
+    let ingredients = food.ing.desc;
+    let ingredientSection = this.processIngredients(ingredients);
+
+    let nutrients;
 
 
 
-    section = (<div className = "nutrients">
-      </div>)
+    let section;
+    section = (
+      <section>
+        {name}
+        <div className = "info">
+          <div className = "ingredients">
+            Ingredients
+            <ul className = "scrollable">
+              {ingredientSection}
+            </ul>
+          </div>
 
+          <div className = "nutrients">
 
+          </div>
+        </div>
+      </section>
+    );
+    return section;
 
   }
 
@@ -65,14 +193,13 @@ class FoodFocus  extends Component {
     let section;
     const buildFocus = () => {
       let section;
-      let {error, isLoaded, info} = this.state.focus;
+      let {error, isLoaded} = this.state.focus;
 
       if (error) {
           section = ("Sorry there was a problem connecting to the web!");
         } else if (!isLoaded) {
           section = ("Loading, please wait...");
         } else {
-          console.log(info);
           section = this.processFood();
         }
         return section;
@@ -84,7 +211,6 @@ class FoodFocus  extends Component {
       <div className = "focus">
         {section}
       </div>
-
     );
   }
 

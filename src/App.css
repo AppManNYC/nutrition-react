@@ -1,27 +1,62 @@
+
+html {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+body, #root, .App {
+  height: 100%;
+  margin: 0;
+}
+
+
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content:flex-start;
+  flex-grow:0;
+  flex-basis: 20%;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
+header{
+  height: 5%;
   padding: 20px;
-  color: white;
+  color:white;
+  background-color: #222;
 }
 
-.App-title {
-  font-size: 1.5em;
+header h1 {
+  margin: 0;
 }
 
-.App-intro {
-  font-size: large;
-  max-height: 500px;
+input{
+  width: 50%;
+  margin:auto;
 }
+
+.food-list{
+  height: 200px;
+}
+
+.focus{
+  font-size: .8em;
+}
+
+
+.ingredients {
+  width: 50%;
+}
+
+ .ingredients > ul {
+  max-height: 200px;
+}
+
+
+
 
 .scrollable{
   overflow-y: scroll;
@@ -39,9 +74,4 @@
 .scrollable::-webkit-scrollbar-thumb {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
