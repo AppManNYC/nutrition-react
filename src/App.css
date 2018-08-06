@@ -46,16 +46,32 @@ input{
   font-size: .8em;
 }
 
+.info {
+  display:flex;
+  flex-direction:row
+}
 
-.ingredients {
+.ingredients, .nutrients {
   width: 50%;
 }
 
- .ingredients > ul {
-  max-height: 200px;
+.ingredients p, .nutrients > .scrollable {
+    height: 85px;
 }
 
 
+.nutrients .scrollable {
+  display: flex;
+}
+
+.nutrients ul, .food-list ul {
+  list-style: none;
+}
+
+
+.ingredients span {
+  font-variant:small-caps;
+}
 
 
 .scrollable{

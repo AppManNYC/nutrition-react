@@ -21,7 +21,7 @@ class App extends Component {
         foodComponents: {error: null, isLoaded: false, list: []},
         search: "",
         focus: {id: "", name: ""},
-        test: null
+        myFood: []
       };
 
   }
@@ -50,7 +50,8 @@ class App extends Component {
     let inner = [];
     for (let i = 0; i < foodList.length; i++) {
       let info = foodList[i].name;
-      if (!info.includes('\\') && !info.includes("!")) {
+      if (!info.includes('\\') && !info.includes("!") &&
+          !info.includes('""'))  {
         info = info.slice(0, info.indexOf("UPC") - 2);
         let item = ((<FoodItem
            click= {this.findFood.bind(this)}
@@ -109,7 +110,7 @@ class App extends Component {
 
 
       if (error) {
-          section = ("Sorry there was a problem connecting to the web!");
+          section = ("Error: there was a problem connecting to the web");
       } else if (!isLoaded) {
         section = ("Loading, please wait...");
       } else {
@@ -145,15 +146,20 @@ class App extends Component {
           <h1 className="App-title">nutrition-react</h1>
         </header>
         <br/>
-        <input type= "text" value = {this.state.search}
-            onChange = {this.updateSearch.bind(this)}
-        />
+        <form>
+          <input type= "text" value = {this.state.search}
+              onChange = {this.updateSearch.bind(this)}
+          />
+        </form>
         <br/>
         <section className="food-list scrollable"   >
           {section}
         </section>
         <br/>
         {section2}
+        <div className = "food-list">
+          My food:
+        </div>
       </div>
     );
   }
