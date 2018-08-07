@@ -46,7 +46,7 @@ input{
   font-size: .8em;
 }
 
-.info {
+.info, .my-food{
   display:flex;
   flex-direction:row
 }
@@ -64,7 +64,7 @@ input{
   display: flex;
 }
 
-.nutrients ul, .food-list ul {
+.nutrients ul, .food-list ul, .my-food ul {
   list-style: none;
 }
 
@@ -73,10 +73,14 @@ input{
   font-variant:small-caps;
 }
 
+.my-food{
+  width: 100%;
+}
 
 .scrollable{
   overflow-y: scroll;
 }
+
 
 .scrollable::-webkit-scrollbar {
     width: 12px;
@@ -90,4 +94,9 @@ input{
 .scrollable::-webkit-scrollbar-thumb {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+.my-food.scrollable {
+  overflow-y:hidden;
+  overflow-x: scroll;
 }

@@ -10,15 +10,55 @@ class FoodFocus  extends Component {
         key: "U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf",
         name: this.props.name,
         focus: {error: null, isLoaded: false, info: null},
-        current: ""
+        current: {name: this.props.name, id: this.props.id, nutrients: {}, ingredients: ""}
       };
 
   }
+
+  addToList = () => {
+    this.props.addFood(JSON.stringify(this.state.current));
+  }
+
+
+  getNutrients =(nutrients) => {
+    let nutrientsObj = {proximates: [], minerals: []}
+    let proximates = [];
+    let minerals = [];
+
+    for (let i = 0; i < nutrients.length; i++) {
+      if (nutrients[i].group === "Proximates") {
+        proximates.push(nutrients[i]);
+      } else if (nutrients[i].group === "Minerals") {
+        minerals.push(nutrients[i]);
+      }
+    }
+
+
+    for (let i = 0; i < proximates.length; i++) {
+      if (!proximates[i].name.includes("Carbohydrate")) {
+        let entry = proximates[i].name + ": " + proximates[i].value + proximates[i].unit;
+        nutrientsObj.proximates.push(entry);
+      }
+    }
+
+
+
+    for (let i = 0; i < minerals.length; i++) {
+      let entry = minerals[i].name + ": " + minerals[i].value + minerals[i].unit;
+      nutrientsObj.minerals.push(entry);
+    }
+
+    return nutrientsObj;
+  }
+
+
+
   componentWillReceiveProps(newProps) {
   if (newProps.name !== this.props.name) {
     this.setState({
-      name: this.props.name,
-      focus: {error: null, isLoaded: false, info: null}
+      name: newProps.name,
+      focus: {error: null, isLoaded: false, info: null},
+      current: {name: newProps.name, id: newProps.id, ...this.state.current}
     });
     this.fetchFocus(newProps);
   }
@@ -38,19 +78,18 @@ class FoodFocus  extends Component {
       })
       .then( (jsonRes) =>  {
 
-        let newState = this.state.focus;
-        newState.isLoaded = true;
-        newState.info = jsonRes;
+        let food = jsonRes.foods[0].food;
+        let ingredients = food.ing.desc;
+        let nutrients = food.nutrients;
+        let nutrientsObj = this.getNutrients(nutrients);
         this.setState({
-          focus: newState
+          focus: {isLoaded: true, info: jsonRes},
+          current: {name: props.name, id: props.id, nutrients: nutrientsObj, ingredients: ingredients}
         });
       },
       (error) => {
-        let newState = this.state.focus;
-        newState.isLoaded = true;
-        newState.error = error;
         this.setState({
-          focus: newState
+          focus: {isLoaded: true, error: error}
         });
       }
     )
@@ -63,7 +102,8 @@ class FoodFocus  extends Component {
 
 
 
-  processIngredients = (ingredients) => {
+  processIngredients = () => {
+    let ingredients = this.state.current.ingredients;
     let section = [];
 
     if (ingredients.length === 0) {
@@ -80,40 +120,30 @@ class FoodFocus  extends Component {
   }
 
 
-  processNutrients = (nutrients) => {
+  processNutrients = () => {
+
+    let macros = this.state.current.nutrients.proximates;
+    let minerals = this.state.current.nutrients.minerals;
+
+
+
+    let macroSection = [];
+    let mineralSection = [];
+
     let section = [];
 
-    let proximates = [];
-    let minerals = [];
-
-    for (let i = 0; i < nutrients.length; i++) {
-      if (nutrients[i].group === "Proximates") {
-        proximates.push(nutrients[i]);
-      } else if (nutrients[i].group === "Minerals") {
-        minerals.push(nutrients[i]);
-      }
-    }
-
-    let macros = [];
-
-    for (let i = 0; i < proximates.length; i++) {
-      if (!proximates[i].name.includes("Carbohydrate")) {
-        macros.push(<li className = "proximates"> {proximates[i].name}:
-           {proximates[i].value}{proximates[i].unit}
-        </li>);
-      }
-    }
-
-    let minComp = [];
-    for (let i = 0; i < minerals.length; i++) {
-      minComp.push(<li className = "minerals"> {minerals[i].name}:
-         {minerals[i].value}{minerals[i].unit}
+    for (let i = 0; i < macros.length; i++) {
+      macroSection.push(<li className = "proximates"> {macros[i]}
       </li>);
     }
 
+    for (let i = 0; i < minerals.length; i++) {
+      mineralSection.push(<li className = "minerals">{minerals[i]}</li>);
+    }
+
     section.push(<div className = "scrollable">
-                 <div id = "macros">Macros: <ul>{macros}</ul></div>
-                 <div id = "minerals">Minerals: <ul>{minComp}</ul></div></div>
+                 <div id = "macros">Macros: <ul>{macroSection}</ul></div>
+                 <div id = "minerals">Minerals: <ul>{mineralSection}</ul></div></div>
 
     );
     return section;
@@ -122,13 +152,10 @@ class FoodFocus  extends Component {
 
   processFood = () => {
     let name = this.state.name.trim();
-    let food = this.state.focus.info.foods[0].food;
 
-    let ingredients = food.ing.desc;
-    let ingredientSection = this.processIngredients(ingredients);
 
-    let nutrients = food.nutrients;
-    let nutrientSection = this.processNutrients(nutrients);
+    let ingredientSection = this.processIngredients();
+    let nutrientSection = this.processNutrients();
 
 
     let section;
@@ -164,7 +191,10 @@ class FoodFocus  extends Component {
           section = ("Loading, please wait...");
         } else {
           section.push(this.processFood());
-          section.push(<Button name ="add"/>);
+          section.push(<Button
+                        onClick = {this.addToList.bind(this)}
+                        name = "add"
+                       />);
         }
         return section;
     }

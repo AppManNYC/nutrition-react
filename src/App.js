@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FoodItem from "./components/FoodItem";
 import FoodFocus from "./components/FoodFocus";
+import MyFood from "./components/MyFood";
 import './App.css';
 
 /*global fetch*/
@@ -27,21 +28,15 @@ class App extends Component {
   }
 
   updateSearch(event) {
-
-    let test = 2;
     this.setState({
-      search: event.target.value,
-      test
+      search: event.target.value
     });
   }
 
 
   findFood = (id, name) => {
-    let newState = this.state.focus;
-    newState.id = id;
-    newState.name = name;
     this.setState({
-      focus: newState
+      focus: {id: id, name: name}
     });
   }
 
@@ -81,24 +76,41 @@ class App extends Component {
         })
         .then( (jsonRes) =>  {
           let newFoodComponents = this.showFoodItems(jsonRes.list.item);
-          let newState = this.state.foodComponents;
-          newState.isLoaded = true;
-          newState.list = newFoodComponents
           this.setState({
-            foodComponents: newState
+            foodComponents: {isLoaded: true, list: newFoodComponents}
           });
         },
         (error) => {
-          let newState = this.state.foodComponents;
-          newState.isLoaded = true;
-          newState.error = error;
           this.setState({
-            foodComponents: newState
+            foodComponents: {isLoaded: true, error: error}
           });
         }
       )
     }
 
+  }
+
+
+  addToList = (foodString) => {
+    let currentList = this.state.myFood;
+    let err = false;
+    for (let i = 0; i < currentList.length; i++) {
+      if (JSON.stringify(currentList[i]) === foodString) {
+        err = true;
+      }
+    }
+
+    if (!err) {
+      let foodObject = JSON.parse(foodString);
+      currentList.push(foodObject);
+      this.setState({
+        myFood: currentList
+      });
+    }
+  }
+
+  removeFood = (position) => {
+    console.log(position);
   }
 
 
@@ -131,14 +143,23 @@ class App extends Component {
 
     section = buildFoodList();
 
-    let section2;
+    let focusSection;
 
-    section2 = ((this.state.focus.id !== "") ?
+    focusSection = ((this.state.focus.id !== "") ?
       <FoodFocus
+        addFood = {this.addToList.bind(this)}
         name = {this.state.focus.name}
         id = {this.state.focus.id}/> : undefined);
 
 
+     let foodList = this.state.myFood;
+     let myFoodSection = ((foodList.length > 0) ?
+          foodList.map((food, i) => <MyFood
+          key = {i}
+          foodString = {JSON.stringify(food)}
+          pos = {i}
+          removeFood = {this.removeFood.bind(this)} />): undefined
+      );
     return (
 
       <div className="App">
@@ -156,10 +177,11 @@ class App extends Component {
           {section}
         </section>
         <br/>
-        {section2}
-        <div className = "food-list">
-          My food:
-        </div>
+        {focusSection}
+        <br/>
+        <section className ="my-food scrollable">
+          {myFoodSection}
+        </section>
       </div>
     );
   }
