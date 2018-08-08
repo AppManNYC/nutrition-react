@@ -7,12 +7,11 @@ import React from 'react';
 const MyFood = (props) => {
 
   let foodObject = JSON.parse(props.foodString);
-  console.log(foodObject);
   let name = foodObject.name;
   let macros = foodObject.nutrients.proximates;
 
   const onClick = () => {
-    this.props.removeFood(this.props.pos);
+    props.removeFood(props.pos);
   }
 
   return(
