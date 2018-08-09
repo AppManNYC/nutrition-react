@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import FoodItem from "./components/FoodItem";
 import FoodFocus from "./components/FoodFocus";
 import MyFood from "./components/MyFood";
-import FoodsTotal from "./components/FoodsTotal"
+import FoodsTotal from "./components/FoodsTotal";
+import Button from "./components/Button";
 import './App.css';
 
 /*global fetch*/
@@ -50,11 +51,29 @@ class App extends Component {
       if (!info.includes('\\') && !info.includes("!") &&
           !info.includes('""'))  {
         info = info.slice(0, info.indexOf("UPC") - 2);
-        let item = ((<FoodItem
-           click= {this.findFood.bind(this)}
-           id = {foodList[i].id}
-           key = {foodList[i].id}>{info}</FoodItem>
-         ));
+        let list = this.state.myFood;
+        console.log(list);
+        let check = false;
+        for (let i = 0; i < list.length; i++) {
+          if (list.name === info) {
+            check = true;
+          }
+        }
+        let item;
+        if (check) {
+          item = ((<FoodItem
+             className = "added"
+             click= {this.findFood.bind(this)}
+             id = {foodList[i].id}
+             key = {foodList[i].id}>{info}</FoodItem>
+           ));
+        } else {
+          item = ((<FoodItem
+             click= {this.findFood.bind(this)}
+             id = {foodList[i].id}
+             key = {foodList[i].id}>{info}</FoodItem>
+           ));
+        }
         inner.push(item);
       }
     }
@@ -62,10 +81,15 @@ class App extends Component {
     return foodItems;
   }
 
+  updateShowFoodItems = () => {
+
+  }
 
   componentDidMount = () => {
-    if (this.state.foodComponents.list.length === 0 &&
-        this.state.menu.search === true) {
+  }
+
+  loadSearch = () => {
+    if (this.state.foodComponents.list.length === 0) {
       let listType = "f"; // food
       let url = "https://api.nal.usda.gov/ndb/list?" +
         "format=json" +
@@ -90,9 +114,7 @@ class App extends Component {
         }
       )
     }
-
   }
-
 
   addToList = (foodString) => {
     let currentList = this.state.myFood;
@@ -109,7 +131,9 @@ class App extends Component {
       this.setState({
         myFood: currentList
       });
+      console.log(this.state.myFood);
     }
+
   }
 
   removeFood = (position) => {
@@ -122,62 +146,82 @@ class App extends Component {
     }
   }
 
+  toFoodSearch = () => {
+    let menu = this.state.menu;
+    let keys = Object.keys(menu);
+    for (let i = 0; i < keys.length; i++) {
+      if (menu[keys[i]]) {
+        menu[keys[i]] = false;
+      }
+    }
+    menu["search"] = true;
+    this.setState({
+      menu: menu
+    });
+    this.loadSearch();
+  }
+
 
   render() {
-
 
     let display = undefined;
 
     if (this.state.menu.intro){
-      let section;
 
-      section = (
-        <section>
+
+      display = (
+        <section id = "landing">
           <h1>
-            Welcome!
+            Interested in better understanding your daily nutrition?
           </h1>
           <p>
-            Are you interested in being more conscientious about the food that goes
-            into fueling your daily life? Are you maybe not that interested in
+            Maybe not that interested in
             number crunching and combing through nutrition labels? Still, maybe you
             would like a rough idea of where to start with your meal plans, or
-            what foods to experiment with in reaching your health goals.
+            what foods to experiment with in reaching your health goals...
           </p>
 
           <h2>
             Here you have a place to start.
           </h2>
           <p>
-            Look up the foods you consume during the day and check for yourself
+            Look up foods you plan to enjoy during the day and see for yourself
             the macro and mineral composition based on 100g portions as reported
             by the United States Drug & Food Administration (USDA).
           </p>
           <p>
-            Make a list of your chosen foods and get suggestions for portion
-            combinations to reach a recommended average daily caloric intake amount.
+            Make a list of your desired foods and get suggestions for portion
+            combinations based on a recommended daily caloric intake.
           </p>
           <p>
-            Please note that if you know your personal caloric goals you can change
-            this amount. If you do not know a specific number, you can use the calculator
-            to get a better ballpark number. As always keep in account that none
-            of this is an exact science and recommendations can vary wildly between
-            individuals.
+            Note that if you know your personal caloric goals you can
+            personalize your recommended target. If you do not know a specific number,
+            you can use the calculator to get a better ballpark sense. Keep in mind
+            that nutrition can be more of an art than a science, feel free to experiment
+            with your food choices!
           </p>
           <p>
-            As a final disclaimer, please be aware that what is considered a 'healthy'
+            Caution: Please be aware that what is considered a 'healthy'
             weight can have different connotations based on who you ask (a health professional,
-            a body positive person, an athlete, Joe the next door neighbor). In general greater
-            weight numbers (relative to height/age/physical activity) have been well correlated
-            in literature with greater propensity for adverse health conditions. In the same vein,
-            very low weight numbers can also be problematic. Please exercise common sense when
-            setting and hustling towards your goals. Best of luck!
+            a body positive person, an athlete, your next door neighbor Warren Peace-- who ironically
+            actually has a very sensible middle-of-the-road outlook on controversial topics
+            thanks in part to his coming to terms with the constant snickering suffered during his
+            childhood years as a result of his namesake).
+            In general, extreme weight (both low and high) increase health risks
+            in different ways. Please exercise common sense when setting your targets,
+            best of luck!
           </p>
+          <Button
+            name = "Get Started!"
+            onClick = {this.toFoodSearch.bind(this)}
+          />
         </section>
       );
 
 
     } else if (this.state.menu.search) {
       const buildFoodList = () => {
+        let section;
         let {error, isLoaded, list} = this.state.foodComponents;
 
 
@@ -200,10 +244,9 @@ class App extends Component {
         }
         return section;
       }
-
+      let section;
       section = buildFoodList();
       let focusSection;
-
       focusSection = ((this.state.focus.id !== "") ?
         <FoodFocus
           addFood = {this.addToList.bind(this)}

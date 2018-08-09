@@ -42,6 +42,10 @@ input{
   height: 200px;
 }
 
+.added {
+  background-color: green;
+}
+
 .focus{
   font-size: .8em;
 }
