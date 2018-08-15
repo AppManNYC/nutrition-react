@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import FoodItem from "./components/FoodItem";
 import FoodFocus from "./components/FoodFocus";
 import MyFood from "./components/MyFood";
-import FoodsTotal from "./components/FoodsTotal";
+import MyFoodDisclaimer from "./components/MyFoodDisclaimer";
 import Button from "./components/Button";
 import './App.css';
 
 /*global fetch*/
 
-//USDA Food Composition Database
+// USDA Food Composition Database
 // @ https://ndb.nal.usda.gov/ndb/doc/index#
 // Usage example:
 // https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf&location=Denver+CO
@@ -52,7 +52,6 @@ class App extends Component {
           !info.includes('""'))  {
         info = info.slice(0, info.indexOf("UPC") - 2);
         let list = this.state.myFood;
-        console.log(list);
         let check = false;
         for (let i = 0; i < list.length; i++) {
           if (list.name === info) {
@@ -119,19 +118,24 @@ class App extends Component {
   addToList = (foodString) => {
     let currentList = this.state.myFood;
     let err = false;
+    let foodStringName = JSON.parse(foodString).name
     for (let i = 0; i < currentList.length; i++) {
-      if (JSON.stringify(currentList[i]) === foodString) {
+      if (currentList[i].name === foodStringName) {
         err = true;
       }
     }
 
     if (!err) {
       let foodObject = JSON.parse(foodString);
+      foodObject.amount = 100;
+      let userNutrientsString = JSON.stringify(foodObject.nutrients);
+      let userNutrients = JSON.parse(userNutrientsString);
+      foodObject.userNutrients = userNutrients;
       currentList.push(foodObject);
+      console.log(foodObject);
       this.setState({
         myFood: currentList
       });
-      console.log(this.state.myFood);
     }
 
   }
@@ -146,7 +150,41 @@ class App extends Component {
     }
   }
 
-  toFoodSearch = () => {
+  portionChange = (position, event) => {
+    let value = event.target.value*1;
+    let foodList = this.state.myFood;
+    let foodObject = foodList[position];
+
+    let userNutrients = foodObject.userNutrients;
+
+
+    foodObject.amount = value;
+
+    for (let i = 0; i < foodObject.nutrients.minerals.length; i++) {
+      let originalAmountPer100g = foodObject.nutrients.minerals[i].match("([0-9]+((\.)[0-9]{1,2})?)")[0];
+      let newAmount = (value/100)*originalAmountPer100g;
+      newAmount = Math.round(newAmount * 100) /100;
+      userNutrients.minerals[i] = foodObject.nutrients.minerals[i].replace(originalAmountPer100g, newAmount);
+    }
+
+    for (let i = 0; i < foodObject.nutrients.proximates.length; i++) {
+      let originalAmountPer100g = foodObject.nutrients.proximates[i].match("([0-9]+((\.)[0-9]{1,2})?)")[0];
+      let newAmount = (value/100)*originalAmountPer100g;
+      newAmount = Math.round(newAmount * 100) /100;
+      userNutrients.proximates[i] = foodObject.nutrients.proximates[i].replace(originalAmountPer100g, newAmount);
+    }
+
+
+    foodObject.userNutrients = userNutrients;
+    foodList[position] = foodObject;
+
+    this.setState({
+      myFood: foodList
+    });
+  }
+
+  toSpecificMenu = (index) => {
+    // ["intro", "search", "myFood", "profile"]
     let menu = this.state.menu;
     let keys = Object.keys(menu);
     for (let i = 0; i < keys.length; i++) {
@@ -154,13 +192,21 @@ class App extends Component {
         menu[keys[i]] = false;
       }
     }
-    menu["search"] = true;
+    menu[keys[index]] = true;
     this.setState({
       menu: menu
     });
+  }
+
+
+  toFoodSearch = () => {
+    this.toSpecificMenu(1);
     this.loadSearch();
   }
 
+  toMyFood = () => {
+    this.toSpecificMenu(2)
+  }
 
   render() {
 
@@ -175,18 +221,18 @@ class App extends Component {
             Interested in better understanding your daily nutrition?
           </h1>
           <p>
-            Maybe not that interested in
-            number crunching and combing through nutrition labels? Still, maybe you
-            would like a rough idea of where to start with your meal plans, or
-            what foods to experiment with in reaching your health goals...
+            Not that interested in
+            number crunching and combing through nutrition labels?
           </p>
-
+          <p>
+            Want a rough idea of where to start/how to modify your meal plans?
+          </p>
           <h2>
             Here you have a place to start.
           </h2>
           <p>
-            Look up foods you plan to enjoy during the day and see for yourself
-            the macro and mineral composition based on 100g portions as reported
+            Search for foods you plan to enjoy during the day and see for yourself
+            macro and mineral nutrient composition based on 100g portions as reported
             by the United States Drug & Food Administration (USDA).
           </p>
           <p>
@@ -194,20 +240,20 @@ class App extends Component {
             combinations based on a recommended daily caloric intake.
           </p>
           <p>
-            Note that if you know your personal caloric goals you can
+            Note that if you know what your personal caloric goals are you can
             personalize your recommended target. If you do not know a specific number,
-            you can use the calculator to get a better ballpark sense. Keep in mind
-            that nutrition can be more of an art than a science, feel free to experiment
-            with your food choices!
+            feel free to use the calculator to get a better ballpark sense. Keep in mind
+            that nutrition can be more of an art than a science, get creative and
+            experiment!
           </p>
           <p>
             Caution: Please be aware that what is considered a 'healthy'
             weight can have different connotations based on who you ask (a health professional,
-            a body positive person, an athlete, your next door neighbor Warren Peace-- who ironically
-            actually has a very sensible middle-of-the-road outlook on controversial topics
-            thanks in part to his coming to terms with the constant snickering suffered during his
-            childhood years as a result of his namesake).
-            In general, extreme weight (both low and high) increase health risks
+            a body positive person, an athlete, your next door neighbor Warren Peace-- who incidentally
+            has a very sensible middle-of-the-road outlook on controversial sunjects, perhaps
+            in part due to coming to terms with the constant gnawing snickering from peers
+            as a result of his namesake).
+            In general, extreme weight (both low and high) increases health risks
             in different ways. Please exercise common sense when setting your targets,
             best of luck!
           </p>
@@ -226,7 +272,7 @@ class App extends Component {
 
 
         if (error) {
-            section = ("Error: there was a problem connecting to the web");
+          section = ("Error: there was a problem connecting to the web");
         } else if (!isLoaded) {
           section = ("Loading, please wait...");
         } else {
@@ -250,12 +296,9 @@ class App extends Component {
       focusSection = ((this.state.focus.id !== "") ?
         <FoodFocus
           addFood = {this.addToList.bind(this)}
+          goToMyFoods = {this.toMyFood.bind(this)}
           name = {this.state.focus.name}
           id = {this.state.focus.id}/> : undefined);
-
-
-
-
 
       display = [];
       display.push(
@@ -282,20 +325,27 @@ class App extends Component {
                 key = {i}
                 foodString = {JSON.stringify(food)}
                 pos = {i}
+                portionChange = {this.portionChange.bind(this)}
                 removeFood = {this.removeFood.bind(this)} />): undefined
             );
 
-            let myFoodsTotal = ((foodList.length > 0) ?
-              <FoodsTotal
-                foods = {JSON.stringify(foodList)}
-              /> : undefined
+            let disclaimer = ((foodList.length > 0) ?
+              <MyFoodDisclaimer/> :
+                (<p> No entries, try adding some foods to your list </p>)
             );
-            myFoodSection.push(myFoods);
-            myFoodSection.push(myFoodsTotal);
+            myFoodSection.push(<div className = "food-list"> {myFoods} </div>);
             display = [];
             display.push(
-              <section className ="my-food scrollable">
-                {myFoodSection}
+              <section className ="my-food">
+                <h1> My foods </h1>
+                <div className = "list-and-total">
+                  {myFoodSection}
+                </div>
+                {disclaimer}
+                <div className = "recommendations">
+
+                </div>
+
               </section>
             );
     }

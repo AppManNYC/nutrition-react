@@ -191,10 +191,18 @@ class FoodFocus  extends Component {
           section = ("Loading, please wait...");
         } else {
           section.push(this.processFood());
-          section.push(<Button
-                        onClick = {this.addToList.bind(this)}
-                        name = "add"
-                       />);
+          section.push(
+            <Button
+              onClick = {this.addToList.bind(this)}
+              name = "add"
+             />
+          );
+          section.push(
+            <Button
+              onClick = {this.props.goToMyFoods.bind(this)}
+              name = "back"
+            />
+          );
         }
         return section;
     }
