@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FoodItem from "./components/FoodItem";
 import FoodFocus from "./components/FoodFocus";
 import MyFood from "./components/MyFood";
+import MyFoodTotals from "./components/MyFoodTotals";
 import MyFoodDisclaimer from "./components/MyFoodDisclaimer";
 import Button from "./components/Button";
 import './App.css';
@@ -132,7 +133,6 @@ class App extends Component {
       let userNutrients = JSON.parse(userNutrientsString);
       foodObject.userNutrients = userNutrients;
       currentList.push(foodObject);
-      console.log(foodObject);
       this.setState({
         myFood: currentList
       });
@@ -217,50 +217,56 @@ class App extends Component {
 
       display = (
         <section id = "landing">
-          <h1>
-            Interested in better understanding your daily nutrition?
-          </h1>
-          <p>
-            Not that interested in
-            number crunching and combing through nutrition labels?
-          </p>
-          <p>
-            Want a rough idea of where to start/how to modify your meal plans?
-          </p>
-          <h2>
-            Here you have a place to start.
-          </h2>
-          <p>
-            Search for foods you plan to enjoy during the day and see for yourself
-            macro and mineral nutrient composition based on 100g portions as reported
-            by the United States Drug & Food Administration (USDA).
-          </p>
-          <p>
-            Make a list of your desired foods and get suggestions for portion
-            combinations based on a recommended daily caloric intake.
-          </p>
-          <p>
-            Note that if you know what your personal caloric goals are you can
-            personalize your recommended target. If you do not know a specific number,
-            feel free to use the calculator to get a better ballpark sense. Keep in mind
-            that nutrition can be more of an art than a science, get creative and
-            experiment!
-          </p>
-          <p>
-            Caution: Please be aware that what is considered a 'healthy'
-            weight can have different connotations based on who you ask (a health professional,
-            a body positive person, an athlete, your next door neighbor Warren Peace-- who incidentally
-            has a very sensible middle-of-the-road outlook on controversial sunjects, perhaps
-            in part due to coming to terms with the constant gnawing snickering from peers
-            as a result of his namesake).
-            In general, extreme weight (both low and high) increases health risks
-            in different ways. Please exercise common sense when setting your targets,
-            best of luck!
-          </p>
-          <Button
-            name = "Get Started!"
-            onClick = {this.toFoodSearch.bind(this)}
-          />
+          <div id = "landing-info">
+            <h1>
+              Interested in better understanding your daily nutrition?
+            </h1>
+            <p>
+              Not looking forward to combing through nutrition labels and
+              number crunching?
+            </p>
+            <p>
+              Want a rough idea of where to start/how to modify your meal plans?
+            </p>
+            <h2>
+              Here you have a place to start.
+            </h2>
+            <p>
+              Search for foods you plan to enjoy during the day and see for yourself
+              macro and mineral nutrient composition based on 100g portions as reported
+              by the United States Drug & Food Administration (USDA).
+            </p>
+            <p>
+              Make a list of your desired foods and get suggestions for portion
+              combinations based on a recommended daily caloric intake.
+            </p>
+            <Button
+              name = "Get Started!"
+              onClick = {this.toFoodSearch.bind(this)}
+            />
+          </div>
+
+          <div>
+            <p className = "landing-disclaimer">
+              <strong>Note</strong> that if you know what your personal caloric goals are you can
+              personalize your recommended target. If you do not know a specific number,
+              feel free to use the calculator to get a better ballpark sense. Keep in mind
+              that nutrition can be more of an art than a science, get creative and
+              experiment!
+            </p>
+            <p className = "landing-disclaimer">
+              <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
+              weight can have different connotations based on who you ask (a health professional,
+              a body positive person, an athlete, your next door neighbor Warren Peace-- who incidentally
+              has a very sensible middle-of-the-road outlook on controversial subjects, perhaps
+              in part due to coming to terms with the constant gnawing snickering from peers
+              as a result of his namesake).
+              In general, extreme weight (both low and high) increases health risks
+              in different ways. Please exercise common sense when setting your targets,
+              best of luck!
+            </p>
+          </div>
+
         </section>
       );
 
@@ -310,7 +316,7 @@ class App extends Component {
             />
           </form>
           <br/>
-          <section className="food-list scrollable"   >
+          <section className="food-list scrollable">
             {section}
           </section>
           <br/>
@@ -326,24 +332,39 @@ class App extends Component {
                 foodString = {JSON.stringify(food)}
                 pos = {i}
                 portionChange = {this.portionChange.bind(this)}
-                removeFood = {this.removeFood.bind(this)} />): undefined
+                removeFood = {this.removeFood.bind(this)} />) :
+                <p> oh dear, you have no foods on your list! </p>
+            );
+
+
+            let myFoodTotals = (
+              <MyFoodTotals
+                foodList = {foodList}
+              />
             );
 
             let disclaimer = ((foodList.length > 0) ?
               <MyFoodDisclaimer/> :
-                (<p> No entries, try adding some foods to your list </p>)
+                undefined
             );
-            myFoodSection.push(<div className = "food-list"> {myFoods} </div>);
+            myFoodSection.push(<div className = "food-items scrollable"> {myFoods} </div>);
             display = [];
             display.push(
               <section className ="my-food">
-                <h1> My foods </h1>
                 <div className = "list-and-total">
-                  {myFoodSection}
+                  <div className = "my-food-list">
+                    <h2> My foods </h2>
+                    {myFoodSection}
+                    <Button
+                      onClick = {this.toFoodSearch.bind(this)}
+                      name = "Back to Search"
+                    />
+                  </div>
+                  {myFoodTotals}
                 </div>
                 {disclaimer}
                 <div className = "recommendations">
-
+                  YO we heard you like recommendations so we recommended you some recommendations
                 </div>
 
               </section>

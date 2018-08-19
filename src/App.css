@@ -22,6 +22,15 @@ body, #root, .App {
   flex-basis: 20%;
 }
 
+#landing {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+
+}
+
 header{
   height: 5%;
   padding: 20px;
@@ -31,6 +40,18 @@ header{
 
 header h1 {
   margin: 0;
+}
+
+#landing button {
+  width: 100px;
+}
+
+
+
+.landing-disclaimer {
+  background-color: yellow;
+  font-size: 9pt;
+  align-self: flex-end;
 }
 
 input{
@@ -78,35 +99,88 @@ input{
   font-variant:small-caps;
 }
 
+.my-food, .my-food-list{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+}
+
 .my-food{
+  justify-content: space-around;
+}
+
+.food-items input {
+  width: 155px;
+}
+
+.food-items, .food-items input {
+  font-size: 9pt;
+}
+
+.food-items {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  justify-content: flex-start;
   width: 100%;
-  height: 100%;
-  justify-content:flex-start;
 }
 
-.food-list input {
-  width: 173px;
+.food-name {
+  padding: 0;
+  margin-top: 0;
+  margin-right: 0;
+  width: 150px;
 }
 
-.food-list, .food-list input {
-  font-size: 10pt;
+ .list-and-total {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  height: 60%;
+  align-content: center;
 }
 
-.food-list, .list-and-total{
-  height: 400px;
-}
-
-.my-food-disclaimer {
+#my-food-disclaimer {
+  background-color: yellow;
+  border-color: black;
+  border-style:solid;
+  font-size: 9pt;
   bottom: 0px;
 }
+
+.my-food-list h2 {
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+.my-food-list ul {
+  margin: auto;
+  height: 33%;
+  padding: 0;
+}
+
+.my-food-list button {
+  width: 150px;
+  margin: auto;
+  height: 30px;
+}
+
+.my-food-list, .my-food-totals {
+  width: 50%;
+}
+
+
 
 .scrollable{
   overflow-y: scroll;
 }
 
+.my-food.scrollable, .food-items.scrollable {
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
 
 .scrollable::-webkit-scrollbar {
     width: 12px;
@@ -120,9 +194,4 @@ input{
 .scrollable::-webkit-scrollbar-thumb {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-}
-
-.my-food.scrollable {
-  overflow-y:hidden;
-  overflow-x: scroll;
 }

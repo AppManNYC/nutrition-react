@@ -7,13 +7,13 @@ const MyFoodDisclaimer = () => {
 
 
   return(
-    <div className = "my-food-disclaimer">
+    <div id = "my-food-disclaimer">
       <p>
-        Disclaimer:
+        <strong>Disclaimer:</strong>
         Metabolic rates vary between individuals by age, height,
         weight, gender, physical activity, health conditions,
         and many other obscure things (such as weather, season, time of day).
-        Please be aware that calculating daily caloric intake
+        Please be aware that determining daily caloric intake
         can be somewhat of an art. For a more rigorous idea
         of your personal needs please consult a qualified health professional.
       </p>

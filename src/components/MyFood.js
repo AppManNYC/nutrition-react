@@ -25,7 +25,7 @@ const MyFood = (props) => {
   return(
     <ul
     >
-      <p>
+      <p className = "food-name">
         <span onClick = {onClick}> {name} </span>
       </p>
       <input
