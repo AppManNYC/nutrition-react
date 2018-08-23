@@ -26,7 +26,8 @@ class App extends Component {
         foodComponents: {error: null, isLoaded: false, list: []},
         search: "",
         focus: {id: "", name: ""},
-        myFood: []
+        myFood: [],
+        myFoodTotal: []
       };
 
   }
@@ -183,6 +184,12 @@ class App extends Component {
     });
   }
 
+  updateFoodTotals = (newTotal) => {
+    this.setState({
+      myFoodTotal: newTotal
+    });
+  }
+
   toSpecificMenu = (index) => {
     // ["intro", "search", "myFood", "profile"]
     let menu = this.state.menu;
@@ -226,7 +233,7 @@ class App extends Component {
               number crunching?
             </p>
             <p>
-              Want a rough idea of where to start/how to modify your meal plans?
+              Would like a rough idea of where to start in modifying your meal plans?
             </p>
             <h2>
               Here you have a place to start.
@@ -237,7 +244,7 @@ class App extends Component {
               by the United States Drug & Food Administration (USDA).
             </p>
             <p>
-              Make a list of your desired foods and get suggestions for portion
+              Make a list of your desired foods and receive suggestions for portion
               combinations based on a recommended daily caloric intake.
             </p>
             <Button
@@ -248,10 +255,10 @@ class App extends Component {
 
           <div>
             <p className = "landing-disclaimer">
-              <strong>Note</strong> that if you know what your personal caloric goals are you can
-              personalize your recommended target. If you do not know a specific number,
+              <strong>Note</strong> if you know what your personal caloric goals are you can
+              personalize your recommended target. If you do not,
               feel free to use the calculator to get a better ballpark sense. Keep in mind
-              that nutrition can be more of an art than a science, get creative and
+              that nutrition can be an obscure art, get creative and
               experiment!
             </p>
             <p className = "landing-disclaimer">
@@ -328,6 +335,7 @@ class App extends Component {
            let myFoodSection = [];
            let myFoods = ((foodList.length > 0) ?
                 foodList.map((food, i) => <MyFood
+                total = {this.state.myFoodTotal}
                 key = {i}
                 foodString = {JSON.stringify(food)}
                 pos = {i}
@@ -340,6 +348,7 @@ class App extends Component {
             let myFoodTotals = (
               <MyFoodTotals
                 foodList = {foodList}
+                updateTotal = {this.updateFoodTotals.bind(this)}
               />
             );
 
