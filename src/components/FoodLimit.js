@@ -15,13 +15,19 @@ class foodLimit extends Component {
              activity: "moderate"
             },
       currentTotals: [],
-      help: false
+      help: false,
+      settings: false
     }
   }
 
 
   handleMouseClick() {
     this.setState({ help: !this.state.help });
+  }
+
+  handleMouseClick2() {
+    this.setState({ settings: !this.state.settings });
+    console.log("does this work???")
   }
 
 
@@ -223,7 +229,7 @@ changeState = (newProps) => {
 
     let how;
       how = ( <div>
-        <span onClick = {this.handleMouseClick.bind(this)}> More info </span>
+        <Button onClick = {this.handleMouseClick.bind(this)} name = "More info"/>
         <div id = "macro-help"
              style = {helptipStyle}
              onClick = {this.handleMouseClick.bind(this)}
@@ -300,7 +306,69 @@ changeState = (newProps) => {
         </div>
       </div>);
 
+      const settingsStyle =  {
+        display: this.state.settings ? 'block' : 'none'
+      };
+      let settings;
+      settings = (
+        <div>
+          <Button name = "Change Settings" onClick = {this.handleMouseClick2.bind(this)} />
+          <div id = "settings"
+            style = {settingsStyle}
+          >
+            <div>
+              <h2> Change your settings here </h2>
+              <section>
+                <p>
+                  If you know your caloric intake goal please add it and your weight.
+                </p>
+                <p>
+                  If you would rather us approximate it then please complete the rest.
+                  Enter as imperial or metric, however all the information will be
+                  converted to metric at display.
+                </p>
 
+                <form>
+                  <label> Biologically female </label>
+                  <input className = "radio-btn" type = "radio" name = "female" />
+                  <label> Biologically male </label>
+                  <input className = "radio-btn" type = "radio" name = "male"/>
+                  <br/>
+
+                  <label> Imperial </label>
+                  <input className = "radio-btn" type = "radio" name = "imperial" />
+                  <label> Metric </label>
+                  <input className = "radio-btn" type = "radio" name = "metric" />
+                  <br/>
+
+                  <label> Weight: </label>
+                  <input type = "text" name = "weight" defaultValue = "Numbers only, either lbs or g"/>
+                  <br/>
+                  <label> Height: </label>
+                  <input type = "text" name = "height" defaultValue = "Numbers only, either ft or cm"/>
+                  <br/>
+                  <label> Age: </label>
+                  <input type = "text" name = "age" defaultValue = "Numbers only, in years"/>
+                  <br/>
+
+
+                  <label> Weight loss </label>
+                  <input className = "radio-btn" type = "radio" name = "loss" />
+                  <label> Weight maintenance </label>
+                  <input className = "radio-btn" type = "radio" name = "maintenance"/>
+                  <label> Weight gain </label>
+                  <input className = "radio-btn" type = "radio" name = "gain" />
+                  <br/>
+                </form>
+
+
+              </section>
+              <Button name = "Back" onClick = {this.handleMouseClick2.bind(this)}/>
+            </div>
+          </div>
+        </div>
+
+      );
 
 
     return(
@@ -309,7 +377,7 @@ changeState = (newProps) => {
         <h2>Breakdown suggestions:</h2>
         {section}
         {how}
-        <Button name = "Change your settings"/  >
+        {settings}
       </div>
 
 

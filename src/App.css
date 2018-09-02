@@ -202,7 +202,7 @@ input{
   color: yellow;
 }
 
-#macro-help {
+#macro-help, #settings {
   position: absolute;
   z-index: 3;
   top: 0; bottom: 0; left: 0; right: 0;
@@ -210,7 +210,7 @@ input{
   background-color: rgba(230, 202, 202, 0.9);
 }
 
-#macro-help div {
+#macro-help div, #settings div {
   transform:translateY(10%);
   display: flex; flex-direction: column;
   justify-content: center; align-items: center;
@@ -236,6 +236,10 @@ input{
   color: inherit;
   vertical-align:sub;
   font-size: 80%;
+}
+
+#settings .radio-btn {
+  width: auto;
 }
 
 .scrollable{
