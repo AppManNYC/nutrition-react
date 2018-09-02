@@ -98,7 +98,6 @@ class MyFoodTotals extends Component {
 
    let totals = (
      <div>
-       Totals:
        <ul>
          <li> Energy: {this.state.energy}kcal</li>
          <li> Protein: {this.state.protein}g </li>
