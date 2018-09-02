@@ -372,10 +372,6 @@ class App extends Component {
                   {myFoodTotals}
                 </div>
                 {disclaimer}
-                <div className = "recommendations">
-                  YO we heard you like recommendations so we recommended you some recommendations
-                </div>
-
               </section>
             );
     }
