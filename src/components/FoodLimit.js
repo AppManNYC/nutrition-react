@@ -11,7 +11,7 @@ class foodLimit extends Component {
       totalEnergyExpenditure: 0,
       data: {units: "metric", // metric for calculations, but input can be imperial or metric
              gender: "female", // biological, apologies to my non binary non cis attack-helicopter kin
-             age: 18,      // age minimum of 18 for legal reasons
+             age: 20,      // age minimum of 18 for legal reasons
              weight: 75.3, //kilograms, but input is either lbs or kg
              height: 1.6,  // m but input is either ft or m
              activity: "moderate"  // either low, moderate, or high
@@ -113,9 +113,46 @@ class foodLimit extends Component {
         goal: {gain: true, maintain: false, lose: false}
       });
     }
-
-    console.log(this.state.goal);
   }
+
+  handleSet() {
+
+    let units = this.state.data.units;
+    let gender = this.state.data.gender;
+    let height = this.state.data.height;
+    let weight = this.state.data.weight;
+    let age = this.state.data.age;
+    let activity = this.state.data.activity;
+    let goal;
+    if (this.state.goal.lose) {
+      goal = "lose";
+    } else if (this.state.goal.gain) {
+      goal = "gain";
+    } else {
+      goal = "maintain";
+    }
+
+    let promptText = "Just to make sure: Your gender is " + gender +
+      " and it has been " + age + " earthly rotations around the sun " +
+      "since the auspicious day you were born. " + "\n \n" +
+      "You chose to input your height and weight in " + units + " units. " +
+      "This means your height is " + height + "m and weight is " + weight +
+      "kg. Your activity level is " + activity + " and ultimately your goal is " +
+      "to " + goal +" weight. \n \n Did we get that right?";
+
+
+
+    let goOn = window.confirm(promptText);
+
+    if (goOn) {
+      this.setState({
+        default: false,
+        settings: {menu: false, own: false, calculator: false}
+      });
+    }
+
+  }
+
 
   changeState = (newProps) => {
     let newPropsString = JSON.stringify(newProps.totals);
@@ -431,11 +468,12 @@ class foodLimit extends Component {
                 </form>
                 <form id = "calculator" style = {calculatorStyle}>
 
-                  <label> Biologically female </label>
+                  Biological gender:
+                  <label> Female </label>
                   <input className = "radio-btn"
                           type = "radio" name = "gender" value = "female" onChange = {this.handleGenderChange.bind(this)}
                   />
-                  <label> Biologically male </label>
+                  <label> Male </label>
                   <input className = "radio-btn"
                          type = "radio" name = "gender" value = "male" onChange = {this.handleGenderChange.bind(this)}
                   />
@@ -528,7 +566,7 @@ class foodLimit extends Component {
                   />
                   <br/>
                 </form>
-                <Button name = "Set" onClick = {this.handleMouseClick2.bind(this)}/>
+                <Button name = "Set" onClick = {this.handleSet.bind(this)}/>
               </section>
             </div>
           </div>
