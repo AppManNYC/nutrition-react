@@ -9,14 +9,17 @@ class foodLimit extends Component {
       goal: {gain: false, maintain: true, lose: false},
       default: true,
       totalEnergyExpenditure: 0,
-      data: {gender: "female",
-             weight: 75.3,
-             height: 1.6,
-             activity: "moderate"
+      data: {units: "metric", // metric for calculations, but input can be imperial or metric
+             gender: "female", // biological, apologies to my non binary non cis attack-helicopter kin
+             age: 18,      // age minimum of 18 for legal reasons
+             weight: 75.3, //kilograms, but input is either lbs or kg
+             height: 1.6,  // m but input is either ft or m
+             activity: "moderate"  // either low, moderate, or high
             },
       currentTotals: [],
       help: false,
-      settings: false
+      settings: {menu: false, own: false, calculator: false},
+
     }
   }
 
@@ -26,22 +29,105 @@ class foodLimit extends Component {
   }
 
   handleMouseClick2() {
-    this.setState({ settings: !this.state.settings });
-    console.log("does this work???")
+    this.setState({ settings: {...this.state.settings, menu: !this.state.settings.menu} });
   }
 
-
-changeState = (newProps) => {
-  let newPropsString = JSON.stringify(newProps.totals);
-  let oldStateString = JSON.stringify(this.state.currentTotals)
-
-  if (newPropsString !== oldStateString) {
-    this.setState({
-      currentTotals: JSON.parse(newPropsString)
+  handleMouseClick3() {
+    this.setState({ settings: {...this.state.settings,
+                               own: true,
+                               calculator: false}
     });
   }
 
-}
+  handleMouseClick4() {
+    this.setState({ settings: {...this.state.settings,
+                               calculator: true,
+                               own: false}
+    });
+  }
+
+
+  handleUnitChange(event) {
+    this.setState({ data: {...this.state.data,
+                           units: event.target.value}
+    });
+  }
+
+  handleGenderChange(event) {
+    this.setState({
+      data: {...this.state.data,
+             gender: event.target.value}
+    });
+  }
+
+  handleWeight(event) {
+    let newWeight = event.target.value;
+    if (this.state.data.units !== "metric") {
+      newWeight = Math.round(newWeight*(.4536)*100)/100;
+    }
+    this.setState({
+      data: {...this.state.data,
+             weight: newWeight}
+    });
+  }
+
+  handleHeight(event) {
+    let newHeight = event.target.value;
+    if (this.state.data.units !== "metric") {
+      newHeight = Math.round(newHeight*(.3048)*100)/100;
+    }
+    this.setState({
+      data: {...this.state.data,
+             height: newHeight}
+    });
+  }
+
+
+  handleAge(event) {
+    this.setState({
+      data: {...this.state.data,
+             age: event.target.value}
+    });
+  }
+
+  handleActivity(event) {
+    this.setState({
+      data: {...this.state.data,
+             activity: event.target.value}
+    });
+    console.log(this.state.data.activity);
+  }
+
+  handleGoal(event) {
+    let goal = event.target.value;
+    if (goal === "lose") {
+      this.setState({
+        goal: {gain: false, maintain: false, lose: true}
+      });
+    } else if (goal === "maintain") {
+      this.setState({
+        goal: {gain: false, maintain: true, lose: false}
+      });
+    } else {
+      this.setState({
+        goal: {gain: true, maintain: false, lose: false}
+      });
+    }
+
+    console.log(this.state.goal);
+  }
+
+  changeState = (newProps) => {
+    let newPropsString = JSON.stringify(newProps.totals);
+    let oldStateString = JSON.stringify(this.state.currentTotals)
+
+    if (newPropsString !== oldStateString) {
+      this.setState({
+        currentTotals: JSON.parse(newPropsString)
+      });
+    }
+
+  }
 
   componentDidMount() {
     this.changeState(this.props);
@@ -307,8 +393,18 @@ changeState = (newProps) => {
       </div>);
 
       const settingsStyle =  {
-        display: this.state.settings ? 'block' : 'none'
+        display: this.state.settings.menu ? 'block' : 'none'
       };
+
+      const ownStyle =  {
+        display: this.state.settings.own ? 'block' : 'none'
+      };
+
+      const calculatorStyle =  {
+        display: this.state.settings.calculator ? 'block' : 'none'
+      };
+
+
       let settings;
       settings = (
         <div>
@@ -319,51 +415,121 @@ changeState = (newProps) => {
             <div>
               <h2> Change your settings here </h2>
               <section>
-                <p>
-                  If you know your caloric intake goal please add it and your weight.
-                </p>
-                <p>
-                  If you would rather us approximate it then please complete the rest.
-                  Enter as imperial or metric, however all the information will be
-                  converted to metric at display.
-                </p>
 
+                <Button name = "Set your own goal" onClick = {this.handleMouseClick3.bind(this)}/>
+                <Button name = "Use the calculator" onClick = {this.handleMouseClick4.bind(this)}/>
                 <form>
+                  <br/>
+                  <label> Imperial </label>
+                  <input className = "radio-btn"
+                    type = "radio" name = "unit" value = "imperial" onChange = {this.handleUnitChange.bind(this)}
+                  />
+                  <label> Metric </label>
+                  <input className = "radio-btn"
+                    type = "radio" name = "unit" value = "metric" onChange = {this.handleUnitChange.bind(this)}
+                  />
+                </form>
+                <form id = "calculator" style = {calculatorStyle}>
+
                   <label> Biologically female </label>
-                  <input className = "radio-btn" type = "radio" name = "female" />
+                  <input className = "radio-btn"
+                          type = "radio" name = "gender" value = "female" onChange = {this.handleGenderChange.bind(this)}
+                  />
                   <label> Biologically male </label>
-                  <input className = "radio-btn" type = "radio" name = "male"/>
+                  <input className = "radio-btn"
+                         type = "radio" name = "gender" value = "male" onChange = {this.handleGenderChange.bind(this)}
+                  />
                   <br/>
 
-                  <label> Imperial </label>
-                  <input className = "radio-btn" type = "radio" name = "imperial" />
-                  <label> Metric </label>
-                  <input className = "radio-btn" type = "radio" name = "metric" />
-                  <br/>
 
                   <label> Weight: </label>
-                  <input type = "text" name = "weight" defaultValue = "Numbers only, either lbs or g"/>
+                  <input type = "number"
+                         name = "weight"
+                         placeholder = "in kg or lbs"
+                         min = "0"
+                         onChange = {this.handleWeight.bind(this)}
+                  />
                   <br/>
                   <label> Height: </label>
-                  <input type = "text" name = "height" defaultValue = "Numbers only, either ft or cm"/>
+                  <input type = "number"
+                         name = "height"
+                         placeholder = "in ft or m"
+                         step = ".01"
+                         min = "0"
+                         onChange = {this.handleHeight.bind(this)}
+                  />
                   <br/>
                   <label> Age: </label>
-                  <input type = "text" name = "age" defaultValue = "Numbers only, in years"/>
+                  <input type = "number"
+                         name = "age"
+                         placeholder = "in years"
+                         min = "18"
+                         onChange = {this.handleAge.bind(this)}/>
+                  <br/>
+
+                  Activity levels:
+                  <label> Sedentary  </label>
+                  <input className = "radio-btn"
+                         type = "radio"
+                         name = "activity" value = "low"
+                         onChange = {this.handleActivity.bind(this)}
+                  />
+                  <label> Moderate </label>
+                  <input className = "radio-btn"
+                         type = "radio"
+                         name = "activity" value = "moderate"
+                         onChange = {this.handleActivity.bind(this)}
+                  />
+                  <label> High </label>
+                  <input className = "radio-btn"
+                         type = "radio"
+                         name = "activity" value = "high"
+                         onChange = {this.handleActivity.bind(this)}
+                  />
+                  <br/>
+
+                  Weight goals:
+                  <label> Loss </label>
+                  <input className = "radio-btn"
+                         type = "radio"
+                         name = "goal" value = "lose"
+                         onChange = {this.handleGoal.bind(this)}
+                  />
+                  <label> Maintenance </label>
+                  <input className = "radio-btn"
+                         type = "radio"
+                         name = "goal" value = "maintain"
+                         onChange = {this.handleGoal.bind(this)}
+                  />
+                  <label> Gain </label>
+                  <input className = "radio-btn"
+                         type = "radio"
+                         name = "goal" value = "gain"
+                         onChange = {this.handleGoal.bind(this)}
+                  />
                   <br/>
 
 
-                  <label> Weight loss </label>
-                  <input className = "radio-btn" type = "radio" name = "loss" />
-                  <label> Weight maintenance </label>
-                  <input className = "radio-btn" type = "radio" name = "maintenance"/>
-                  <label> Weight gain </label>
-                  <input className = "radio-btn" type = "radio" name = "gain" />
-                  <br/>
+
                 </form>
 
+                <form id = "own-calories" style = {ownStyle}>
 
+
+                  <label> Caloric intake goal: </label>
+                  <input type = "text" name = "kcals" defaultValue = "Daily value in kcals" />
+                  <br/>
+                  <label> Weight: </label>
+                  <input type = "number"
+                         name = "weight"
+                         placeholder = "in kg or lbs"
+                         min = "0"
+                         onChange = {this.handleWeight.bind(this)}
+                  />
+                  <br/>
+                </form>
+                <Button name = "Set" onClick = {this.handleMouseClick2.bind(this)}/>
               </section>
-              <Button name = "Back" onClick = {this.handleMouseClick2.bind(this)}/>
             </div>
           </div>
         </div>
