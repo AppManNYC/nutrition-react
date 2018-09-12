@@ -27,7 +27,8 @@ class App extends Component {
         search: "",
         focus: {id: "", name: ""},
         myFood: [],
-        myFoodTotal: []
+        myFoodTotal: [],
+        userSettings: ""
       };
 
   }
@@ -215,6 +216,15 @@ class App extends Component {
     this.toSpecificMenu(2)
   }
 
+
+  onSettingsChange = (newData) => {
+    if (newData !== this.state.userData) {
+      this.setState({
+        userData: newData
+      })
+    }
+  }
+
   render() {
 
     let display = undefined;
@@ -256,7 +266,7 @@ class App extends Component {
           <div>
             <p className = "landing-disclaimer">
               <strong>Note</strong> if you know what your personal caloric goals are you can
-              personalize your recommended target. If you do not,
+              personalize your recommended target. If not,
               feel free to use the calculator to get a better ballpark sense. Keep in mind
               that nutrition can be an obscure art, get creative and
               experiment!
@@ -347,6 +357,8 @@ class App extends Component {
 
             let myFoodTotals = (
               <MyFoodTotals
+                changeSettings = {this.onSettingsChange.bind(this)}
+                userSettings = {this.state.userSettings}
                 foodList = {foodList}
                 updateTotal = {this.updateFoodTotals.bind(this)}
               />

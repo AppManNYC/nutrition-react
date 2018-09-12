@@ -5,24 +5,29 @@ import Button from './Button'
 class foodLimit extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      goal: {gain: false, maintain: true, lose: false},
-      default: true,
-      totalEnergyExpenditure: 0,
-      data: {units: "metric", // metric for calculations, but input can be imperial or metric
-             gender: "female", // biological, apologies to my non binary non cis attack-helicopter kin
-             age: 20,      // age minimum of 18 for legal reasons
-             weight: 75.3, //kilograms, but input is either lbs or kg
-             height: 1.6,  // m but input is either ft or m
-             activity: "moderate"  // either low, moderate, or high
-            },
-      currentTotals: [],
-      help: false,
-      settings: {menu: false, own: false, calculator: false},
 
+    if (this.props.userSettings !== "") {
+      let newSettings = JSON.parse(this.props.userSettings);
+      this.state = newSettings;
+    } else {
+      this.state = {
+        selfReported: false,
+        goal: "maintain",
+        default: true,
+        suggestedCalories: 2250,
+        data: {units: "metric", // metric for calculations, but input can be imperial or metric
+               gender: "female", // biological, apologies to my non binary non cis attack-helicopter kin
+               age: 20,      // age minimum of 18 for legal reasons
+               weight: 75.3, //kilograms, but input is either lbs or kg
+               height: 1.6,  // m but input is either ft or m
+               activity: "moderate"  // either low, moderate, or high
+              },
+        currentTotals: [],
+        help: false,
+        settings: {menu: false, own: false, calculator: false},
+      }
     }
   }
-
 
   handleMouseClick() {
     this.setState({ help: !this.state.help });
@@ -33,13 +38,16 @@ class foodLimit extends Component {
   }
 
   handleMouseClick3() {
-    this.setState({ settings: {...this.state.settings,
+    this.setState({
+      selfReported: true,
+      settings: {...this.state.settings,
                                own: true,
                                calculator: false}
     });
   }
 
   handleMouseClick4() {
+    selfReported: false,
     this.setState({ settings: {...this.state.settings,
                                calculator: true,
                                own: false}
@@ -95,24 +103,52 @@ class foodLimit extends Component {
       data: {...this.state.data,
              activity: event.target.value}
     });
-    console.log(this.state.data.activity);
   }
 
   handleGoal(event) {
-    let goal = event.target.value;
-    if (goal === "lose") {
-      this.setState({
-        goal: {gain: false, maintain: false, lose: true}
-      });
-    } else if (goal === "maintain") {
-      this.setState({
-        goal: {gain: false, maintain: true, lose: false}
-      });
-    } else {
-      this.setState({
-        goal: {gain: true, maintain: false, lose: false}
-      });
+    this.setState({
+      goal: event.target.value
+    });
+  }
+
+  calculateCalories() {
+    let weight = this.state.data.weight
+    let height = this.state.data.height*100;
+    let age = this.state.data.age;
+    let gender = this.state.data.gender;
+    let constant;
+    if (gender === "female") {
+      constant = -161;
+    } else if (gender === "male") {
+      constant = 5;
     }
+    let activityLevel = this.state.data.activity;
+    let physicalActivityMultiplier;
+    if (activityLevel === "low"){
+      physicalActivityMultiplier = 1.5;
+    } else if (activityLevel === "moderate"){
+      physicalActivityMultiplier = 1.88;
+    } else if (activityLevel === "high") {
+      physicalActivityMultiplier = 2.25;
+    }
+    let goal = this.state.goal;
+    let goalMultiplier;
+
+    if (goal === "lose") {
+      goalMultiplier = .85;
+    } else if (goal === "maintain") {
+      goalMultiplier = 1;
+    } else if(goal === "gain") {
+      goalMultiplier = 1.15;
+    }
+
+
+    let basalMetabolicRate = (10*weight) + (6.25*height) - (5*age) + constant;
+    let totalEnergyExpenditure = basalMetabolicRate*physicalActivityMultiplier;
+    let dailyIntake = totalEnergyExpenditure*goalMultiplier;
+    dailyIntake = Math.round(dailyIntake);
+
+    return(dailyIntake);
   }
 
   handleSet() {
@@ -123,36 +159,76 @@ class foodLimit extends Component {
     let weight = this.state.data.weight;
     let age = this.state.data.age;
     let activity = this.state.data.activity;
-    let goal;
-    if (this.state.goal.lose) {
-      goal = "lose";
-    } else if (this.state.goal.gain) {
-      goal = "gain";
-    } else {
-      goal = "maintain";
+    let goal = this.state.goal;
+
+
+    let promptText;
+    if (this.state.settings.calculator) {
+      promptText = "Just to make sure:" + "\n" + " Your gender is " + gender +
+      " and it has been " + age + " earthly rotations around the sun " +
+      "since the auspicious day from whence you were born. " + "\n \n" +
+      "Choosing to input your information in " + units + " units " +
+      "means your height is " + height + "m and weight is " + weight +
+      "kg. Your activity level is " + activity + " and ultimately your goal is " +
+      "to " + goal +" weight. \n \n Did we get that right?" +
+      "\n \n Note: Canceling will revert to the default suggestions.";
+    } else if (this.state.settings.own) {
+      promptText = "Just to make sure: \nYou've chosen to report your weight" +
+      " in " + units + " units, which means that at "  + weight + "kg " +
+      "your chosen daily Caloric intake will be " +
+      this.state.suggestedCalories + "kcals. \nIs this correct?" +
+      " \n \n Note: Canceling will revert back to default suggestions."
     }
 
-    let promptText = "Just to make sure: Your gender is " + gender +
-      " and it has been " + age + " earthly rotations around the sun " +
-      "since the auspicious day you were born. " + "\n \n" +
-      "You chose to input your height and weight in " + units + " units. " +
-      "This means your height is " + height + "m and weight is " + weight +
-      "kg. Your activity level is " + activity + " and ultimately your goal is " +
-      "to " + goal +" weight. \n \n Did we get that right?";
+
 
 
 
     let goOn = window.confirm(promptText);
 
     if (goOn) {
+
+      let newSuggestion;
+      if (this.state.selfReported) {
+        newSuggestion = this.state.suggestedCalories;
+      } else {
+        newSuggestion = this.calculateCalories();
+      }
+
       this.setState({
         default: false,
+        suggestedCalories: newSuggestion,
         settings: {menu: false, own: false, calculator: false}
+      });
+
+      let newSettings = JSON.stringify(this.state);
+      this.props.changeSettings(newSettings);
+    } else {
+      this.setState({
+        selfReported: false,
+        default: true,
+        suggestedCalories: 2250,
+        goal: "maintain",
+        data: {units: "metric",
+               gender: "female",
+               age: 20,
+               weight: 75.3,
+               height: 1.6,
+               activity: "moderate"
+             },
+       settings: {menu: false, own: false, calculator: false}
       });
     }
 
   }
 
+
+  handleOwnCals = (event) => {
+    this.setState({
+      default: false,
+      suggestedCalories: event.target.value
+    });
+  }
 
   changeState = (newProps) => {
     let newPropsString = JSON.stringify(newProps.totals);
@@ -176,33 +252,13 @@ class foodLimit extends Component {
   }
 
   processTotals() {
-    let totalEnergyExpenditure;
-    if (this.state.default) {
-      totalEnergyExpenditure = 2250;
-    } else {
-      totalEnergyExpenditure = this.state.totalEnergyExpenditure;
-    }
-
-
-    let index;
-    if (this.state.data.activity === "sedentary") {
-      index = 0;
-    } else if (this.state.data.activity === "moderate") {
-      index = 1;
-    } else if (this.state.data.activity === "high") {
-      index = 2;
-    }
 
     let goal;
-    let goalMultiplier;
-    if (this.state.goal.gain) {
-      goalMultiplier = 1.15;
+    if (this.state.goal === "gain") {
       goal = "weight gain";
-    } else if (this.state.goal.maintain) {
-      goalMultiplier = 1;
+    } else if (this.state.goal === "maintain") {
       goal = "weight maintainance";
-    } else if (this.state.goal.lose) {
-      goalMultiplier = .85;
+    } else if (this.state.goal === "lose") {
       goal = "weight loss";
     }
 
@@ -229,16 +285,15 @@ class foodLimit extends Component {
     ];
 
 
-    let calorieSuggest = totalEnergyExpenditure*goalMultiplier;
+    let calorieSuggest = this.state.suggestedCalories;
 
     let currentTotals = this.state.currentTotals;
 
-    let kcalsInfo = " At a " + goal + " goal of " + calorieSuggest + " kcals, you are ";
-
+    let kcalsInfo;
     if (currentTotals[0] > calorieSuggest) {
-      kcalsInfo = kcalsInfo + "over by  " + (currentTotals[0] - calorieSuggest);
+      kcalsInfo = "Over by  " + (currentTotals[0] - calorieSuggest);
     } else {
-      kcalsInfo = kcalsInfo + "under by " + ( calorieSuggest - currentTotals[0]);
+      kcalsInfo = "Under by " + ( calorieSuggest - currentTotals[0]);
     }
 
     let percent = Math.round(currentTotals[0]/calorieSuggest*100);
@@ -312,7 +367,15 @@ class foodLimit extends Component {
     let macroBreakdown = (
       <div>
         <p>
-          The following are based on your personal information:
+          {this.state.default? "The following information is based" +
+            " on the default settings." : "The following are based on " +
+            "your provided information."
+          }
+        </p>
+        <p>
+          <strong> Daily Caloric Intake goal: </strong> {this.state.suggestedCalories} kcals
+          {" "}
+          <strong>Current weight: </strong> {this.state.data.weight} kg
         </p>
         <p>
           {kcalsInfo}
@@ -334,17 +397,8 @@ class foodLimit extends Component {
 
   render() {
 
-    let section;
-    if (this.state.default) {
-      section = (
-        <div>
-          <p> Based on the default settings (see/change below),
-            your approximate total energy expenditure is about <strong>2250 kcals</strong>.
-          </p>
-          {this.processTotals()}
-        </div>
-      );
-    }
+    let section = this.processTotals();
+
 
     const helptipStyle =  {
       display: this.state.help ? 'block' : 'none'
@@ -362,7 +416,7 @@ class foodLimit extends Component {
             <fieldset>
               <legend> Calories </legend>
               <p>
-                So please stay critical! One of most (historically) used
+                So please stay critical! \n One of most (historically) used
                 methods is the Harris-Benedict equation (originally introduced in the early
                 1900s but revised multiple times through the early 2000s)--
                 due to its simplicity and relative accuracy.
@@ -453,17 +507,28 @@ class foodLimit extends Component {
               <h2> Change your settings here </h2>
               <section>
 
-                <Button name = "Set your own goal" onClick = {this.handleMouseClick3.bind(this)}/>
-                <Button name = "Use the calculator" onClick = {this.handleMouseClick4.bind(this)}/>
+                <Button name = "Set your own goal"
+                  onClick = {this.handleMouseClick3.bind(this)}
+                  disabled = {this.state.settings.own}
+                />
+                <Button name = "Use the calculator"
+                  onClick = {this.handleMouseClick4.bind(this)}
+                  disabled = {this.state.settings.calculator}
+                />
                 <form>
                   <br/>
                   <label> Imperial </label>
                   <input className = "radio-btn"
-                    type = "radio" name = "unit" value = "imperial" onChange = {this.handleUnitChange.bind(this)}
+                    type = "radio" name = "unit"
+                    value = "imperial"
+                    onChange = {this.handleUnitChange.bind(this)}
                   />
                   <label> Metric </label>
                   <input className = "radio-btn"
-                    type = "radio" name = "unit" value = "metric" onChange = {this.handleUnitChange.bind(this)}
+                    checked
+                    type = "radio" name = "unit"
+                    value = "metric"
+                    onChange = {this.handleUnitChange.bind(this)}
                   />
                 </form>
                 <form id = "calculator" style = {calculatorStyle}>
@@ -471,11 +536,15 @@ class foodLimit extends Component {
                   Biological gender:
                   <label> Female </label>
                   <input className = "radio-btn"
-                          type = "radio" name = "gender" value = "female" onChange = {this.handleGenderChange.bind(this)}
+                          checked = {this.state.data.gender === "female"}
+                          type = "radio" name = "gender" value = "female"
+                          onChange = {this.handleGenderChange.bind(this)}
                   />
                   <label> Male </label>
                   <input className = "radio-btn"
-                         type = "radio" name = "gender" value = "male" onChange = {this.handleGenderChange.bind(this)}
+                         checked = {this.state.data.gender === "male"}
+                         type = "radio" name = "gender" value = "male"
+                         onChange = {this.handleGenderChange.bind(this)}
                   />
                   <br/>
 
@@ -485,6 +554,7 @@ class foodLimit extends Component {
                          name = "weight"
                          placeholder = "in kg or lbs"
                          min = "0"
+                         value = {this.state.data.weight}
                          onChange = {this.handleWeight.bind(this)}
                   />
                   <br/>
@@ -494,6 +564,7 @@ class foodLimit extends Component {
                          placeholder = "in ft or m"
                          step = ".01"
                          min = "0"
+                         value = {this.state.data.height}
                          onChange = {this.handleHeight.bind(this)}
                   />
                   <br/>
@@ -502,26 +573,30 @@ class foodLimit extends Component {
                          name = "age"
                          placeholder = "in years"
                          min = "18"
+                         value = {"" + this.state.data.age}
                          onChange = {this.handleAge.bind(this)}/>
                   <br/>
 
                   Activity levels:
-                  <label> Sedentary  </label>
+                  <label> Low  </label>
                   <input className = "radio-btn"
                          type = "radio"
                          name = "activity" value = "low"
+                         checked = {this.state.data.activity === "low"}
                          onChange = {this.handleActivity.bind(this)}
                   />
                   <label> Moderate </label>
                   <input className = "radio-btn"
                          type = "radio"
                          name = "activity" value = "moderate"
+                         checked = {this.state.data.activity === "moderate"}
                          onChange = {this.handleActivity.bind(this)}
                   />
                   <label> High </label>
                   <input className = "radio-btn"
                          type = "radio"
                          name = "activity" value = "high"
+                         checked = {this.state.data.activity === "high"}
                          onChange = {this.handleActivity.bind(this)}
                   />
                   <br/>
@@ -531,18 +606,21 @@ class foodLimit extends Component {
                   <input className = "radio-btn"
                          type = "radio"
                          name = "goal" value = "lose"
+                         checked = {this.state.goal === "lose"}
                          onChange = {this.handleGoal.bind(this)}
                   />
                   <label> Maintenance </label>
                   <input className = "radio-btn"
                          type = "radio"
                          name = "goal" value = "maintain"
+                         checked = {this.state.goal === "maintain"}
                          onChange = {this.handleGoal.bind(this)}
                   />
                   <label> Gain </label>
                   <input className = "radio-btn"
                          type = "radio"
                          name = "goal" value = "gain"
+                         checked = {this.state.goal === "gain"}
                          onChange = {this.handleGoal.bind(this)}
                   />
                   <br/>
@@ -555,12 +633,21 @@ class foodLimit extends Component {
 
 
                   <label> Caloric intake goal: </label>
-                  <input type = "text" name = "kcals" defaultValue = "Daily value in kcals" />
+                  <input type = "number"
+                    name = "kcals"
+                    step = "50"
+                    min = "0"
+                    value = {this.state.suggestedCalories}
+                    placeholder = "daily value in kcals"
+                    onChange = {this.handleOwnCals.bind(this)}
+                  />
                   <br/>
                   <label> Weight: </label>
                   <input type = "number"
                          name = "weight"
+                         step = "5"
                          placeholder = "in kg or lbs"
+                         value = {this.state.data.weight}
                          min = "0"
                          onChange = {this.handleWeight.bind(this)}
                   />

@@ -242,6 +242,10 @@ input{
   width: auto;
 }
 
+button:disabled{
+  opacity: .5;
+}
+
 .scrollable{
   overflow-y: scroll;
 }

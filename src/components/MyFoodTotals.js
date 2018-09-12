@@ -13,7 +13,8 @@ class MyFoodTotals extends Component {
       protein: 0,
       fat: 0,
       fiber: 0,
-      sugar: 0
+      sugar: 0,
+      limitData: ""
     };
 
 
@@ -117,7 +118,10 @@ class MyFoodTotals extends Component {
                    this.state.protein,
                    this.state.fat,
                    this.state.fiber,
-                   this.state.sugar]}
+                   this.state.sugar,
+                 ]}
+       userSettings = {this.props.userSettings}
+       changeSettings = {this.props.changeSettings}
        />
      </div>
    );
