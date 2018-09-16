@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from './Button'
+import ProgressBar from './ProgressBar';
 
 
 class foodLimit extends Component {
@@ -289,80 +290,109 @@ class foodLimit extends Component {
 
     let currentTotals = this.state.currentTotals;
 
-    let kcalsInfo;
+    let excess;
     if (currentTotals[0] > calorieSuggest) {
-      kcalsInfo = "Over by  " + (currentTotals[0] - calorieSuggest);
+      excess = "Over by  " + (currentTotals[0] - calorieSuggest);
     } else {
-      kcalsInfo = "Under by " + ( calorieSuggest - currentTotals[0]);
+      excess = "Under by " + ( calorieSuggest - currentTotals[0]);
     }
 
     let percent = Math.round(currentTotals[0]/calorieSuggest*100);
-    kcalsInfo = kcalsInfo + " kcals (at " + percent +
-                "% of recommended).";
 
 
-    let protInfo = "At " + currentTotals[1] + "g ";
-    let fatInfo = "At " + currentTotals[2] + "g ";
-    let carbInfo = "At " + currentTotals[4] + "g ";
-    let add = true;
+    let kcalsInfo = (
+      <div className = "macro-suggestion">
+        <strong> Calories: </strong>
+        <ProgressBar
+          target = {calorieSuggest}
+          currentKcals = {currentTotals[0]}
+        />
+        Currently at {percent}% of recommended ({excess} kcals.)
+      </div>
+    );
+
+
 
     if (currentTotals[1] > protRange[0] && currentTotals[1] < protRange[1]) {
-      protInfo += "you are within the recommended range of " + protRange[0] +
-      " - " + protRange[1] + " grams of protein based on your weight.";
-      add = false;
+      percent = false;
+      excess = "You are within the recommended range of " + protRange[0] +
+      " - " + protRange[1] + " grams";
     } else if (currentTotals[1] < protRange[0]){
       percent = Math.round(currentTotals[1]/protRange[0]*100);
-      protInfo += "you are below the minimum recommended " + protRange[0];
+      excess= "lower recommended threshold  of " + protRange[0] ;
     } else if (currentTotals[1] > protRange[0]){
       percent = Math.round(currentTotals[1]/protRange[1]*100);
-      protInfo += "you are above the maximum recommended " + protRange[1];
+      excess= "higher recommended threshold of " + protRange[1];
     }
 
-    if (add) {
-      protInfo += " grams of protein threshold (currently at " + percent +
-      "% of recommended).";
-      add = true;
-    }
+    let protInfo = (
+      <div className = "macro-suggestion">
+        <strong> Proteins: </strong>
+        <ProgressBar
+          lowerBound = {protRange[0]}
+          upperBound = {protRange[1]}
+          currentGrams = {currentTotals[1]}
+        />
+        {percent ?   "Currently at " + percent + "% of " + excess + " grams":
+          excess
+        }
+      </div>
+    );
+
 
 
 
     if (currentTotals[2] > fatRange[0] && currentTotals[2] < fatRange[1]) {
-      fatInfo += "you are within the recommended range of " + fatRange[0] +
-      " - " + fatRange[1] + " grams of fat based on your weight.";
-      add = false;
+      percent = false;
+      excess = "You are within the recommended range of " + fatRange[0] +
+      " - " + fatRange[1] + " grams";
     } else if (currentTotals[2] < fatRange[0]){
       percent = Math.round(currentTotals[2]/fatRange[0]*100);
-      fatInfo += "you are below the minimum recommended " + fatRange[0];
-    } else if (currentTotals[2] > fatRange[1]){
+      excess= "lower recommended threshold  of " + fatRange[0] ;
+    } else if (currentTotals[2] > fatRange[0]){
       percent = Math.round(currentTotals[2]/fatRange[1]*100);
-      fatInfo += "you are above the maximum recommended " + fatRange[1];
+      excess= "higher recommended threshold of " + fatRange[1];
     }
 
-    if (add) {
-      fatInfo += " grams of fat threshold (currently at " + percent +
-      "% of recommended).";
-      add = true;
-    }
+    let fatInfo = (
+      <div className = "macro-suggestion">
+        <strong> Fats: </strong>
+        <ProgressBar
+          lowerBound = {fatRange[0]}
+          upperBound = {fatRange[1]}
+          currentGrams = {currentTotals[2]}
+        />
+        {percent ?   "Currently at " + percent + "% of " + excess + " grams":
+          excess
+        }
+      </div>
+    );
 
-
-
-    if (currentTotals[4] > carbRange[0] && currentTotals[3] < carbRange[1]) {
-      carbInfo += "you are within the recommended range of " + carbRange[0] +
-      " - " + carbRange[1] + " grams of carbs based on your weight.";
-      add = false;
+    if (currentTotals[4] > carbRange[0] && currentTotals[4] < carbRange[1]) {
+      percent = false;
+      excess = "You are within the recommended range of " + carbRange[0] +
+      " - " + carbRange[1] + " grams";
     } else if (currentTotals[4] < carbRange[0]){
       percent = Math.round(currentTotals[4]/carbRange[0]*100);
-      carbInfo += "you are below the minimum recommended " + carbRange[0];
+      excess= "lower recommended threshold  of " + carbRange[0] ;
     } else if (currentTotals[4] > carbRange[1]){
       percent = Math.round(currentTotals[4]/carbRange[1]*100);
-      carbInfo += "you are above the maximum recommended " + carbRange[1];
+      excess= "higher recommended threshold of " + carbRange[1];
     }
 
-    if (add) {
-      carbInfo += " grams of carbs threshold (currently at " + percent +
-      "% of recommended).";
-    }
-
+    let carbInfo = (
+      <div className = "macro-suggestion">
+        <strong> Fats: </strong>
+        <ProgressBar
+          lowerBound = {carbRange[0]}
+          upperBound = {carbRange[1]}
+          currentGrams = {currentTotals[4]}
+        />
+        {percent ?   "Currently at " + percent + "% of " + excess + " grams":
+          excess
+        }
+      </div>
+    );
 
     let macroBreakdown = (
       <div>
@@ -377,12 +407,8 @@ class foodLimit extends Component {
           {" "}
           <strong>Current weight: </strong> {this.state.data.weight} kg
         </p>
-        <p>
           {kcalsInfo}
-        </p>
-        <p>
           {protInfo}
-        </p>
         <p>
           {fatInfo}
         </p>

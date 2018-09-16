@@ -108,7 +108,6 @@ input{
 }
 
 .my-food{
-  justify-content: space-around;
 }
 
 .food-items input {
@@ -154,12 +153,20 @@ input{
 }
 
 #my-food-disclaimer {
+  overflow-y:hidden;
+  position: absolute;
   background-color: yellow;
   border-color: black;
   border-style:solid;
   font-size: 9pt;
   bottom: 0px;
+  height: 20px;
 }
+
+#my-food-disclaimer:hover {
+  height: auto;
+}
+
 
 .my-food-list h2 {
   padding-bottom: 0px;
@@ -246,6 +253,17 @@ button:disabled{
   opacity: .5;
 }
 
+.macro-suggestion {
+  display: flex; flex-direction: column;
+}
+
+.macro-suggestion > strong {
+  text-align:left;
+}
+
+
+/* Scrolling class style */
+
 .scrollable{
   overflow-y: scroll;
 }
@@ -267,4 +285,63 @@ button:disabled{
 .scrollable::-webkit-scrollbar-thumb {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+
+/* numberLine class style */
+
+
+.line-container {
+  position: relative;
+  margin-top: 10px; margin-bottom: 10px;
+}
+
+.numberline {
+  position: relative;
+  border-color: black; border-width: 1px; border-style: solid;
+  height: 15px;
+  background-color: white;
+}
+
+.scale-origin, .scale-end {
+  position: absolute;
+  top: 10px;
+}
+
+.scale-end {
+  right: 0;
+}
+
+.line {
+  position: absolute;
+  width: 30%;
+  height: 100%;
+  background-color: brown;
+  opacity: .8;
+}
+
+
+.threshold-1, .threshold-2, .target {
+  position: absolute;
+  height: 15px;
+  width: 2px;
+  background-color: black;
+}
+
+.threshold-1 p, .threshold-2 p, .target p {
+  position: absolute;
+  bottom: 10px;
+}
+
+.threshold-1 {
+  left: 25%;
+}
+
+.threshold-2 {
+  left: 50%;
+}
+
+
+
+.marker {
 }
