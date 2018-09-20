@@ -5,7 +5,7 @@ const ProgressBar = (props) => {
 
   let numberLine;
 
-  if (props.target) {
+  if (props.target && props.set) {
 
     let place = Math.round(props.target/4500*100) + "%";
 
@@ -39,15 +39,14 @@ const ProgressBar = (props) => {
         </p>
       </div>
     );
-  } else {
+  } else if (props.set) {
 
     let scaleEnd = Math.round(props.upperBound * 1.50);
 
 
 
     let width = Math.round(props.currentGrams/scaleEnd*100) + "%";
-    console.log(scaleEnd);
-    console.log(props.currentGrams);
+
 
     const progressStyle = {
       width: width
@@ -85,6 +84,8 @@ const ProgressBar = (props) => {
          {scaleEnd} grams
         </p>
       </div>);
+  } else {
+    numberLine = ( <h3> Working on your settings!  </h3>);
   }
 
 

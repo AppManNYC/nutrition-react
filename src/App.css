@@ -1,3 +1,6 @@
+@import url('//fonts.googleapis.com/css?family=PT+Sans');
+
+
 
 html {
   position: absolute;
@@ -10,6 +13,7 @@ html {
 body, #root, .App {
   height: 100%;
   margin: 0;
+  font-family: "PT Sans", Arial, sans-serif;
 }
 
 
@@ -55,8 +59,9 @@ header h1 {
 }
 
 input{
-  width: 50%;
-  margin:auto;
+  width: 30%;
+  margin: auto;
+  text-align: center;
 }
 
 .food-list{
@@ -99,6 +104,11 @@ input{
   font-variant:small-caps;
 }
 
+.dear{
+  text-align:center;
+}
+
+
 .my-food, .my-food-list{
   display: flex;
   flex-direction: column;
@@ -107,34 +117,35 @@ input{
   justify-content: flex-start;
 }
 
-.my-food{
-}
 
 .food-items input {
-  width: 155px;
+  width: 175px;
+
 }
 
 .food-items, .food-items input {
   font-size: 9pt;
 }
 
-.food-items {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+
+.my-food-list {
+  height: auto;
 }
 
 #my-food-totals, .food-items, .my-food-list {
   margin: auto;
   padding: 15px;
   width: 50%;
-  height: 100%;
 }
 
 .food-items {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  height: 500px;
   width: 100%;
 }
-
 
 .food-name {
   padding: 0;
@@ -147,7 +158,7 @@ input{
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  height: 60%;
+  height: 100%;
   align-content: center;
   flex-basis: auto;
 }
@@ -161,10 +172,11 @@ input{
   font-size: 9pt;
   bottom: 0px;
   height: 20px;
+  transition: all .5s ease;
 }
 
 #my-food-disclaimer:hover {
-  height: auto;
+  height: 125px;
 }
 
 
@@ -176,7 +188,8 @@ input{
 .my-food-list ul {
   margin: auto;
   height: 33%;
-  padding: 5px;
+  width: 100%;
+  padding: 10px;
 }
 
 .my-food-list button {
@@ -188,6 +201,7 @@ input{
 .my-food-list, .my-food-totals {
   width: 50%;
 }
+
 
 .food-tooltip {
   position: absolute;
@@ -261,6 +275,23 @@ button:disabled{
   text-align:left;
 }
 
+.within-goal, .not-within-goal {
+  position:relative;
+}
+
+.within-goal img, .not-within-goal img {
+  position: absolute;
+  width: 40px;
+}
+
+.not-within-goal img {
+  opacity: 0;
+}
+
+.within-goal > img, .not-within-goal img {
+  left: 0;
+}
+
 
 /* Scrolling class style */
 
@@ -268,7 +299,7 @@ button:disabled{
   overflow-y: scroll;
 }
 
-.my-food.scrollable, .food-items.scrollable {
+.my-food.scrollable {
   overflow-y: hidden;
   overflow-x: scroll;
 }
@@ -292,8 +323,9 @@ button:disabled{
 
 
 .line-container {
-  position: relative;
+  position: relatives;
   margin-top: 10px; margin-bottom: 10px;
+  overflow-x: hidden;
 }
 
 .numberline {
@@ -318,6 +350,7 @@ button:disabled{
   height: 100%;
   background-color: brown;
   opacity: .8;
+  transition: all .5s ease;
 }
 
 
@@ -341,7 +374,36 @@ button:disabled{
   left: 50%;
 }
 
+/* Animations */
+@keyframes fadeIn{
+    0%{
+        transform:  rotate(0deg) translateX(0) translateY(-50px);
+        opacity: 0;
+        }
+    100%{
+        transform: rotate(360deg) scale(1) translateX(0) translateY(0);
+        opacity: 1;
+        }
+}
 
 
-.marker {
+
+@keyframes fadeOut{
+    0%{
+        transform:  rotate(0deg) translateX(0) translateY(0);
+        opacity: 1;
+        }
+    100%{
+        transform: rotate(360deg) scale(1) translateX(0) translateY(-50px);
+        opacity: 0;
+        }
+}
+
+
+.fade-in{
+    animation: fadeIn .5s 1 ease;
+}
+
+.fade-out{
+  animation: fadeOut .5s 1 ease;
 }

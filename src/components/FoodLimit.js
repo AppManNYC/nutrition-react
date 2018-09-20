@@ -3,6 +3,9 @@ import Button from './Button'
 import ProgressBar from './ProgressBar';
 
 
+import star from '../assets/star.png'
+
+
 class foodLimit extends Component {
   constructor(props) {
     super(props);
@@ -14,6 +17,7 @@ class foodLimit extends Component {
       this.state = {
         selfReported: false,
         goal: "maintain",
+        set: true,
         default: true,
         suggestedCalories: 2250,
         data: {units: "metric", // metric for calculations, but input can be imperial or metric
@@ -41,6 +45,7 @@ class foodLimit extends Component {
   handleMouseClick3() {
     this.setState({
       selfReported: true,
+      set: false,
       settings: {...this.state.settings,
                                own: true,
                                calculator: false}
@@ -48,8 +53,10 @@ class foodLimit extends Component {
   }
 
   handleMouseClick4() {
-    selfReported: false,
-    this.setState({ settings: {...this.state.settings,
+    this.setState({
+      selfReported: false,
+      set: false,
+      settings: {...this.state.settings,
                                calculator: true,
                                own: false}
     });
@@ -167,9 +174,9 @@ class foodLimit extends Component {
     if (this.state.settings.calculator) {
       promptText = "Just to make sure:" + "\n" + " Your gender is " + gender +
       " and it has been " + age + " earthly rotations around the sun " +
-      "since the auspicious day from whence you were born. " + "\n \n" +
-      "Choosing to input your information in " + units + " units " +
-      "means your height is " + height + "m and weight is " + weight +
+      "since the auspicious day whence you were born. " + "\n \n" +
+      "Your input is in " + units + " units " +
+      "which means your height is " + height + "m and weight is " + weight +
       "kg. Your activity level is " + activity + " and ultimately your goal is " +
       "to " + goal +" weight. \n \n Did we get that right?" +
       "\n \n Note: Canceling will revert to the default suggestions.";
@@ -198,6 +205,7 @@ class foodLimit extends Component {
 
       this.setState({
         default: false,
+        set: true,
         suggestedCalories: newSuggestion,
         settings: {menu: false, own: false, calculator: false}
       });
@@ -207,6 +215,7 @@ class foodLimit extends Component {
     } else {
       this.setState({
         selfReported: false,
+        set: true,
         default: true,
         suggestedCalories: 2250,
         goal: "maintain",
@@ -304,6 +313,7 @@ class foodLimit extends Component {
       <div className = "macro-suggestion">
         <strong> Calories: </strong>
         <ProgressBar
+          set = {this.state.set}
           target = {calorieSuggest}
           currentKcals = {currentTotals[0]}
         />
@@ -325,18 +335,29 @@ class foodLimit extends Component {
       excess= "higher recommended threshold of " + protRange[1];
     }
 
-    let protInfo = (
+    let protInfo = ((currentTotals[1] > 0) ?
       <div className = "macro-suggestion">
         <strong> Proteins: </strong>
         <ProgressBar
+          set = {this.state.set}
           lowerBound = {protRange[0]}
           upperBound = {protRange[1]}
           currentGrams = {currentTotals[1]}
         />
-        {percent ?   "Currently at " + percent + "% of " + excess + " grams":
-          excess
+        {percent ?   <div className = "not-within-goal">
+           <img className = "fade-out" src = {star}/>
+          {"Currently at " + percent + "% of " + excess + " grams"}
+         </div>:
+        <div className = "within-goal">
+         <img className = "fade-in" src= {star}
+           alt = "An image of a star. Good Job!"/>
+           {excess}
+        </div>
         }
-      </div>
+      </div> : <div className = "macro-suggestion">
+          <strong> Proteins: </strong>
+          <p> Zero! </p>
+        </div>
     );
 
 
@@ -354,18 +375,29 @@ class foodLimit extends Component {
       excess= "higher recommended threshold of " + fatRange[1];
     }
 
-    let fatInfo = (
+    let fatInfo = ((currentTotals[2] > 0) ?
       <div className = "macro-suggestion">
         <strong> Fats: </strong>
         <ProgressBar
+          set = {this.state.set}
           lowerBound = {fatRange[0]}
           upperBound = {fatRange[1]}
           currentGrams = {currentTotals[2]}
         />
-        {percent ?   "Currently at " + percent + "% of " + excess + " grams":
-          excess
+        {percent ?   <div className = "not-within-goal">
+           <img className = "fade-out" src = {star}/>
+          {"Currently at " + percent + "% of " + excess + " grams"}
+         </div>:
+        <div className = "within-goal">
+         <img className = "fade-in" src= {star}
+           alt = "An image of a star. Good Job!"/>
+           {excess}
+        </div>
         }
-      </div>
+      </div> : <div className = "macro-suggestion">
+          <strong> Fats: </strong>
+          <p> Nada! </p>
+        </div>
     );
 
     if (currentTotals[4] > carbRange[0] && currentTotals[4] < carbRange[1]) {
@@ -380,18 +412,30 @@ class foodLimit extends Component {
       excess= "higher recommended threshold of " + carbRange[1];
     }
 
-    let carbInfo = (
+    let carbInfo = ((currentTotals[4] > 0) ?
       <div className = "macro-suggestion">
-        <strong> Fats: </strong>
+        <strong> Carbs: </strong>
         <ProgressBar
+          set = {this.state.set}
           lowerBound = {carbRange[0]}
           upperBound = {carbRange[1]}
           currentGrams = {currentTotals[4]}
         />
-        {percent ?   "Currently at " + percent + "% of " + excess + " grams":
-          excess
+        {percent ? <div className = "not-within-goal">
+           <img className = "fade-out" src = {star}/>
+          {"Currently at " + percent + "% of " + excess + " grams"}
+         </div>
+         :
+         <div className = "within-goal">
+          <img className = "fade-in" src= {star}
+            alt = "An image of a star. Good Job!"/>
+            {excess}
+         </div>
         }
-      </div>
+      </div> : <div className = "macro-suggestion">
+          <strong> Carbs: </strong>
+          <p>  Zilch! </p>
+        </div>
     );
 
     let macroBreakdown = (
@@ -696,14 +740,8 @@ class foodLimit extends Component {
         {how}
         {settings}
       </div>
-
-
-
     )
   }
-
-
-
 }
 
 

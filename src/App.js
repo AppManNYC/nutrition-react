@@ -159,6 +159,10 @@ class App extends Component {
 
     let userNutrients = foodObject.userNutrients;
 
+    if (value > 500) {
+      value = 500;
+      event.target.value = 500;
+    }
 
     foodObject.amount = value;
 
@@ -306,9 +310,25 @@ class App extends Component {
                   return food.props.children.includes(this.state.search.toUpperCase());
                 }
               ));
-              section = (<ul>{filteredFood}</ul>);
+              section = (
+                <div>
+
+                  <br/>
+                  <ul>{filteredFood}</ul>
+                </div>
+              );
             } else {
-              section = list;
+              section = (
+                <div>
+                  <form>
+                    <input type= "text" value = {this.state.search}
+                        placeholder = "Search specific foods by name"
+                        onChange = {this.updateSearch.bind(this)}
+                    />
+                  </form>
+                  {list}
+                </div>
+              );
             }
         }
         return section;
@@ -327,12 +347,6 @@ class App extends Component {
       display.push(
         (<div>
           <br/>
-          <form>
-            <input type= "text" value = {this.state.search}
-                onChange = {this.updateSearch.bind(this)}
-            />
-          </form>
-          <br/>
           <section className="food-list scrollable">
             {section}
           </section>
@@ -344,31 +358,33 @@ class App extends Component {
            let foodList = this.state.myFood;
            let myFoodSection = [];
            let myFoods = ((foodList.length > 0) ?
-                foodList.map((food, i) => <MyFood
-                total = {this.state.myFoodTotal}
-                key = {i}
-                foodString = {JSON.stringify(food)}
-                pos = {i}
-                portionChange = {this.portionChange.bind(this)}
-                removeFood = {this.removeFood.bind(this)} />) :
-                <p> oh dear, you have no foods on your list! </p>
+                <div className = "food-items scrollable">
+                  {foodList.map((food, i) => <MyFood
+                  total = {this.state.myFoodTotal}
+                  key = {i}
+                  foodString = {JSON.stringify(food)}
+                  pos = {i}
+                  portionChange = {this.portionChange.bind(this)}
+                  removeFood = {this.removeFood.bind(this)} />)}
+                </div> :
+                  <p className = "dear"> Oh dear, you have no foods on your list! </p>
             );
 
 
-            let myFoodTotals = (
+            let myFoodTotals = ((foodList.length > 0) ?
               <MyFoodTotals
                 changeSettings = {this.onSettingsChange.bind(this)}
                 userSettings = {this.state.userSettings}
                 foodList = {foodList}
                 updateTotal = {this.updateFoodTotals.bind(this)}
-              />
+              /> : undefined
             );
 
             let disclaimer = ((foodList.length > 0) ?
               <MyFoodDisclaimer/> :
                 undefined
             );
-            myFoodSection.push(<div className = "food-items scrollable"> {myFoods} </div>);
+            myFoodSection.push( myFoods);
             display = [];
             display.push(
               <section className ="my-food">
