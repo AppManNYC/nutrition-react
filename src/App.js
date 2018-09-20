@@ -312,9 +312,15 @@ class App extends Component {
               ));
               section = (
                 <div>
-
-                  <br/>
-                  <ul>{filteredFood}</ul>
+                  <form>
+                    <input type= "text" value = {this.state.search}
+                        placeholder = "Search specific foods by name"
+                        onChange = {this.updateSearch.bind(this)}
+                    />
+                  </form>
+                  <div className="food-list scrollable">
+                    <ul>{filteredFood}</ul>
+                  </div>
                 </div>
               );
             } else {
@@ -326,7 +332,9 @@ class App extends Component {
                         onChange = {this.updateSearch.bind(this)}
                     />
                   </form>
-                  {list}
+                  <div className="food-list scrollable">
+                    {list}
+                  </div>
                 </div>
               );
             }
@@ -347,9 +355,7 @@ class App extends Component {
       display.push(
         (<div>
           <br/>
-          <section className="food-list scrollable">
             {section}
-          </section>
           <br/>
         </div>)
       );
