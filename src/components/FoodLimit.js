@@ -328,12 +328,14 @@ class foodLimit extends Component {
       excess = "You are within the recommended range of " + protRange[0] +
       " - " + protRange[1] + " grams";
     } else if (currentTotals[1] < protRange[0]){
-      percent = Math.round(currentTotals[1]/protRange[0]*100);
+      percent = Math.round(currentTotals[1]/protRange[0]*100*100)/100;
       excess= "lower recommended threshold  of " + protRange[0] ;
     } else if (currentTotals[1] > protRange[0]){
-      percent = Math.round(currentTotals[1]/protRange[1]*100);
+      percent = Math.round(currentTotals[1]/protRange[1]*100*100)/100;
       excess= "higher recommended threshold of " + protRange[1];
     }
+
+
 
     let protInfo = ((currentTotals[1] > 0) ?
       <div className = "macro-suggestion">
@@ -368,10 +370,10 @@ class foodLimit extends Component {
       excess = "You are within the recommended range of " + fatRange[0] +
       " - " + fatRange[1] + " grams";
     } else if (currentTotals[2] < fatRange[0]){
-      percent = Math.round(currentTotals[2]/fatRange[0]*100);
+      percent = Math.round(currentTotals[2]/fatRange[0]*100*100)/100;
       excess= "lower recommended threshold  of " + fatRange[0] ;
     } else if (currentTotals[2] > fatRange[0]){
-      percent = Math.round(currentTotals[2]/fatRange[1]*100);
+      percent = Math.round(currentTotals[2]/fatRange[1]*100*100)/100;
       excess= "higher recommended threshold of " + fatRange[1];
     }
 
@@ -405,7 +407,7 @@ class foodLimit extends Component {
       excess = "You are within the recommended range of " + carbRange[0] +
       " - " + carbRange[1] + " grams";
     } else if (currentTotals[4] < carbRange[0]){
-      percent = Math.round(currentTotals[4]/carbRange[0]*100);
+      percent = Math.round(currentTotals[4]/carbRange[0]*100*100)/100;
       excess= "lower recommended threshold  of " + carbRange[0] ;
     } else if (currentTotals[4] > carbRange[1]){
       percent = Math.round(currentTotals[4]/carbRange[1]*100);

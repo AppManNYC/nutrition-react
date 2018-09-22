@@ -1,4 +1,4 @@
-@import url('//fonts.googleapis.com/css?family=PT+Sans');
+@import url('//fonts.googleapis.com/css?family=PT+Sans|Montserrat');
 
 
 
@@ -26,34 +26,80 @@ body, #root, .App {
   flex-basis: 20%;
 }
 
+#landing-bg {
+  width: 100%;
+  height: 100%;
+  background-image: url('./assets/landing-bg.jpg');
+  background-repeat: no-repeat;
+  background-size:cover;
+  filter: brightness(75%) saturate(90%) contrast(80%);
+}
+
+
 #landing {
+  position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   height: 100%;
-
 }
 
-header{
-  height: 5%;
-  padding: 20px;
-  color:white;
-  background-color: #222;
+#landing header {
+  opacity: .8;
+  background-color: white;
+  mix-blend-mode: screen;
+  padding: 15px 15px 15px 15px;
 }
 
-header h1 {
+#landing header h1 {
   margin: 0;
+  font-size: 25pt;
+  font-family: 'Montserrat', sans-serif;
+
 }
+
+#landing-info {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  text-align: center;
+  opacity: .8;
+  background-color: white;
+  width: 60%;
+  padding: 15px;
+  font-size: 8pt;
+  padding: 20px;
+}
+
+
+#landing-info h1 {
+  font-size: 13pt;
+  font-family: 'PT Sans', sans-serif;
+}
+
+#landing-info p {
+}
+
 
 #landing button {
+  padding: 0; margin: auto; margin-bottom: 5px;
   width: 100px;
+  background-color: white;
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  font-family: 'PT Sans', sans-serif;
 }
 
+#landing button:hover {
+  background-color: #d1d1d1;
+  color: black;
+}
 
 
 .landing-disclaimer {
-  background-color: yellow;
+  background-color: white;
   font-size: 9pt;
   align-self: flex-end;
 }

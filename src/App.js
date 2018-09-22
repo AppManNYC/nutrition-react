@@ -7,12 +7,17 @@ import MyFoodDisclaimer from "./components/MyFoodDisclaimer";
 import Button from "./components/Button";
 import './App.css';
 
-/*global fetch*/
+
+
+import background from './assets/landing-bg.jpg'
 
 // USDA Food Composition Database
 // @ https://ndb.nal.usda.gov/ndb/doc/index#
 // Usage example:
 // https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf&location=Denver+CO
+
+
+/*global fetch*/
 
 
 class App extends Component {
@@ -29,7 +34,7 @@ class App extends Component {
         myFood: [],
         myFoodTotal: [],
         userSettings: ""
-      };
+    };
 
   }
 
@@ -237,58 +242,63 @@ class App extends Component {
 
 
       display = (
-        <section id = "landing">
-          <div id = "landing-info">
-            <h1>
-              Interested in better understanding your daily nutrition?
-            </h1>
-            <p>
-              Not looking forward to combing through nutrition labels and
-              number crunching?
-            </p>
-            <p>
-              Would like a rough idea of where to start in modifying your meal plans?
-            </p>
-            <h2>
-              Here you have a place to start.
-            </h2>
-            <p>
-              Search for foods you plan to enjoy during the day and see for yourself
-              macro and mineral nutrient composition based on 100g portions as reported
-              by the United States Drug & Food Administration (USDA).
-            </p>
-            <p>
-              Make a list of your desired foods and receive suggestions for portion
-              combinations based on a recommended daily caloric intake.
-            </p>
-            <Button
-              name = "Get Started!"
-              onClick = {this.toFoodSearch.bind(this)}
-            />
+        <div className = "App">
+          <div id = "landing-bg">
           </div>
+          <section id = "landing">
+            <header>
+              <h1> HORN OF PLENTY</h1>
+            </header>
+            <div id = "landing-info">
+              <h1>
+                Looking to better understand your daily nutrition?
+              </h1>
+              <h1>
+                Or a starting point on where to modify your meal plans?
+              </h1>
+              <p>
+                <span>Horn of Plenty</span> provides a way of visiualizing
+                caloric and nutritional contributions from each of the foods
+                you eat.
+              </p>
+              <p>
+                Here you can create and modify a food list of your preferred foods.
+                Based on food portions you will be shown respective and total
+                macronutrient information as reported by the USDA.
+              </p>
+              <p>
+                You can also choose to provide information regarding your nutritional
+                goals, and be shown more accurate information of the nutritional content
+                relative to your settings.
+              </p>
 
-          <div>
-            <p className = "landing-disclaimer">
-              <strong>Note</strong> if you know what your personal caloric goals are you can
-              personalize your recommended target. If not,
-              feel free to use the calculator to get a better ballpark sense. Keep in mind
-              that nutrition can be an obscure art, get creative and
-              experiment!
-            </p>
-            <p className = "landing-disclaimer">
-              <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
-              weight can have different connotations based on who you ask (a health professional,
-              a body positive person, an athlete, your next door neighbor Warren Peace-- who incidentally
-              has a very sensible middle-of-the-road outlook on controversial subjects, perhaps
-              in part due to coming to terms with the constant gnawing snickering from peers
-              as a result of his namesake).
-              In general, extreme weight (both low and high) increases health risks
-              in different ways. Please exercise common sense when setting your targets,
-              best of luck!
-            </p>
-          </div>
-
-        </section>
+              <Button
+                name = "GET STARTED"
+                onClick = {this.toFoodSearch.bind(this)}
+              />
+            </div>
+            <div>
+              <p className = "landing-disclaimer">
+                <strong>Note</strong> if you know what your personal caloric goals are you can
+                personalize your recommended target. If not,
+                feel free to use the calculator to get a better ballpark sense. Keep in mind
+                that nutrition can be an obscure art, get creative and
+                experiment!
+              </p>
+              <p className = "landing-disclaimer">
+                <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
+                weight can have different connotations based on who you ask (a health professional,
+                a body positive person, an athlete, your next door neighbor Warren Peace-- who incidentally
+                has a very sensible middle-of-the-road outlook on controversial subjects, perhaps
+                in part due to coming to terms with the constant gnawing snickering from peers
+                as a result of his namesake).
+                In general, extreme weight (both low and high) increases health risks
+                in different ways. Please exercise common sense when setting your targets,
+                best of luck!
+              </p>
+            </div>
+          </section>
+        </div>
       );
 
 
@@ -416,13 +426,7 @@ class App extends Component {
 
 
     return (
-
-      <div className="App">
-        <header>
-          <h1 className="App-title">nutrition-react</h1>
-        </header>
-        {display}
-      </div>
+      display
     );
   }
 }
