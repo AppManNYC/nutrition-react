@@ -5,6 +5,7 @@ import MyFood from "./components/MyFood";
 import MyFoodTotals from "./components/MyFoodTotals";
 import MyFoodDisclaimer from "./components/MyFoodDisclaimer";
 import Button from "./components/Button";
+import Transition from 'react-transition-group/Transition';
 import './App.css';
 
 
@@ -33,7 +34,8 @@ class App extends Component {
         focus: {id: "", name: ""},
         myFood: [],
         myFoodTotal: [],
-        userSettings: ""
+        userSettings: "",
+        hook: {yes: false, no: false}
     };
 
   }
@@ -202,6 +204,11 @@ class App extends Component {
 
   toSpecificMenu = (index) => {
     // ["intro", "search", "myFood", "profile"]
+    let hook = this.state.hook;
+    if (index === 0) {
+      hook.yes = false;
+      hook.no = false;
+    }
     let menu = this.state.menu;
     let keys = Object.keys(menu);
     for (let i = 0; i < keys.length; i++) {
@@ -211,7 +218,8 @@ class App extends Component {
     }
     menu[keys[index]] = true;
     this.setState({
-      menu: menu
+      menu: menu,
+      hook: hook
     });
   }
 
@@ -225,6 +233,19 @@ class App extends Component {
     this.toSpecificMenu(2)
   }
 
+
+  handleHookAffirm = () => {
+    this.setState({
+      hook: {yes: true, no: false}
+    });
+  }
+
+  handleHookDeny = () => {
+    this.setState({
+      hook: {yes: false, no: true}
+    });
+    console.log(this.state);
+  }
 
   onSettingsChange = (newData) => {
     if (newData !== this.state.userData) {
@@ -241,62 +262,89 @@ class App extends Component {
     if (this.state.menu.intro){
 
 
+
+
       display = (
         <div className = "App">
           <div id = "landing-bg">
           </div>
           <section id = "landing">
-            <header>
+            <header className = "enter-left">
               <h1> HORN OF PLENTY</h1>
             </header>
-            <div id = "landing-info">
-              <h1>
-                Looking to better understand your daily nutrition?
-              </h1>
-              <h1>
-                Or a starting point on where to modify your meal plans?
-              </h1>
-              <p>
-                <span>Horn of Plenty</span> provides a way of visiualizing
-                caloric and nutritional contributions from each of the foods
-                you eat.
-              </p>
-              <p>
-                Here you can create and modify a food list of your preferred foods.
-                Based on food portions you will be shown respective and total
-                macronutrient information as reported by the USDA.
-              </p>
-              <p>
-                You can also choose to provide information regarding your nutritional
-                goals, and be shown more accurate information of the nutritional content
-                relative to your settings.
-              </p>
 
-              <Button
-                name = "GET STARTED"
-                onClick = {this.toFoodSearch.bind(this)}
-              />
-            </div>
-            <div>
-              <p className = "landing-disclaimer">
-                <strong>Note</strong> if you know what your personal caloric goals are you can
-                personalize your recommended target. If not,
-                feel free to use the calculator to get a better ballpark sense. Keep in mind
-                that nutrition can be an obscure art, get creative and
-                experiment!
+
+            {(!this.state.hook.yes && !this.state.hook.no) ?
+              <div className = "hook">
+                <h1 id = "left">
+                  Looking to better understand your daily nutrition?
+                </h1>
+                <h1 id = "right">
+                  A place to start modifying your meal plans?
+                </h1>
+                <Button
+                  name = "LEARN MORE"
+                  onClick = {this.handleHookAffirm.bind(this)}
+                />
+                <Button
+                  name = "NO"
+                  onClick = {this.handleHookDeny.bind(this)}
+                />
+              </div> :
+              ((this.state.hook.yes) ?
+                <div id = "landing-info">
+                  <p>
+                    <span>Horn of Plenty</span> provides a way of visiualizing
+                    caloric and nutritional contributions from each of the foods
+                    you eat.
+                  </p>
+                  <p>
+                    Here you can create and modify a food list of your preferred foods.
+                    Based on food portions you choose, you will be shown total and
+                    individual macronutrient information as reported by the USDA.
+                  </p>
+                  <p>
+                    You can also choose to provide information regarding your nutritional
+                    goals, and be shown more accurate information of the nutritional content
+                    relative to your settings.
+                  </p>
+
+                  <Button
+                    name = "GET STARTED"
+                    onClick = {this.toFoodSearch.bind(this)}
+                  />
+                </div> :
+                  <div id = "landing-info">
+                    <p>
+                      Fair enough!
+                    </p>
+                    <Button
+                      name = "Bye!"
+                      onClick = {() => {this.toSpecificMenu(0)}}
+                    />
+                  </div>
+              )
+            }
+
+
+            <footer id = "landing-disclaimer">
+              <p>
+                <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
+                can help provide a starting point, and hopefully make the process less
+                daunting. Ultimately you will have to find what
+                works for you. Please be creative and experiment!
               </p>
-              <p className = "landing-disclaimer">
+              <p>
                 <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
                 weight can have different connotations based on who you ask (a health professional,
-                a body positive person, an athlete, your next door neighbor Warren Peace-- who incidentally
-                has a very sensible middle-of-the-road outlook on controversial subjects, perhaps
-                in part due to coming to terms with the constant gnawing snickering from peers
-                as a result of his namesake).
+                a body positive person, an athlete, your next door neighbor-- who incidentally
+                has a very sensible middle-of-the-road outlook on controversial topics, what
+                a good bloke).
                 In general, extreme weight (both low and high) increases health risks
                 in different ways. Please exercise common sense when setting your targets,
                 best of luck!
               </p>
-            </div>
+            </footer>
           </section>
         </div>
       );

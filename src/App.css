@@ -1,4 +1,4 @@
-@import url('//fonts.googleapis.com/css?family=PT+Sans|Montserrat');
+
 
 
 
@@ -40,13 +40,16 @@ body, #root, .App {
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   height: 100%;
 }
 
 #landing header {
-  opacity: .8;
+  margin-top: 20px;
+  margin-left: 20px;
+  align-self: flex-start;
+  opacity: .65;
   background-color: white;
   mix-blend-mode: screen;
   padding: 15px 15px 15px 15px;
@@ -55,28 +58,45 @@ body, #root, .App {
 #landing header h1 {
   margin: 0;
   font-size: 25pt;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Lora', serif;
 
 }
 
 #landing-info {
   display: flex;
   flex-direction: column;
-  height: 300px;
   text-align: center;
-  opacity: .8;
+  opacity: .65;
   background-color: white;
   width: 60%;
   padding: 15px;
-  font-size: 8pt;
+  font-size: 12pt;
   padding: 20px;
 }
 
-
-#landing-info h1 {
-  font-size: 13pt;
-  font-family: 'PT Sans', sans-serif;
+#left {
+  text-align: left;
 }
+
+#right {
+  text-align: right;
+}
+
+.hook {
+  width: 50%;
+  height: 15%;
+  opacity: .65;
+  background-color: white;
+  mix-blend-mode: screen;
+  padding: 25px;
+}
+
+.hook h1 {
+  padding: 0; margin: 0;
+  font-size: 18pt;
+  font-family: 'Lora', serif;
+}
+
 
 #landing-info p {
 }
@@ -92,16 +112,24 @@ body, #root, .App {
   font-family: 'PT Sans', sans-serif;
 }
 
+
 #landing button:hover {
   background-color: #d1d1d1;
   color: black;
 }
 
 
-.landing-disclaimer {
+#landing .hook button {
+  margin-top: 15px;
+}
+
+
+
+#landing-disclaimer {
+  opacity: .65;
   background-color: white;
-  font-size: 9pt;
-  align-self: flex-end;
+  font-size: 7pt;
+  bottom: 0px;
 }
 
 input{
@@ -421,6 +449,8 @@ button:disabled{
 }
 
 /* Animations */
+
+/* Progress bar stars animations in and out */
 @keyframes fadeIn{
     0%{
         transform:  rotate(0deg) translateX(0) translateY(-50px);
@@ -446,10 +476,30 @@ button:disabled{
 }
 
 
+
 .fade-in{
     animation: fadeIn .5s 1 ease;
 }
 
 .fade-out{
   animation: fadeOut .5s 1 ease;
+}
+
+
+
+/* animations for landing*/
+
+@keyframes enterLeft{
+    0%{
+      transform: translateX(-50px);
+      opacity: 0;
+    }
+    100%{
+        transform: translateX(0);
+        opacity: .65;
+    }
+}
+
+.enter-left{
+  animation: enterLeft 1s 1 ease;
 }
