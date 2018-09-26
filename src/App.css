@@ -489,17 +489,11 @@ button:disabled{
 
 /* animations for landing*/
 
-@keyframes enterLeft{
-    0%{
-      transform: translateX(-50px);
-      opacity: 0;
-    }
-    100%{
-        transform: translateX(0);
-        opacity: .65;
-    }
+.fade-appear{
+  opacity: 0;
 }
 
-.enter-left{
-  animation: enterLeft 1s 1 ease;
+.fade-appear.fade-appear-active{
+  opacity: 1;
+  transition: all 1000ms ease;
 }

@@ -5,7 +5,7 @@ import MyFood from "./components/MyFood";
 import MyFoodTotals from "./components/MyFoodTotals";
 import MyFoodDisclaimer from "./components/MyFoodDisclaimer";
 import Button from "./components/Button";
-import Transition from 'react-transition-group/Transition';
+import {CSSTransition} from 'react-transition-group';
 import './App.css';
 
 
@@ -265,88 +265,95 @@ class App extends Component {
 
 
       display = (
-        <div className = "App">
-          <div id = "landing-bg">
-          </div>
-          <section id = "landing">
-            <header className = "enter-left">
-              <h1> HORN OF PLENTY</h1>
-            </header>
+        <CSSTransition
+          classNames = "fade"
+          in = {true}
+          appear = {true}
+          timeout = {1000}
+        >
+          <div className = "App">
+            <div id = "landing-bg">
+            </div>
+            <section id = "landing">
+              <header className = "enter-left">
+                <h1> HORN OF PLENTY</h1>
+              </header>
 
 
-            {(!this.state.hook.yes && !this.state.hook.no) ?
-              <div className = "hook">
-                <h1 id = "left">
-                  Looking to better understand your daily nutrition?
-                </h1>
-                <h1 id = "right">
-                  A place to start modifying your meal plans?
-                </h1>
-                <Button
-                  name = "LEARN MORE"
-                  onClick = {this.handleHookAffirm.bind(this)}
-                />
-                <Button
-                  name = "NO"
-                  onClick = {this.handleHookDeny.bind(this)}
-                />
-              </div> :
-              ((this.state.hook.yes) ?
-                <div id = "landing-info">
-                  <p>
-                    <span>Horn of Plenty</span> provides a way of visiualizing
-                    caloric and nutritional contributions from each of the foods
-                    you eat.
-                  </p>
-                  <p>
-                    Here you can create and modify a food list of your preferred foods.
-                    Based on food portions you choose, you will be shown total and
-                    individual macronutrient information as reported by the USDA.
-                  </p>
-                  <p>
-                    You can also choose to provide information regarding your nutritional
-                    goals, and be shown more accurate information of the nutritional content
-                    relative to your settings.
-                  </p>
-
+              {(!this.state.hook.yes && !this.state.hook.no) ?
+                <div className = "hook">
+                  <h1 id = "left">
+                    Looking to better understand your daily nutrition?
+                  </h1>
+                  <h1 id = "right">
+                    A place to start modifying your meal plans?
+                  </h1>
                   <Button
-                    name = "GET STARTED"
-                    onClick = {this.toFoodSearch.bind(this)}
+                    name = "LEARN MORE"
+                    onClick = {this.handleHookAffirm.bind(this)}
+                  />
+                  <Button
+                    name = "NO"
+                    onClick = {this.handleHookDeny.bind(this)}
                   />
                 </div> :
+                ((this.state.hook.yes) ?
                   <div id = "landing-info">
                     <p>
-                      Fair enough!
+                      <span>Horn of Plenty</span> provides a way of visiualizing
+                      caloric and nutritional contributions from each of the foods
+                      you eat.
                     </p>
+                    <p>
+                      Here you can create and modify a food list of your preferred foods.
+                      Based on food portions you choose, you will be shown total and
+                      individual macronutrient information as reported by the USFDA.
+                    </p>
+                    <p>
+                      You can also choose to provide information regarding your nutritional
+                      goals, and be shown more accurate information of the nutritional content
+                      relative to your settings.
+                    </p>
+
                     <Button
-                      name = "Bye!"
-                      onClick = {() => {this.toSpecificMenu(0)}}
+                      name = "GET STARTED"
+                      onClick = {this.toFoodSearch.bind(this)}
                     />
-                  </div>
-              )
-            }
+                  </div> :
+                    <div id = "landing-info">
+                      <p>
+                        Fair enough!
+                      </p>
+                      <Button
+                        name = "Bye!"
+                        onClick = {() => {this.toSpecificMenu(0)}}
+                      />
+                    </div>
+                )
+              }
 
 
-            <footer id = "landing-disclaimer">
-              <p>
-                <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
-                can help provide a starting point, and hopefully make the process less
-                daunting. Ultimately you will have to find what
-                works for you. Please be creative and experiment!
-              </p>
-              <p>
-                <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
-                weight can have different connotations based on who you ask (a health professional,
-                a body positive person, an athlete, your next door neighbor-- who incidentally
-                has a very sensible middle-of-the-road outlook on controversial topics, what
-                a good bloke).
-                In general, extreme weight (both low and high) increases health risks
-                in different ways. Please exercise common sense when setting your targets,
-                best of luck!
-              </p>
-            </footer>
-          </section>
-        </div>
+              <footer id = "landing-disclaimer">
+                <p>
+                  <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
+                  can help provide a starting point, and hopefully make the process less
+                  daunting. Ultimately you will have to find what
+                  works for you. Please be creative and experiment!
+                </p>
+                <p>
+                  <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
+                  weight can have different connotations based on who you ask (a health professional,
+                  a body positive person, an athlete, your next door neighbor-- who incidentally
+                  has a very sensible middle-of-the-road outlook on controversial topics, what
+                  a good bloke).
+                  In general, extreme weight (both low and high) increases health risks
+                  in different ways. Please exercise common sense when setting your targets,
+                  best of luck!
+                </p>
+              </footer>
+            </section>
+          </div>
+        </CSSTransition>
       );
 
 
