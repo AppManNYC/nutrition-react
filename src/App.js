@@ -10,7 +10,8 @@ import './App.css';
 
 
 
-import background from './assets/landing-bg.jpg'
+import bg from './assets/landing-bg.jpg';
+import loading from './assets/wedges-loading.svg';
 
 // USDA Food Composition Database
 // @ https://ndb.nal.usda.gov/ndb/doc/index#
@@ -35,7 +36,8 @@ class App extends Component {
         myFood: [],
         myFoodTotal: [],
         userSettings: "",
-        hook: {yes: false, no: false}
+        hook: {yes: false, no: false},
+        bg: {loaded: false, style: "hidden"}
     };
 
   }
@@ -255,230 +257,252 @@ class App extends Component {
     }
   }
 
+  handleBgLoad = () => {
+    console.log("hello?");
+    this.setState({
+      bg: {loaded: true, style: "visible" }
+    });
+  }
+
   render() {
 
     let display = undefined;
 
-    if (this.state.menu.intro){
+    let bgStyle = {
+      visibility: this.state.bg.style
+    };
 
+    let background = (
+      <div
+        style = {bgStyle}
+      >
+        <img id = "landing-bg"
+          src = {bg}
+          onLoad = {this.handleBgLoad.bind(this)}
+        />
+      </div>
+    )
 
-
-
+    if (!this.state.bg.loaded) {
       display = (
-        <CSSTransition
-          classNames = "fade"
-          in = {true}
-          appear = {true}
-          timeout = {1000}
-        >
-          <div className = "App">
-            <div id = "landing-bg">
-            </div>
-            <section id = "landing">
-              <header className = "enter-left">
-                <h1> HORN OF PLENTY</h1>
-              </header>
+        <div id = "loading">
+          <img src = {loading}/>
+          {background}
+        </div>
+      );
+    } else {
+      if (this.state.menu.intro){
+        display = (
+
+          <CSSTransition
+            classNames = "fade"
+            in = {true}
+            appear = {true}
+            timeout = {1000}
+          >
+            <div className = "App">
+              {background}
+              <section id = "landing">
+                <header className = "enter-left">
+                  <h1> HORN OF PLENTY</h1>
+                </header>
 
 
-              {(!this.state.hook.yes && !this.state.hook.no) ?
-                <div className = "hook">
-                  <h1 id = "left">
-                    Looking to better understand your daily nutrition?
-                  </h1>
-                  <h1 id = "right">
-                    A place to start modifying your meal plans?
-                  </h1>
-                  <Button
-                    name = "LEARN MORE"
-                    onClick = {this.handleHookAffirm.bind(this)}
-                  />
-                  <Button
-                    name = "NO"
-                    onClick = {this.handleHookDeny.bind(this)}
-                  />
-                </div> :
-                ((this.state.hook.yes) ?
-                  <div id = "landing-info">
-                    <p>
-                      <span>Horn of Plenty</span> provides a way of visiualizing
-                      caloric and nutritional contributions from each of the foods
-                      you eat.
-                    </p>
-                    <p>
-                      Here you can create and modify a food list of your preferred foods.
-                      Based on food portions you choose, you will be shown total and
-                      individual macronutrient information as reported by the USFDA.
-                    </p>
-                    <p>
-                      You can also choose to provide information regarding your nutritional
-                      goals, and be shown more accurate information of the nutritional content
-                      relative to your settings.
-                    </p>
-
+                {(!this.state.hook.yes && !this.state.hook.no) ?
+                  <div className = "hook">
+                    <h1 id = "left">
+                      Looking to better understand your daily nutrition?
+                    </h1>
+                    <h1 id = "right">
+                      A place to start modifying your meal plans?
+                    </h1>
                     <Button
-                      name = "GET STARTED"
-                      onClick = {this.toFoodSearch.bind(this)}
+                      name = "LEARN MORE"
+                      onClick = {this.handleHookAffirm.bind(this)}
+                    />
+                    <Button
+                      name = "NO"
+                      onClick = {this.handleHookDeny.bind(this)}
                     />
                   </div> :
+                  ((this.state.hook.yes) ?
                     <div id = "landing-info">
                       <p>
-                        Fair enough!
+                        <span>Horn of Plenty</span> provides a way of visiualizing
+                        caloric and nutritional contributions from each of the foods
+                        you eat.
                       </p>
+                      <p>
+                        Here you can create and modify a food list of your preferred foods.
+                        Based on food portions you choose, you will be shown total and
+                        individual macronutrient information as reported by the USFDA.
+                      </p>
+                      <p>
+                        You can also choose to provide information regarding your nutritional
+                        goals, and be shown more accurate information of the nutritional content
+                        relative to your settings.
+                      </p>
+
                       <Button
-                        name = "Bye!"
-                        onClick = {() => {this.toSpecificMenu(0)}}
+                        name = "GET STARTED"
+                        onClick = {this.toFoodSearch.bind(this)}
+                      />
+                    </div> :
+                      <div id = "landing-info">
+                        <p>
+                          Fair enough!
+                        </p>
+                        <Button
+                          name = "Bye!"
+                          onClick = {() => {this.toSpecificMenu(0)}}
+                        />
+                      </div>
+                  )
+                }
+
+
+                <footer id = "landing-disclaimer">
+                  <p>
+                    <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
+                    can help provide a starting point, and hopefully make the process less
+                    daunting. Ultimately you will have to find what
+                    works for you. Please be creative and experiment!
+                  </p>
+                  <p>
+                    <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
+                    weight can have different connotations based on who you ask (a health professional,
+                    a body positive person, an athlete, your next door neighbor-- who incidentally
+                    has a very sensible middle-of-the-road outlook on controversial topics, what
+                    a good bloke).
+                    In general, extreme weight (both low and high) increases health risks
+                    in different ways. Please exercise common sense when setting your targets,
+                    best of luck!
+                  </p>
+                </footer>
+              </section>
+            </div>
+          </CSSTransition>
+        );
+
+
+      } else if (this.state.menu.search) {
+        const buildFoodList = () => {
+          let section;
+          let {error, isLoaded, list} = this.state.foodComponents;
+
+
+          if (error) {
+            section = ("Error: there was a problem connecting to the web");
+          } else if (!isLoaded) {
+            section = ("Loading, please wait...");
+          } else {
+              let filteredFood = [];
+              if(this.state.search !== ""){
+                filteredFood.push(list[0].props.children.filter(
+                  (food) => {
+                    return food.props.children.includes(this.state.search.toUpperCase());
+                  }
+                ));
+                section = (
+                  <div>
+                    <form>
+                      <input type= "text" value = {this.state.search}
+                          placeholder = "Search specific foods by name"
+                          onChange = {this.updateSearch.bind(this)}
+                      />
+                    </form>
+                    <div className="food-list scrollable">
+                      <ul>{filteredFood}</ul>
+                    </div>
+                  </div>
+                );
+              } else {
+                section = (
+                  <div>
+                    <form>
+                      <input type= "text" value = {this.state.search}
+                          placeholder = "Search specific foods by name"
+                          onChange = {this.updateSearch.bind(this)}
+                      />
+                    </form>
+                    <div className="food-list scrollable">
+                      {list}
+                    </div>
+                  </div>
+                );
+              }
+          }
+          return section;
+        }
+        let section;
+        section = buildFoodList();
+        let focusSection;
+        focusSection = ((this.state.focus.id !== "") ?
+          <FoodFocus
+            addFood = {this.addToList.bind(this)}
+            goToMyFoods = {this.toMyFood.bind(this)}
+            name = {this.state.focus.name}
+            id = {this.state.focus.id}/> : undefined);
+
+        display = [];
+        display.push(
+          (<div>
+            <br/>
+              {section}
+            <br/>
+          </div>)
+        );
+        display.push(focusSection);
+      } else if (this.state.menu.myFood) {
+             let foodList = this.state.myFood;
+             let myFoodSection = [];
+             let myFoods = ((foodList.length > 0) ?
+                  <div className = "food-items scrollable">
+                    {foodList.map((food, i) => <MyFood
+                    total = {this.state.myFoodTotal}
+                    key = {i}
+                    foodString = {JSON.stringify(food)}
+                    pos = {i}
+                    portionChange = {this.portionChange.bind(this)}
+                    removeFood = {this.removeFood.bind(this)} />)}
+                  </div> :
+                    <p className = "dear"> Oh dear, you have no foods on your list! </p>
+              );
+
+
+              let myFoodTotals = ((foodList.length > 0) ?
+                <MyFoodTotals
+                  changeSettings = {this.onSettingsChange.bind(this)}
+                  userSettings = {this.state.userSettings}
+                  foodList = {foodList}
+                  updateTotal = {this.updateFoodTotals.bind(this)}
+                /> : undefined
+              );
+
+              let disclaimer = ((foodList.length > 0) ?
+                <MyFoodDisclaimer/> :
+                  undefined
+              );
+              myFoodSection.push( myFoods);
+              display = [];
+              display.push(
+                <section className ="my-food">
+                  <div className = "list-and-total">
+                    <div className = "my-food-list">
+                      <h2> My foods </h2>
+                      {myFoodSection}
+                      <Button
+                        onClick = {this.toFoodSearch.bind(this)}
+                        name = "Back to Search"
                       />
                     </div>
-                )
-              }
-
-
-              <footer id = "landing-disclaimer">
-                <p>
-                  <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
-                  can help provide a starting point, and hopefully make the process less
-                  daunting. Ultimately you will have to find what
-                  works for you. Please be creative and experiment!
-                </p>
-                <p>
-                  <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
-                  weight can have different connotations based on who you ask (a health professional,
-                  a body positive person, an athlete, your next door neighbor-- who incidentally
-                  has a very sensible middle-of-the-road outlook on controversial topics, what
-                  a good bloke).
-                  In general, extreme weight (both low and high) increases health risks
-                  in different ways. Please exercise common sense when setting your targets,
-                  best of luck!
-                </p>
-              </footer>
-            </section>
-          </div>
-        </CSSTransition>
-      );
-
-
-    } else if (this.state.menu.search) {
-      const buildFoodList = () => {
-        let section;
-        let {error, isLoaded, list} = this.state.foodComponents;
-
-
-        if (error) {
-          section = ("Error: there was a problem connecting to the web");
-        } else if (!isLoaded) {
-          section = ("Loading, please wait...");
-        } else {
-            let filteredFood = [];
-            if(this.state.search !== ""){
-              filteredFood.push(list[0].props.children.filter(
-                (food) => {
-                  return food.props.children.includes(this.state.search.toUpperCase());
-                }
-              ));
-              section = (
-                <div>
-                  <form>
-                    <input type= "text" value = {this.state.search}
-                        placeholder = "Search specific foods by name"
-                        onChange = {this.updateSearch.bind(this)}
-                    />
-                  </form>
-                  <div className="food-list scrollable">
-                    <ul>{filteredFood}</ul>
+                    {myFoodTotals}
                   </div>
-                </div>
+                  {disclaimer}
+                </section>
               );
-            } else {
-              section = (
-                <div>
-                  <form>
-                    <input type= "text" value = {this.state.search}
-                        placeholder = "Search specific foods by name"
-                        onChange = {this.updateSearch.bind(this)}
-                    />
-                  </form>
-                  <div className="food-list scrollable">
-                    {list}
-                  </div>
-                </div>
-              );
-            }
-        }
-        return section;
       }
-      let section;
-      section = buildFoodList();
-      let focusSection;
-      focusSection = ((this.state.focus.id !== "") ?
-        <FoodFocus
-          addFood = {this.addToList.bind(this)}
-          goToMyFoods = {this.toMyFood.bind(this)}
-          name = {this.state.focus.name}
-          id = {this.state.focus.id}/> : undefined);
-
-      display = [];
-      display.push(
-        (<div>
-          <br/>
-            {section}
-          <br/>
-        </div>)
-      );
-      display.push(focusSection);
-    } else if (this.state.menu.myFood) {
-           let foodList = this.state.myFood;
-           let myFoodSection = [];
-           let myFoods = ((foodList.length > 0) ?
-                <div className = "food-items scrollable">
-                  {foodList.map((food, i) => <MyFood
-                  total = {this.state.myFoodTotal}
-                  key = {i}
-                  foodString = {JSON.stringify(food)}
-                  pos = {i}
-                  portionChange = {this.portionChange.bind(this)}
-                  removeFood = {this.removeFood.bind(this)} />)}
-                </div> :
-                  <p className = "dear"> Oh dear, you have no foods on your list! </p>
-            );
-
-
-            let myFoodTotals = ((foodList.length > 0) ?
-              <MyFoodTotals
-                changeSettings = {this.onSettingsChange.bind(this)}
-                userSettings = {this.state.userSettings}
-                foodList = {foodList}
-                updateTotal = {this.updateFoodTotals.bind(this)}
-              /> : undefined
-            );
-
-            let disclaimer = ((foodList.length > 0) ?
-              <MyFoodDisclaimer/> :
-                undefined
-            );
-            myFoodSection.push( myFoods);
-            display = [];
-            display.push(
-              <section className ="my-food">
-                <div className = "list-and-total">
-                  <div className = "my-food-list">
-                    <h2> My foods </h2>
-                    {myFoodSection}
-                    <Button
-                      onClick = {this.toFoodSearch.bind(this)}
-                      name = "Back to Search"
-                    />
-                  </div>
-                  {myFoodTotals}
-                </div>
-                {disclaimer}
-              </section>
-            );
     }
-
-
-
-
-
 
     return (
       display
