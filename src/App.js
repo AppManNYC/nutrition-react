@@ -11,6 +11,7 @@ import './App.css';
 
 
 import bg from './assets/landing-bg.jpg';
+import bg2 from './assets/foodlist-bg.jpg';
 import loading from './assets/wedges-loading.svg';
 
 // USDA Food Composition Database
@@ -30,14 +31,15 @@ class App extends Component {
     this.state = {
         menu: {intro: true, search: false, myFood: false, profile: false},
         key: "U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf",
-        foodComponents: {error: null, isLoaded: false, list: []},
+        foodComponents: {error: null, isLoaded: false, list: false},
         search: "",
         focus: {id: "", name: ""},
         myFood: [],
         myFoodTotal: [],
         userSettings: "",
         hook: {yes: false, no: false},
-        bg: {loaded: false, style: "hidden"}
+        bg: {loaded: false, style: "hidden"},
+        foodListBg: {loaded: false, style: "hidden"}
     };
 
   }
@@ -96,8 +98,6 @@ class App extends Component {
 
   }
 
-  componentDidMount = () => {
-  }
 
   loadSearch = () => {
     if (this.state.foodComponents.list.length === 0) {
@@ -114,9 +114,16 @@ class App extends Component {
         })
         .then( (jsonRes) =>  {
           let newFoodComponents = this.showFoodItems(jsonRes.list.item);
-          this.setState({
-            foodComponents: {isLoaded: true, list: newFoodComponents}
-          });
+          if (this.state.foodListBg.loaded) {
+            this.setState({
+              foodComponents: {isLoaded: true, list: newFoodComponents},
+              foodListBg: {loaded: true, style: "visible"}
+            });
+          } else {
+            this.setState({
+              foodComponents: {isLoaded: false, list: newFoodComponents}
+            });
+          }
         },
         (error) => {
           this.setState({
@@ -246,7 +253,6 @@ class App extends Component {
     this.setState({
       hook: {yes: false, no: true}
     });
-    console.log(this.state);
   }
 
   onSettingsChange = (newData) => {
@@ -258,10 +264,24 @@ class App extends Component {
   }
 
   handleBgLoad = () => {
-    console.log("hello?");
     this.setState({
       bg: {loaded: true, style: "visible" }
     });
+  }
+
+  handleBgLoadTwo = () => {
+    if (!this.state.foodComponents.list) {
+      this.setState({
+        foodListBg: {loaded: true, style: "hidden"}
+      });
+    } else {
+      this.setState({
+        foodListBg: {loaded: true, style: "visible"},
+        foodComponents: {...this.state.foodComponents, isLoaded: true}
+      });
+    }
+
+
   }
 
   render() {
@@ -287,6 +307,9 @@ class App extends Component {
       display = (
         <div id = "loading">
           <img src = {loading}/>
+          <h1>
+            CAN YOU READ THIS FAST ENOUGH ??
+          </h1>
           {background}
         </div>
       );
@@ -316,32 +339,35 @@ class App extends Component {
                     <h1 id = "right">
                       A place to start modifying your meal plans?
                     </h1>
-                    <Button
-                      name = "LEARN MORE"
-                      onClick = {this.handleHookAffirm.bind(this)}
-                    />
-                    <Button
-                      name = "NO"
-                      onClick = {this.handleHookDeny.bind(this)}
-                    />
+                    <div id = "buttons">
+                      <Button
+                        name = "LEARN MORE"
+                        onClick = {this.handleHookAffirm.bind(this)}
+                      />
+                      <Button
+                        name = "NO"
+                        onClick = {this.handleHookDeny.bind(this)}
+                      />
+                    </div>
+
                   </div> :
                   ((this.state.hook.yes) ?
                     <div id = "landing-info">
-                      <p>
+                      <h1 id = "left">
                         <span>Horn of Plenty</span> provides a way of visiualizing
                         caloric and nutritional contributions from each of the foods
                         you eat.
-                      </p>
-                      <p>
+                      </h1>
+                      <h1 id = "right">
                         Here you can create and modify a food list of your preferred foods.
                         Based on food portions you choose, you will be shown total and
                         individual macronutrient information as reported by the USFDA.
-                      </p>
-                      <p>
+                      </h1>
+                      <h1 id = "left">
                         You can also choose to provide information regarding your nutritional
                         goals, and be shown more accurate information of the nutritional content
                         relative to your settings.
-                      </p>
+                      </h1>
 
                       <Button
                         name = "GET STARTED"
@@ -349,9 +375,9 @@ class App extends Component {
                       />
                     </div> :
                       <div id = "landing-info">
-                        <p>
+                        <h1>
                           Fair enough!
-                        </p>
+                        </h1>
                         <Button
                           name = "Bye!"
                           onClick = {() => {this.toSpecificMenu(0)}}
@@ -389,12 +415,32 @@ class App extends Component {
         const buildFoodList = () => {
           let section;
           let {error, isLoaded, list} = this.state.foodComponents;
-
+          let bgStyle = {
+            visibility: this.state.foodListBg.style
+          };
+          let background = (
+            <div
+              style = {bgStyle}
+            >
+              <img id = "foodlist-bg"
+                src = {bg2}
+                onLoad = {this.handleBgLoadTwo.bind(this)}
+              />
+            </div>
+          );
 
           if (error) {
-            section = ("Error: there was a problem connecting to the web");
+            section = (<h1> Error: there was a problem connecting to the web </h1>);
           } else if (!isLoaded) {
-            section = ("Loading, please wait...");
+            section = (
+              <div id = "loading">
+                <img src = {loading}/>
+                <h1>
+                  Loading, please wait...
+                </h1>
+                {background}
+              </div>
+            );
           } else {
               let filteredFood = [];
               if(this.state.search !== ""){

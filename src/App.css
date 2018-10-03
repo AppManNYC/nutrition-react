@@ -29,11 +29,10 @@ body, #root, .App {
 
 #loading {
   text-align: center;
-
   padding: 300px;
 }
 
-
+/* Landing intro page style */
 #landing-bg {
   z-index: 2;
   text-align: center;
@@ -62,7 +61,7 @@ body, #root, .App {
   opacity: .65;
   background-color: white;
   mix-blend-mode: screen;
-  padding: 15px 15px 15px 15px;
+  padding: 0px 15px 0px 15px;
 }
 
 #landing header h1 {
@@ -81,11 +80,15 @@ body, #root, .App {
   width: 60%;
   padding: 15px;
   font-size: 12pt;
-  padding: 20px;
+  padding: 20px; padding-bottom: 6px;
 }
 
-#left {
+#left, #buttons {
   text-align: left;
+}
+
+#buttons{
+  position: relative; bottom: 0px;
 }
 
 #right {
@@ -98,22 +101,24 @@ body, #root, .App {
   opacity: .65;
   background-color: white;
   mix-blend-mode: screen;
-  padding: 25px;
+  padding: 25px; padding-bottom: 0px;
 }
 
-.hook h1 {
+.hook h1, #landing-info h1 {
   padding: 0; margin: 0;
   font-size: 18pt;
   font-family: 'Lora', serif;
 }
 
 
-#landing-info p {
+#landing-info h1 {
+  padding: 10px;
+  font-size: 12pt;
 }
 
 
 #landing button {
-  padding: 0; margin: auto; margin-bottom: 5px;
+  padding:0;  margin: auto; margin: 0 5px 0 0;
   width: 100px;
   background-color: white;
   border-color: black;
@@ -133,14 +138,14 @@ body, #root, .App {
   margin-top: 15px;
 }
 
-
-
 #landing-disclaimer {
   opacity: .65;
   background-color: white;
   font-size: 7pt;
   bottom: 0px;
 }
+
+/* food search and food list style */
 
 input{
   width: 30%;
