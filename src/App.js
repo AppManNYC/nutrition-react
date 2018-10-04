@@ -31,7 +31,7 @@ class App extends Component {
     this.state = {
         menu: {intro: true, search: false, myFood: false, profile: false},
         key: "U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf",
-        foodComponents: {error: null, isLoaded: false, list: false},
+        foodComponents: {error: null, isLoaded: false, list: []},
         search: "",
         focus: {id: "", name: ""},
         myFood: [],
@@ -39,7 +39,7 @@ class App extends Component {
         userSettings: "",
         hook: {yes: false, no: false},
         bg: {loaded: false, style: "hidden"},
-        foodListBg: {loaded: false, style: "hidden"}
+        foodListBg: {loaded: false, bgAndFetchLoaded: false, style: "hidden"}
     };
 
   }
@@ -100,13 +100,14 @@ class App extends Component {
 
 
   loadSearch = () => {
-    if (this.state.foodComponents.list.length === 0) {
+    if (this.state.foodComponents.list.length === 0  ) {
       let listType = "f"; // food
       let url = "https://api.nal.usda.gov/ndb/list?" +
         "format=json" +
         "&lt=" + listType +
         "&max=" + 100 +
         "&api_key=" + this.state.key;
+
 
       fetch(url)
         .then( (response) => {
@@ -117,11 +118,11 @@ class App extends Component {
           if (this.state.foodListBg.loaded) {
             this.setState({
               foodComponents: {isLoaded: true, list: newFoodComponents},
-              foodListBg: {loaded: true, style: "visible"}
+              foodListBg: {loaded: true, bgAndFetchLoaded: true, style: "visible"}
             });
           } else {
             this.setState({
-              foodComponents: {isLoaded: false, list: newFoodComponents}
+              foodComponents: {isLoaded: true, list: newFoodComponents}
             });
           }
         },
@@ -270,18 +271,15 @@ class App extends Component {
   }
 
   handleBgLoadTwo = () => {
-    if (!this.state.foodComponents.list) {
+    if (this.state.foodComponents.isLoaded) {
       this.setState({
-        foodListBg: {loaded: true, style: "hidden"}
+        foodListBg: {loaded: true, bgAndFetchLoaded: true, style: "visible"}
       });
     } else {
       this.setState({
-        foodListBg: {loaded: true, style: "visible"},
-        foodComponents: {...this.state.foodComponents, isLoaded: true}
+        foodListBg: {...this.state.foodListBg, loaded: true}
       });
     }
-
-
   }
 
   render() {
@@ -415,33 +413,19 @@ class App extends Component {
         const buildFoodList = () => {
           let section;
           let {error, isLoaded, list} = this.state.foodComponents;
-          let bgStyle = {
-            visibility: this.state.foodListBg.style
-          };
-          let background = (
-            <div
-              style = {bgStyle}
-            >
-              <img id = "foodlist-bg"
-                src = {bg2}
-                onLoad = {this.handleBgLoadTwo.bind(this)}
-              />
-            </div>
-          );
-
+          let bgAndFetchLoaded = this.state.foodListBg.bgAndFetchLoaded;
           if (error) {
             section = (<h1> Error: there was a problem connecting to the web </h1>);
-          } else if (!isLoaded) {
+          } else if (!bgAndFetchLoaded) {
             section = (
               <div id = "loading">
                 <img src = {loading}/>
                 <h1>
                   Loading, please wait...
                 </h1>
-                {background}
               </div>
             );
-          } else {
+          } else if (bgAndFetchLoaded) {
               let filteredFood = [];
               if(this.state.search !== ""){
                 filteredFood.push(list[0].props.children.filter(
@@ -451,12 +435,6 @@ class App extends Component {
                 ));
                 section = (
                   <div>
-                    <form>
-                      <input type= "text" value = {this.state.search}
-                          placeholder = "Search specific foods by name"
-                          onChange = {this.updateSearch.bind(this)}
-                      />
-                    </form>
                     <div className="food-list scrollable">
                       <ul>{filteredFood}</ul>
                     </div>
@@ -465,12 +443,6 @@ class App extends Component {
               } else {
                 section = (
                   <div>
-                    <form>
-                      <input type= "text" value = {this.state.search}
-                          placeholder = "Search specific foods by name"
-                          onChange = {this.updateSearch.bind(this)}
-                      />
-                    </form>
                     <div className="food-list scrollable">
                       {list}
                     </div>
@@ -480,6 +452,22 @@ class App extends Component {
           }
           return section;
         }
+        let bgStyle = {
+          visibility: this.state.foodListBg.style,
+          position: "absolute",
+          width: "100%",
+          height: "auto"
+        };
+        let background = (
+          <div
+            style = {bgStyle}
+          >
+            <img id = "foodlist-bg"
+              src = {bg2}
+              onLoad = {this.handleBgLoadTwo.bind(this)}
+            />
+          </div>
+        );
         let section;
         section = buildFoodList();
         let focusSection;
@@ -488,17 +476,32 @@ class App extends Component {
             addFood = {this.addToList.bind(this)}
             goToMyFoods = {this.toMyFood.bind(this)}
             name = {this.state.focus.name}
-            id = {this.state.focus.id}/> : undefined);
-
-        display = [];
-        display.push(
-          (<div>
-            <br/>
-              {section}
-            <br/>
-          </div>)
+            id = {this.state.focus.id}
+          /> : undefined
         );
-        display.push(focusSection);
+
+        let searchBar = (
+          this.state.foodListBg.bgAndFetchLoaded ?
+            (<form>
+              <input type= "text" value = {this.state.search}
+                    placeholder = "Search specific foods by name"
+                    onChange = {this.updateSearch.bind(this)}
+               />
+            </form>) :
+          undefined
+        );
+        display = (
+          <div id = "food-list-page">
+            {background}
+            <div id = "food-list-view">
+              {searchBar}
+              <div id = "section-focus">
+                {section}
+                {focusSection}
+              </div>
+            </div>
+          </div>
+        );
       } else if (this.state.menu.myFood) {
              let foodList = this.state.myFood;
              let myFoodSection = [];

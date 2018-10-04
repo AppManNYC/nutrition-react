@@ -28,6 +28,7 @@ body, #root, .App {
 }
 
 #loading {
+  margin-left: auto; margin-right: auto;
   text-align: center;
   padding: 300px;
 }
@@ -147,10 +148,34 @@ body, #root, .App {
 
 /* food search and food list style */
 
+#foodlist-bg{
+  position:relative;
+  z-index: 0;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  filter: brightness(75%) saturate(90%) contrast(80%);
+}
+
+#food-list-view{
+  background-color: white;
+  opacity: .78;
+  z-index: 5000;
+  height: 100%;
+}
+
+
 input{
   width: 30%;
   margin: auto;
   text-align: center;
+}
+
+#section-focus {
+  width: 100%;
+  align-items: center;
+  display: flex; flex-direction: row; justify-content: space-between;
 }
 
 .food-list{

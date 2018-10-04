@@ -186,9 +186,17 @@ class FoodFocus  extends Component {
       let {error, isLoaded} = this.state.focus;
 
       if (error) {
-          section = ("Sorry there was a problem connecting to the web!");
+          section = (
+            <h1>
+              Error: There was a problem connection to the web
+            </h1>
+          );
         } else if (!isLoaded) {
-          section = ("Loading, please wait...");
+          section = (
+            <h1>
+              Loading, please wait...
+            </h1>
+          );
         } else {
           section.push(this.processFood());
           section.push(
