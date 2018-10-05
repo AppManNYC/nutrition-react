@@ -13,6 +13,7 @@ import './App.css';
 import bg from './assets/landing-bg.jpg';
 import bg2 from './assets/foodlist-bg.jpg';
 import loading from './assets/wedges-loading.svg';
+import magni from './assets/magnifying.png';
 
 // USDA Food Composition Database
 // @ https://ndb.nal.usda.gov/ndb/doc/index#
@@ -434,15 +435,18 @@ class App extends Component {
                   }
                 ));
                 section = (
-                  <div>
+                  <div id = "food-list-container">
                     <div className="food-list scrollable">
-                      <ul>{filteredFood}</ul>
+                      {filteredFood[0].length === 0 ?
+                        <h1> No such food!  </h1> :
+                        <ul>{filteredFood}</ul>
+                      }
                     </div>
                   </div>
                 );
               } else {
                 section = (
-                  <div>
+                  <div id = "food-list-container">
                     <div className="food-list scrollable">
                       {list}
                     </div>
@@ -483,10 +487,13 @@ class App extends Component {
         let searchBar = (
           this.state.foodListBg.bgAndFetchLoaded ?
             (<form>
-              <input type= "text" value = {this.state.search}
-                    placeholder = "Search specific foods by name"
-                    onChange = {this.updateSearch.bind(this)}
-               />
+              <div id = "search-bar-container">
+                <input type= "text" value = {this.state.search}
+                      placeholder = "Search specific foods by name"
+                      onChange = {this.updateSearch.bind(this)}
+                 />
+                  <img src = {magni} alt = "Search bar"/>
+               </div>
             </form>) :
           undefined
         );

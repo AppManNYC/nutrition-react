@@ -218,7 +218,7 @@ class FoodFocus  extends Component {
     section = buildFocus();
 
     return(
-      <section className = "focus">
+      <section id = "focus">
         {section}
       </section>
     );
