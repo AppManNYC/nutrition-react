@@ -142,8 +142,8 @@ class FoodFocus  extends Component {
     }
 
     section.push(<div className = "scrollable">
-                 <div id = "macros">Macros: <ul>{macroSection}</ul></div>
-                 <div id = "minerals">Minerals: <ul>{mineralSection}</ul></div></div>
+                 <div id = "macros"><h3>Macros: </h3><ul>{macroSection}</ul></div>
+                 <div id = "minerals"><h3>Minerals: </h3><ul>{mineralSection}</ul></div></div>
 
     );
     return section;
@@ -161,16 +161,16 @@ class FoodFocus  extends Component {
     let section;
     section = (
       <section>
-        {name}
+        <h1>{name}</h1>
         <div className = "info">
           <div className = "ingredients">
-            Ingredients
+            <h2>Ingredients</h2>
             <p className = "scrollable">
               {ingredientSection}
             </p>
           </div>
           <div className = "nutrients">
-            Nutrients
+            <h2>Nutrients</h2>
               {nutrientSection}
           </div>
         </div>
@@ -187,15 +187,15 @@ class FoodFocus  extends Component {
 
       if (error) {
           section = (
-            <h1>
+            <h4>
               Error: There was a problem connection to the web
-            </h1>
+            </h4>
           );
         } else if (!isLoaded) {
           section = (
-            <h1>
+            <h4>
               Loading, please wait...
-            </h1>
+            </h4>
           );
         } else {
           section.push(this.processFood());

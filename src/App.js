@@ -447,6 +447,7 @@ class App extends Component {
               } else {
                 section = (
                   <div id = "food-list-container">
+                    <h1>FOOD LIST</h1>
                     <div className="food-list scrollable">
                       {list}
                     </div>
@@ -498,16 +499,23 @@ class App extends Component {
           undefined
         );
         display = (
-          <div id = "food-list-page">
-            {background}
-            <div id = "food-list-view">
-              {searchBar}
-              <div id = "section-focus">
-                {section}
-                {focusSection}
+          <CSSTransition
+            classNames = "fade"
+            in = {true}
+            appear = {true}
+            timeout = {1000}
+          >
+            <div id = "food-list-page">
+              {background}
+              <div id = "food-list-view">
+                {searchBar}
+                <div id = "section-focus">
+                  {section}
+                  {focusSection}
+                </div>
               </div>
             </div>
-          </div>
+          </CSSTransition>
         );
       } else if (this.state.menu.myFood) {
              let foodList = this.state.myFood;
