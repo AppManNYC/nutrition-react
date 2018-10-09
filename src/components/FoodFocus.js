@@ -207,7 +207,7 @@ class FoodFocus  extends Component {
           );
           section.push(
             <Button
-              onClick = {this.props.goToMyFoods.bind(this)}
+              onClick = {this.props.goToMyFoods}
               name = "back"
             />
           );
