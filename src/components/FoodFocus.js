@@ -72,7 +72,7 @@ class FoodFocus  extends Component {
       "&type=f" +
       "&api_key=" + this.state.key;
 
-    fetch(url)
+    fetch(url, {signal: this.abortController.signal})
       .then( (response) => {
         return response.json();
       })
@@ -86,13 +86,15 @@ class FoodFocus  extends Component {
           focus: {isLoaded: true, info: jsonRes},
           current: {name: props.name, id: props.id, nutrients: nutrientsObj, ingredients: ingredients}
         });
-      },
-      (error) => {
-        this.setState({
-          focus: {isLoaded: true, error: error}
-        });
+    })
+    .catch( error => {
+      if (error.name === 'AbortError'){
+        return (console.log("Aborted supposedly"));
       }
-    )
+      this.setState({
+        focus: {isLoaded: true, error: error}
+      });
+    });
   }
 
 
@@ -178,6 +180,13 @@ class FoodFocus  extends Component {
     );
     return section;
   }
+
+
+  componentWillUnmoun(){
+    this.abortController.abort();
+  }
+
+  abortController = new window.AbortController();
 
   render() {
     let section;

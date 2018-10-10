@@ -28,7 +28,7 @@ class App extends Component {
 
     this.state = {
         menu: {intro: true, search: false, myFood: false, profile: false},
-        foodComponents: {list: []},
+        apiData: null,
         search: "",
         focus: {id: "", name: ""},
         myFood: [],
@@ -42,10 +42,10 @@ class App extends Component {
   }
 
   saveAPICall = (list) => {
-    let currentList = JSON.stringify(this.state.foodComponents.list);
+    let currentList = this.state.apiData;
     if (currentList !== list) {
       this.setState({
-        foodComponents: { list: JSON.parse(list)}
+        apiData: list
       });
     }
   }
@@ -185,17 +185,6 @@ class App extends Component {
     });
   }
 
-  handleBgLoadTwo = () => {
-    if (this.state.foodComponents.isLoaded) {
-      this.setState({
-        foodListBg: {loaded: true, bgAndFetchLoaded: true, style: "visible"}
-      });
-    } else {
-      this.setState({
-        foodListBg: {...this.state.foodListBg, loaded: true}
-      });
-    }
-  }
 
   render() {
 
@@ -322,18 +311,16 @@ class App extends Component {
             </div>
           </CSSTransition>
         );
-
-
       } else if (this.state.menu.search) {
         display = (
           <FoodSearch
+            key = "foodKeyYum"
             addFood = {this.addToList.bind(this)}
             toMyFood = {this.toMyFood.bind(this)}
             myFood = {this.state.myFood}
             saveCall = {this.saveAPICall.bind(this)}
-            foodAPIList = {JSON.stringify(this.state.foodComponents.list)}
+            savedData = {this.state.apiData}
           />
-
         );
       } else if (this.state.menu.myFood) {
              let foodList = this.state.myFood;

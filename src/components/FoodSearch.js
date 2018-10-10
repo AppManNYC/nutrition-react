@@ -16,6 +16,7 @@ class FoodSearch extends Component {
     this.state = {
       key: "U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf",
       foodComponents: {error: null, isLoaded: false, list: []},
+      rawCallData: null,
       search: "",
       focus: {id: "", name: ""},
       myFood: props.myFood,
@@ -24,8 +25,8 @@ class FoodSearch extends Component {
   }
 
   // When triggered sends a copy of the api call to parent.
-  saveData = () => {
-    this.props.saveCall(JSON.stringify(this.state.foodComponents.list));
+  saveData = (jsonData) => {
+    this.props.saveCall(jsonData);
   }
 
 
@@ -35,15 +36,19 @@ class FoodSearch extends Component {
     this.setState({
       search: event.target.value
     });
+    console.log(this.state);
   }
 
 
   // onClick unction for food items. When clicked, change state to remember
   // the food name and id.
   findFood = (id, name) => {
+    console.log("Setting focus");
+    console.log(id + " " + name)
     this.setState({
       focus: {id: id, name: name}
     });
+    console.log(this.state);
   }
 
   // Helper function to process API data. Takes JSON format object and
@@ -99,11 +104,12 @@ class FoodSearch extends Component {
         "&api_key=" + this.state.key;
 
 
-      fetch(url)
+      fetch(url, {signal: this.abortController.signal })
         .then( (response) => {
           return response.json();
         })
         .then( (jsonRes) =>  {
+          this.saveData(jsonRes);
           let newFoodComponents = this.showFoodItems(jsonRes.list.item);
           if (this.state.bg.isLoaded) {
             this.setState({
@@ -115,14 +121,16 @@ class FoodSearch extends Component {
               foodComponents: {isLoaded: true, list: newFoodComponents}
             });
           }
-          this.saveData();
-        },
-        (error) => {
+      })
+      .catch(error => {
+        if (error.name === 'AbortError'){
+          return(console.log("Aborted supposedly, at search"));
+        } else {
           this.setState({
             foodComponents: {isLoaded: true, error: error}
           });
         }
-      )
+      })
     }
   }
 
@@ -155,6 +163,7 @@ class FoodSearch extends Component {
           ));
           section = (
             <div id = "food-list-container">
+              <h1> FOOD LIST </h1>
               <div className="food-list scrollable">
                 {filteredFood[0].length === 0 ?
                   <h1> No such food!  </h1> :
@@ -179,18 +188,36 @@ class FoodSearch extends Component {
 
 
   componentDidMount() {
-    let list = JSON.parse(this.props.foodAPIList);
-    if (list.length !== 0) {
-      this.setState({
-        foodComponents: {isLoaded: true, list: list}
-      });
+    let rawData = this.props.savedData;
+    console.log(rawData);
+    if (rawData !== null) {
+      let newFoodComponents = this.showFoodItems(rawData.list.item);
+      if (this.state.bg.isLoaded) {
+        this.setState({
+          foodComponents: {isLoaded: true, list: newFoodComponents},
+          foodListBg: {isLoaded: true, style: "visible"}
+        });
+      } else {
+        this.setState({
+          foodComponents: {isLoaded: true, list: newFoodComponents}
+        });
+      }
     } else {
       this.loadSearch();
     }
   }
 
-  render() {
+  componentWillReceiveProps() {
+  }
 
+  componentWillUnmount() {
+    this.abortController.abort();
+  }
+
+  abortController = new window.AbortController();
+
+  render() {
+    console.log("rendering");
     let display;
 
     let bgStyle = {
@@ -209,7 +236,6 @@ class FoodSearch extends Component {
         />
       </div>
     );
-
     if ( !this.state.foodComponents.isLoaded || !this.state.bg.isLoaded) {
       display = (
         <div id = "loading">
@@ -221,9 +247,12 @@ class FoodSearch extends Component {
         </div>
       );
     } else {
+      console.log("building view not Loading");
+      console.log(this.state);
       let section;
       section = this.buildView();
       let focusSection;
+      console.log(this.state.focus.id);
       focusSection = ((this.state.focus.id !== "") ?
         <FoodFocus
           addFood = {this.props.addFood}
@@ -232,7 +261,7 @@ class FoodSearch extends Component {
           id = {this.state.focus.id}
         /> : undefined
       );
-
+      console.log(focusSection);
       let searchBar = (
         <form>
             <div id = "search-bar-container">
