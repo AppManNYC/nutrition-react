@@ -4,7 +4,7 @@ import MyFood from "./components/MyFood";
 import MyFoodTotals from "./components/MyFoodTotals";
 import MyFoodDisclaimer from "./components/MyFoodDisclaimer";
 import Button from "./components/Button";
-import {CSSTransition} from 'react-transition-group';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import './App.css';
 
 
@@ -35,8 +35,7 @@ class App extends Component {
         myFoodTotal: [],
         userSettings: "",
         hook: {yes: false, no: false},
-        bg: {loaded: false, style: "hidden"},
-        foodListBg: {loaded: false, bgAndFetchLoaded: false, style: "hidden"}
+        bg: {loaded: false, visibility: "hidden"}
     };
 
   }
@@ -191,125 +190,136 @@ class App extends Component {
     let display = undefined;
 
     let bgStyle = {
-      visibility: this.state.bg.style
+      visibility: this.state.bg.visibility
     };
 
     let background = (
       <div
+        id = "landing-bg"
         style = {bgStyle}
       >
-        <img id = "landing-bg"
-          src = {bg}
-          onLoad = {this.handleBgLoad.bind(this)}
-        />
       </div>
     )
 
     if (!this.state.bg.loaded) {
       display = (
-        <div id = "loading">
-          <img src = {loading}/>
-          <h1>
-            CAN YOU READ THIS FAST ENOUGH ??
-          </h1>
-          {background}
-        </div>
+        <CSSTransition
+          key = "alpha"
+          classNames = "fade"
+          appear = {!this.state.bg.loaded}
+          timeout = {1000}
+          onEntered = {
+            () =>{
+              (!this.state.bg.loaded) ?
+                this.setState({
+                  bg: {loaded: true, visibility: "visible"}
+                }) : undefined
+            }
+          }
+        >
+          <div className = "App" id = "loading">
+            <img src = {loading}/>
+            <h1>
+              Welcome!
+            </h1>
+            {background}
+          </div>
+        </CSSTransition>
       );
     } else {
       if (this.state.menu.intro){
         display = (
-
           <CSSTransition
-            classNames = "fade"
             in = {true}
+            key = "bravo"
+            classNames = "fade"
             appear = {true}
             timeout = {1000}
+
           >
-            <div className = "App">
-              {background}
-              <section id = "landing">
-                <header className = "enter-left">
-                  <h1> HORN OF PLENTY</h1>
-                </header>
+          <div className = "App">
+            {background}
+            <section id = "landing">
+              <header className = "enter-left">
+                <h1> HORN OF PLENTY</h1>
+              </header>
+              {(!this.state.hook.yes && !this.state.hook.no) ?
+                <div className = "hook">
+                  <h1 id = "left">
+                    Looking to better understand your daily nutrition?
+                  </h1>
+                  <h1 id = "right">
+                    A place to start modifying your meal plans?
+                  </h1>
+                  <div id = "buttons">
+                    <Button
+                      name = "LEARN MORE"
+                      onClick = {this.handleHookAffirm.bind(this)}
+                    />
+                    <Button
+                      name = "NO"
+                      onClick = {this.handleHookDeny.bind(this)}
+                    />
+                  </div>
 
-
-                {(!this.state.hook.yes && !this.state.hook.no) ?
-                  <div className = "hook">
+                </div> :
+                ((this.state.hook.yes) ?
+                  <div id = "landing-info">
                     <h1 id = "left">
-                      Looking to better understand your daily nutrition?
+                      <span>Horn of Plenty</span> provides a way of visiualizing
+                      caloric and nutritional contributions from each of the foods
+                      you eat.
                     </h1>
                     <h1 id = "right">
-                      A place to start modifying your meal plans?
+                      Here you can create and modify a food list of your preferred foods.
+                      Based on food portions you choose, you will be shown total and
+                      individual macronutrient information as reported by the USFDA.
                     </h1>
-                    <div id = "buttons">
+                    <h1 id = "left">
+                      You can also choose to provide information regarding your nutritional
+                      goals, and be shown more accurate information of the nutritional content
+                      relative to your settings.
+                    </h1>
+
+                    <Button
+                      name = "GET STARTED"
+                      onClick = {this.toFoodSearch.bind(this)}
+                    />
+                  </div> :
+                    <div id = "landing-info">
+                      <h1>
+                        Fair enough!
+                      </h1>
                       <Button
-                        name = "LEARN MORE"
-                        onClick = {this.handleHookAffirm.bind(this)}
-                      />
-                      <Button
-                        name = "NO"
-                        onClick = {this.handleHookDeny.bind(this)}
+                        name = "Bye!"
+                        onClick = {() => {this.toSpecificMenu(0)}}
                       />
                     </div>
-
-                  </div> :
-                  ((this.state.hook.yes) ?
-                    <div id = "landing-info">
-                      <h1 id = "left">
-                        <span>Horn of Plenty</span> provides a way of visiualizing
-                        caloric and nutritional contributions from each of the foods
-                        you eat.
-                      </h1>
-                      <h1 id = "right">
-                        Here you can create and modify a food list of your preferred foods.
-                        Based on food portions you choose, you will be shown total and
-                        individual macronutrient information as reported by the USFDA.
-                      </h1>
-                      <h1 id = "left">
-                        You can also choose to provide information regarding your nutritional
-                        goals, and be shown more accurate information of the nutritional content
-                        relative to your settings.
-                      </h1>
-
-                      <Button
-                        name = "GET STARTED"
-                        onClick = {this.toFoodSearch.bind(this)}
-                      />
-                    </div> :
-                      <div id = "landing-info">
-                        <h1>
-                          Fair enough!
-                        </h1>
-                        <Button
-                          name = "Bye!"
-                          onClick = {() => {this.toSpecificMenu(0)}}
-                        />
-                      </div>
-                  )
-                }
+                )
+              }
 
 
-                <footer id = "landing-disclaimer">
-                  <p>
-                    <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
-                    can help provide a starting point, and hopefully make the process less
-                    daunting. Ultimately you will have to find what
-                    works for you. Please be creative and experiment!
-                  </p>
-                  <p>
-                    <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
-                    weight can have different connotations based on who you ask (a health professional,
-                    a body positive person, an athlete, your next door neighbor-- who incidentally
-                    has a very sensible middle-of-the-road outlook on controversial topics, what
-                    a good bloke).
-                    In general, extreme weight (both low and high) increases health risks
-                    in different ways. Please exercise common sense when setting your targets,
-                    best of luck!
-                  </p>
-                </footer>
-              </section>
-            </div>
-          </CSSTransition>
+              <footer id = "landing-disclaimer">
+                <p>
+                  <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
+                  can help provide a starting point, and hopefully make the process less
+                  daunting. Ultimately you will have to find what
+                  works for you. Please be creative and experiment!
+                </p>
+                <p>
+                  <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
+                  weight can have different connotations based on who you ask (a health professional,
+                  a body positive person, an athlete, your next door neighbor-- who incidentally
+                  has a very sensible middle-of-the-road outlook on controversial topics, what
+                  a good bloke).
+                  In general, extreme weight (both low and high) increases health risks
+                  in different ways. Please exercise common sense when setting your targets,
+                  best of luck!
+                </p>
+              </footer>
+            </section>
+          </div>
+        </CSSTransition>
         );
       } else if (this.state.menu.search) {
         display = (
@@ -353,8 +363,7 @@ class App extends Component {
                   undefined
               );
               myFoodSection.push( myFoods);
-              display = [];
-              display.push(
+              display = (
                 <section className ="my-food">
                   <div className = "list-and-total">
                     <div className = "my-food-list">
@@ -374,7 +383,24 @@ class App extends Component {
     }
 
     return (
-      display
+      <TransitionGroup>
+        <CSSTransition
+          classNames = "fade"
+          appear = {!this.state.bg.loaded}
+          timeout = {1000}
+          onEntered = {
+            () =>{
+              (!this.state.bg.loaded) ?
+                this.setState({
+                  bg: {loaded: true, visibility: "visible"}
+                }) : undefined
+            }
+          }
+        >
+          {display}
+        </CSSTransition>
+      </TransitionGroup>
+
     );
   }
 }

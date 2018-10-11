@@ -4,7 +4,7 @@ import FoodFocus from "./FoodFocus";
 import FoodItem from "./FoodItem";
 
 import {CSSTransition} from 'react-transition-group';
-import bg from '../assets/foodlist-bg.jpg';
+import bg from '../assets/foodlist-bg2.jpg';
 import loading from '../assets/wedges-loading.svg';
 import magni from '../assets/magnifying.png';
 
@@ -217,7 +217,6 @@ class FoodSearch extends Component {
   abortController = new window.AbortController();
 
   render() {
-    console.log("rendering");
     let display;
 
     let bgStyle = {
@@ -247,12 +246,9 @@ class FoodSearch extends Component {
         </div>
       );
     } else {
-      console.log("building view not Loading");
-      console.log(this.state);
       let section;
       section = this.buildView();
       let focusSection;
-      console.log(this.state.focus.id);
       focusSection = ((this.state.focus.id !== "") ?
         <FoodFocus
           addFood = {this.props.addFood}
@@ -261,7 +257,6 @@ class FoodSearch extends Component {
           id = {this.state.focus.id}
         /> : undefined
       );
-      console.log(focusSection);
       let searchBar = (
         <form>
             <div id = "search-bar-container">
@@ -275,16 +270,30 @@ class FoodSearch extends Component {
       );
 
       display = (
-        <div id = "food-list-page">
-          {background}
-          <div id = "food-list-view">
-            {searchBar}
-            <div id = "section-focus">
-              {section}
-              {focusSection}
+        <CSSTransition
+          classNames = "fade"
+          in = {true}
+          appear = {true}
+          timeout = {1000}
+        >
+          <div id = "food-list-page">
+            {background}
+            <div id = "food-list-view">
+              {searchBar}
+              <div id = "section-focus">
+                <CSSTransition
+                  classNames = "enter-left"
+                  in = {true}
+                  appear = {true}
+                  timeout = {800}
+                >
+                  {section}
+                </CSSTransition>
+                {focusSection}
+              </div>
             </div>
           </div>
-        </div>
+        </CSSTransition>
       );
     }
 
