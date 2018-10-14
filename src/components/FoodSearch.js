@@ -3,8 +3,7 @@ import Button from "./Button";
 import FoodFocus from "./FoodFocus";
 import FoodItem from "./FoodItem";
 
-import {CSSTransition} from 'react-transition-group';
-import bg from '../assets/foodlist-bg2.jpg';
+import {TransitionGroup, CSSTransition} from 'react-transition-group';
 import loading from '../assets/wedges-loading.svg';
 import magni from '../assets/magnifying.png';
 
@@ -43,12 +42,9 @@ class FoodSearch extends Component {
   // onClick unction for food items. When clicked, change state to remember
   // the food name and id.
   findFood = (id, name) => {
-    console.log("Setting focus");
-    console.log(id + " " + name)
     this.setState({
       focus: {id: id, name: name}
     });
-    console.log(this.state);
   }
 
   // Helper function to process API data. Takes JSON format object and
@@ -61,6 +57,7 @@ class FoodSearch extends Component {
       if (!info.includes('\\') && !info.includes("!") &&
           !info.includes('""'))  {
         info = info.slice(0, info.indexOf("UPC") - 2);
+        info = info.toLowerCase();
         let list = this.state.myFood;
         let check = false;
         for (let i = 0; i < list.length; i++) {
@@ -77,11 +74,13 @@ class FoodSearch extends Component {
              key = {foodList[i].id}>{info}</FoodItem>
            ));
         } else {
-          item = ((<FoodItem
-             click= {this.findFood.bind(this)}
-             id = {foodList[i].id}
-             key = {foodList[i].id}>{info}</FoodItem>
-           ));
+          item = ((
+            <FoodItem
+               click= {this.findFood.bind(this)}
+               id = {foodList[i].id}
+               key = {foodList[i].id}>{info}
+             </FoodItem>
+        ``));
         }
         inner.push(item);
       }
@@ -94,7 +93,6 @@ class FoodSearch extends Component {
   // showFoodItems to process the API response into a presentable format.
   // Updates state based on response.
   loadSearch = () => {
-    console.log("Api fetch started");
     if (this.state.foodComponents.list.length === 0  ) {
       let listType = "f"; // food
       let url = "https://api.nal.usda.gov/ndb/list?" +
@@ -111,20 +109,14 @@ class FoodSearch extends Component {
         .then( (jsonRes) =>  {
           this.saveData(jsonRes);
           let newFoodComponents = this.showFoodItems(jsonRes.list.item);
-          if (this.state.bg.isLoaded) {
-            this.setState({
-              foodComponents: {isLoaded: true, list: newFoodComponents},
-              foodListBg: {isLoaded: true, style: "visible"}
-            });
-          } else {
-            this.setState({
-              foodComponents: {isLoaded: true, list: newFoodComponents}
-            });
-          }
+          this.setState({
+            foodComponents: {isLoaded: true, list: newFoodComponents},
+            bg: {isLoaded: true, style: "visible"}
+          });
       })
       .catch(error => {
         if (error.name === 'AbortError'){
-          return(console.log("Aborted supposedly, at search"));
+          return;
         } else {
           this.setState({
             foodComponents: {isLoaded: true, error: error}
@@ -136,15 +128,6 @@ class FoodSearch extends Component {
 
   // onLoad for background, updates state to signal background is ready
   handleBgLoad = () => {
-    if (this.state.foodComponents.isLoaded) {
-      this.setState({
-        bg: {isLoaded: true, style: "visible"}
-      });
-    } else {
-      this.setState({
-        bg: {...this.state.bg, isLoaded: true}
-      });
-    }
   }
 
   // Based on state, arrange the jsx UI.
@@ -152,22 +135,26 @@ class FoodSearch extends Component {
     let section;
     let {error, isLoaded, list} = this.state.foodComponents;
     if (error) {
-      section = (<h1> Error: there was a problem connecting to the web </h1>);
+      section = (
+        <div id = "error">
+          <h1> Error: there was a problem connecting to the web </h1>
+        </div>
+      );
     } else {
         let filteredFood = [];
         if(this.state.search !== ""){
           filteredFood.push(list[0].props.children.filter(
             (food) => {
-              return food.props.children.includes(this.state.search.toUpperCase());
+              return food.props.children.includes(this.state.search.toLowerCase());
             }
           ));
           section = (
             <div id = "food-list-container">
-              <h1> FOOD LIST </h1>
+              <h1> Food List </h1>
               <div className="food-list scrollable">
                 {filteredFood[0].length === 0 ?
                   <h1> No such food!  </h1> :
-                  <ul>{filteredFood}</ul>
+                  <ul >{filteredFood}</ul>
                 }
               </div>
             </div>
@@ -175,7 +162,7 @@ class FoodSearch extends Component {
         } else {
           section = (
             <div id = "food-list-container">
-              <h1>FOOD LIST</h1>
+              <h1>Food List</h1>
               <div className="food-list scrollable">
                 {list}
               </div>
@@ -189,7 +176,6 @@ class FoodSearch extends Component {
 
   componentDidMount() {
     let rawData = this.props.savedData;
-    console.log(rawData);
     if (rawData !== null) {
       let newFoodComponents = this.showFoodItems(rawData.list.item);
       if (this.state.bg.isLoaded) {
@@ -220,19 +206,12 @@ class FoodSearch extends Component {
     let display;
 
     let bgStyle = {
-      visibility: this.state.bg.style,
-      position: "absolute",
-      width: "100%",
-      height: "auto"
+      visibility: this.state.bg.style
     };
     let background = (
-      <div
+      <div id = "foodlist-bg"
         style = {bgStyle}
       >
-        <img id = "foodlist-bg"
-          src = {bg}
-          onLoad = {this.handleBgLoad.bind(this)}
-        />
       </div>
     );
     if ( !this.state.foodComponents.isLoaded || !this.state.bg.isLoaded) {
@@ -271,35 +250,47 @@ class FoodSearch extends Component {
 
       display = (
         <CSSTransition
-          classNames = "fade"
           in = {true}
+          appear = {true}
+          classNames = "fade"
           appear = {true}
           timeout = {1000}
         >
-          <div id = "food-list-page">
-            {background}
-            <div id = "food-list-view">
-              {searchBar}
-              <div id = "section-focus">
-                <CSSTransition
-                  classNames = "enter-left"
-                  in = {true}
-                  appear = {true}
-                  timeout = {800}
-                >
-                  {section}
-                </CSSTransition>
-                {focusSection}
-              </div>
+        <div id = "food-list-page">
+          {background}
+          <div id = "food-list-view">
+            {searchBar}
+            <div id = "section-focus">
+              <CSSTransition
+                classNames = "enter-left"
+                in = {true}
+                appear = {true}
+                timeout = {800}
+              >
+                {section}
+              </CSSTransition>
+              {focusSection}
             </div>
           </div>
+        </div>
         </CSSTransition>
       );
     }
 
 
     return(
-      display
+      <TransitionGroup
+        id = "css-transitions"
+      >
+        <CSSTransition
+          classNames = "fade"
+          in = {true}
+          appear = {true}
+          timeout = {1000}
+        >
+          {display}
+        </CSSTransition>
+      </TransitionGroup>
     );
   }
 }

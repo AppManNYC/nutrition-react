@@ -9,7 +9,6 @@ import './App.css';
 
 
 
-import bg from './assets/landing-bg.jpg';
 import loading from './assets/wedges-loading.svg';
 
 // USDA Food Composition Database
@@ -153,7 +152,6 @@ class App extends Component {
   }
 
   toMyFood = () => {
-    console.log("triggering");
     this.toSpecificMenu(2)
   }
 
@@ -203,41 +201,24 @@ class App extends Component {
 
     if (!this.state.bg.loaded) {
       display = (
-        <CSSTransition
-          key = "alpha"
-          classNames = "fade"
-          appear = {!this.state.bg.loaded}
-          timeout = {1000}
-          onEntered = {
-            () =>{
-              (!this.state.bg.loaded) ?
-                this.setState({
-                  bg: {loaded: true, visibility: "visible"}
-                }) : undefined
-            }
-          }
-        >
-          <div className = "App" id = "loading">
+          <div key = "alpha" className = "App" id = "loading">
             <img src = {loading}/>
             <h1>
               Welcome!
             </h1>
             {background}
           </div>
-        </CSSTransition>
       );
     } else {
       if (this.state.menu.intro){
         display = (
-          <CSSTransition
-            in = {true}
-            key = "bravo"
-            classNames = "fade"
-            appear = {true}
-            timeout = {1000}
-
-          >
-          <div className = "App">
+        <CSSTransition
+          classNames = "fade"
+          appear = {true}
+          timeout = {1000}
+          in = {true}
+        >
+          <div key = "bravo" className = "App">
             {background}
             <section id = "landing">
               <header className = "enter-left">
@@ -297,8 +278,6 @@ class App extends Component {
                     </div>
                 )
               }
-
-
               <footer id = "landing-disclaimer">
                 <p>
                   <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
@@ -386,7 +365,7 @@ class App extends Component {
       <TransitionGroup>
         <CSSTransition
           classNames = "fade"
-          appear = {!this.state.bg.loaded}
+          appear = {true}
           timeout = {1000}
           onEntered = {
             () =>{

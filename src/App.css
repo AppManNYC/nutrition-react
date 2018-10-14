@@ -28,21 +28,10 @@ body, #root, #root > div, .App {
 }
 
 #loading {
-  margin-left: auto; margin-right: auto;
   text-align: center;
   padding: 300px;
 }
 
-/* Landing intro page style
-#landing-bg {
-  z-index: 2;
-  text-align: center;
-  max-width: 100%;
-  height: auto;
-  filter: brightness(75%) saturate(90%) contrast(80%);
-  margin-top: -150px;
-}
-*/
 
 #landing-bg {
   z-index: 2;
@@ -159,24 +148,35 @@ body, #root, #root > div, .App {
 /* food search and food list style */
 
 #foodlist-bg{
-  position:relative;
-  z-index: 0;
-  text-align: center;
-  max-width: 100%;
-  height: auto;
-  filter: brightness(80%) saturate(80%) contrast(90%);
+  position: absolute;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  background-image: url('./assets/foodlist-bg2.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  filter: brightness(90%) saturate(80%) contrast(80%)
+}
+
+#css-transitions{
+  height: 100%;
+  width: 100%;
 }
 
 
 #food-list-page{
   height: 100%;
+  position: relative;
+  width: 100%;
 }
 
 #food-list-view{
-  background-color: none;
-  opacity: .78;
-  z-index: 5000;
+  position: absolute;
+  opacity: .7;
+  z-index: 2;
   height: 100%;
+  width: 100%;
 }
 
 #food-list-view form {
@@ -188,7 +188,6 @@ body, #root, #root > div, .App {
   display: flex; flex-direction: row;
   justify-content: center;
   margin-left: auto; margin-right: auto;
-  border: 1px solid black;
 }
 
 #search-bar-container img{
@@ -202,15 +201,15 @@ input{
   display: block;
   width: 100%; height: 20px;
   padding-left: 5px;
-  border: 1px solid black; border-left:
+
 }
 
 input::placeholder{
   color: grey;
 }
 
-input:hover{
-  border-color: blue;
+#search-bar-container:hover{
+  border-color: blue; border-width: 1px;
 }
 
 #section-focus {
@@ -244,18 +243,18 @@ input:hover{
   font-size: 12pt;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
+
 #food-list-container{
   padding: 8px;
   margin-top: 100px;
   display: relative;
   margin-left: 80px; margin-right: 100px;
   width: 50%;
-  border: 1px solid black;
-  background-color:white;
+  background-color:beige;
 }
-
-
-
 
 .food-list{
   margin: auto;
@@ -270,8 +269,15 @@ input:hover{
 }
 
 .food-list li {
+  margin: 2px;
   display: block;
   width: 80%;
+  padding: 2px;
+}
+
+.food-list li span{
+  border-bottom: 1px groove  lightgrey;
+  border-bottom-style: inset; 
 }
 
 .food-list li:hover {
@@ -291,8 +297,7 @@ input:hover{
 
 #focus section{
   padding: 15px;
-  border: 1px solid black;
-  background-color: white;
+  background-color: beige;
   height: auto; width: 90%;
 }
 
@@ -675,11 +680,11 @@ button:disabled{
 
 .enter-left-appear{
   opacity: 0;
-  transform: translateX(-200px);
+  transform: translateY(-200px);
 }
 
 .enter-left-appear-active{
   opacity: 1;
-  transform: translateX(0px);
+  transform: translateY(0px);
   transition: all 800ms ease;
 }

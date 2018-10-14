@@ -11,7 +11,7 @@ const FoodItem = (props) => {
     <li
       key = {props.id}
       onClick = {handleClick}
-    >{props.children}</li>
+    ><span>{props.children}</span></li>
   );
 
 
