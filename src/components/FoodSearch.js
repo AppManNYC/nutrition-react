@@ -35,7 +35,6 @@ class FoodSearch extends Component {
     this.setState({
       search: event.target.value
     });
-    console.log(this.state);
   }
 
 
@@ -61,26 +60,32 @@ class FoodSearch extends Component {
         let list = this.state.myFood;
         let check = false;
         for (let i = 0; i < list.length; i++) {
-          if (list.name === info) {
+          if (list[i].name.toLowerCase() === info) {
             check = true;
           }
         }
         let item;
         if (check) {
-          item = ((<FoodItem
-             className = "added"
-             click= {this.findFood.bind(this)}
-             id = {foodList[i].id}
-             key = {foodList[i].id}>{info}</FoodItem>
+          item = ((
+             <FoodItem
+               className = "added"
+               click= {this.findFood.bind(this)}
+               id = {foodList[i].id}
+               key = {foodList[i].id}
+             >
+              {info}
+             </FoodItem>
            ));
         } else {
           item = ((
             <FoodItem
                click= {this.findFood.bind(this)}
                id = {foodList[i].id}
-               key = {foodList[i].id}>{info}
-             </FoodItem>
-        ``));
+               key = {foodList[i].id}
+             >
+               {info}
+            </FoodItem>
+        ));
         }
         inner.push(item);
       }
@@ -104,15 +109,18 @@ class FoodSearch extends Component {
 
       fetch(url, {signal: this.abortController.signal })
         .then( (response) => {
+          console.log("1");
           return response.json();
         })
         .then( (jsonRes) =>  {
+          console.log("2")
           this.saveData(jsonRes);
           let newFoodComponents = this.showFoodItems(jsonRes.list.item);
           this.setState({
             foodComponents: {isLoaded: true, list: newFoodComponents},
             bg: {isLoaded: true, style: "visible"}
           });
+          console.log(this.state);
       })
       .catch(error => {
         if (error.name === 'AbortError'){
@@ -181,11 +189,12 @@ class FoodSearch extends Component {
       if (this.state.bg.isLoaded) {
         this.setState({
           foodComponents: {isLoaded: true, list: newFoodComponents},
-          foodListBg: {isLoaded: true, style: "visible"}
+          bg: {isLoaded: true, style: "visible"}
         });
       } else {
         this.setState({
-          foodComponents: {isLoaded: true, list: newFoodComponents}
+          foodComponents: {isLoaded: true, list: newFoodComponents},
+          bg: {isLoaded: true, style: "visible"}
         });
       }
     } else {
@@ -215,6 +224,7 @@ class FoodSearch extends Component {
       </div>
     );
     if ( !this.state.foodComponents.isLoaded || !this.state.bg.isLoaded) {
+      console.log(this.state);
       display = (
         <div id = "loading">
           <img src = {loading}/>

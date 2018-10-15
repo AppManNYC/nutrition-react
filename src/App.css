@@ -117,7 +117,7 @@ body, #root, #root > div, .App {
 }
 
 
-#landing button {
+button {
   padding:0;  margin: auto; margin: 0 5px 0 0;
   width: 100px;
   background-color: white;
@@ -156,7 +156,7 @@ body, #root, #root > div, .App {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
-  filter: brightness(90%) saturate(80%) contrast(80%)
+  filter: brightness(90%) saturate(80%) contrast(80%);
 }
 
 #css-transitions{
@@ -184,7 +184,7 @@ body, #root, #root > div, .App {
 }
 
 #food-list-view form #search-bar-container {
-  width: 50%; height: 23px; background-color: white;
+  width: 50%; height: 24px; background-color: white;
   display: flex; flex-direction: row;
   justify-content: center;
   margin-left: auto; margin-right: auto;
@@ -192,16 +192,17 @@ body, #root, #root > div, .App {
 
 #search-bar-container img{
   position: relative; bottom: 7px;
-  height: 35px;
+  height: 40px;
 }
 
 input{
+  position: relative;
+  bottom: 1px;
   background-color: none;
   color: black;
   display: block;
   width: 100%; height: 20px;
   padding-left: 5px;
-
 }
 
 input::placeholder{
@@ -214,14 +215,13 @@ input::placeholder{
 
 #section-focus {
   width: 100%;
-  margin-top: auto; margin-bottom: auto;
-  align-items: center;
+  height: 600px;
+  margin-top: 80px; margin-bottom: auto;
   display: flex; flex-direction: row; justify-content: space-between;
 }
 
 
-
-#food-list-view h1, #food-list-view h2, #food-list-view h3, #food-list-view h4 {
+#food-list-view h1, #food-list-view h2, #food-list-view h3{
   font-family: 'Lora', serif;
   padding: 0px;
   margin: 0px;
@@ -229,9 +229,10 @@ input::placeholder{
 
 
 #food-list-view h4{
-  background-color: white;
-  margin-left: 100px; margin-top: 100px;
+  background-color: beige;
+  margin: 0; margin-left: 100px; margin-top: 100px;
   padding: 40px;
+  font-size: 15pt;
 }
 
 
@@ -241,6 +242,11 @@ input::placeholder{
 
 #food-list-view #focus h1 {
   font-size: 12pt;
+  margin-bottom: 15px;
+}
+
+#food-list-view #focus h2 {
+  margin-bottom: 5px;
 }
 
 .capitalize {
@@ -249,17 +255,18 @@ input::placeholder{
 
 #food-list-container{
   padding: 8px;
+  height: 60%;
   margin-top: 100px;
   display: relative;
-  margin-left: 80px; margin-right: 100px;
-  width: 50%;
+  margin-left: 80px; margin-right: 50px;
+  width: 35%;
   background-color:beige;
 }
 
 .food-list{
-  margin: auto;
+  margin: auto; margin-top: 15px;
   width: 100%;
-  height: 200px;
+  height: 80%
 }
 
 #food-list-view .food-list  h1 {
@@ -277,11 +284,11 @@ input::placeholder{
 
 .food-list li span{
   border-bottom: 1px groove  lightgrey;
-  border-bottom-style: inset; 
+  border-bottom-style: inset;
 }
 
 .food-list li:hover {
-  background-color: lightblue;
+  background-color: #baffb1;
 }
 
 
@@ -310,25 +317,44 @@ input::placeholder{
   width: 50%;
 }
 
-.ingredients p, .nutrients > .scrollable {
-    height: 130px;
+.ingredients div {
+  height: 180px;
+  font-size: 11pt;
 }
 
 
 .nutrients .scrollable {
   display: flex;
   justify-content: space-around;
+  height: 130px;
+  font-size: 10pt;
 }
-
 .nutrients ul, .food-list ul, .my-food ul {
   list-style: none;
 }
 
-
-.ingredients span {
-  font-variant:small-caps;
+.ing-group {
+  text-transform: lowercase;
 }
 
+#macros li, #minerals li {
+  padding: 3px; padding-left: 0px;
+}
+
+
+#food-list-page button {
+  padding: 2px; margin-top: 2px;
+  border: none;
+  background-color: beige;
+  border: 1px solid black;
+}
+
+#food-list-page button:hover {
+  background-color: #baffb1;
+  color: black;
+}
+
+/* Food stats page styling*/
 .dear{
   text-align:center;
 }
@@ -426,9 +452,6 @@ input::placeholder{
 .my-food-list, .my-food-totals {
   width: 50%;
 }
-
-
-
 
 
 .food-tooltip {

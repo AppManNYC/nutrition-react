@@ -143,10 +143,17 @@ class FoodFocus  extends Component {
       mineralSection.push(<li className = "minerals">{minerals[i]}</li>);
     }
 
-    section.push(<div className = "scrollable">
-                 <div id = "macros"><h3>Macros: </h3><ul>{macroSection}</ul></div>
-                 <div id = "minerals"><h3>Minerals: </h3><ul>{mineralSection}</ul></div></div>
-
+    section.push(
+      <div>
+        <div id = "macros">
+          <h3>Macros: </h3>
+          <div className = "scrollable"><ul>{macroSection}</ul></div>
+        </div>
+        <div id = "minerals">
+          <h3>Minerals: </h3>
+          <div className = "scrollable"><ul>{mineralSection}</ul></div>
+        </div>
+      </div>
     );
     return section;
   }
@@ -167,14 +174,24 @@ class FoodFocus  extends Component {
         <div className = "info">
           <div className = "ingredients">
             <h2>Ingredients</h2>
-            <p className = "scrollable">
+            <div className = "scrollable">
               {ingredientSection}
-            </p>
+            </div>
           </div>
           <div className = "nutrients">
             <h2>Nutrients</h2>
               {nutrientSection}
           </div>
+        </div>
+          <Button
+            onClick = {this.addToList.bind(this)}
+            name = "add"
+           />
+           <Button
+             onClick = {this.props.goToMyFoods}
+             name = "back"
+           />
+        <div id = "buttons">
         </div>
       </section>
     );
@@ -207,19 +224,7 @@ class FoodFocus  extends Component {
             </h4>
           );
         } else {
-          section.push(this.processFood());
-          section.push(
-            <Button
-              onClick = {this.addToList.bind(this)}
-              name = "add"
-             />
-          );
-          section.push(
-            <Button
-              onClick = {this.props.goToMyFoods}
-              name = "back"
-            />
-          );
+          section = (this.processFood());
         }
         return section;
     }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import FoodSearch from "./components/FoodSearch";
+import FoodStats from "./components/FoodStats";
 import MyFood from "./components/MyFood";
 import MyFoodTotals from "./components/MyFoodTotals";
 import MyFoodDisclaimer from "./components/MyFoodDisclaimer";
@@ -312,6 +313,21 @@ class App extends Component {
           />
         );
       } else if (this.state.menu.myFood) {
+            let newThing = (
+              <FoodStats
+                myFood = {this.state.myFood}
+                myFoodTotal = {this.state.myFoodTotal}
+                userSettings = {this.state.userSettings}
+                portionChange = {this.portionChange.bind(this)}
+                removeFood = {this.removeFood.bind(this)}
+                onSettingschange = {this.onSettingsChange.bind(this)}
+                updateFoodTotals = {this.updateFoodTotals.bind(this)}
+                toFoodSearch = {this.toFoodSearch.bind(this)}
+              />
+            );
+
+            display = newThing;
+            /*
              let foodList = this.state.myFood;
              let myFoodSection = [];
              let myFoods = ((foodList.length > 0) ?
@@ -358,6 +374,7 @@ class App extends Component {
                   {disclaimer}
                 </section>
               );
+              */
       }
     }
 

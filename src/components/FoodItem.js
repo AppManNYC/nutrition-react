@@ -11,10 +11,10 @@ const FoodItem = (props) => {
     <li
       key = {props.id}
       onClick = {handleClick}
-    ><span>{props.children}</span></li>
+    >
+      {props.children}
+    </li>
   );
-
-
 }
 
 
