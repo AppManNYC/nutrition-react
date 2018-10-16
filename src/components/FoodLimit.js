@@ -283,7 +283,6 @@ class foodLimit extends Component {
       Math.round(proteinLevels[0]*weight*100)/100,
       Math.round(proteinLevels[1]*weight*100)/100
     ];
-
     let fatRange = [
       Math.round(fatLevels[0]*weight*100)/100,
       Math.round(fatLevels[1]*weight*100)/100

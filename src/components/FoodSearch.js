@@ -109,18 +109,15 @@ class FoodSearch extends Component {
 
       fetch(url, {signal: this.abortController.signal })
         .then( (response) => {
-          console.log("1");
           return response.json();
         })
         .then( (jsonRes) =>  {
-          console.log("2")
           this.saveData(jsonRes);
           let newFoodComponents = this.showFoodItems(jsonRes.list.item);
           this.setState({
             foodComponents: {isLoaded: true, list: newFoodComponents},
             bg: {isLoaded: true, style: "visible"}
           });
-          console.log(this.state);
       })
       .catch(error => {
         if (error.name === 'AbortError'){
@@ -224,7 +221,6 @@ class FoodSearch extends Component {
       </div>
     );
     if ( !this.state.foodComponents.isLoaded || !this.state.bg.isLoaded) {
-      console.log(this.state);
       display = (
         <div id = "loading">
           <img src = {loading}/>
@@ -239,12 +235,12 @@ class FoodSearch extends Component {
       section = this.buildView();
       let focusSection;
       focusSection = ((this.state.focus.id !== "") ?
-        <FoodFocus
-          addFood = {this.props.addFood}
-          goToMyFoods = {this.props.toMyFood}
-          name = {this.state.focus.name}
-          id = {this.state.focus.id}
-        /> : undefined
+          <FoodFocus
+            addFood = {this.props.addFood}
+            goToMyFoods = {this.props.toMyFood}
+            name = {this.state.focus.name}
+            id = {this.state.focus.id}
+          /> : undefined
       );
       let searchBar = (
         <form>
@@ -279,7 +275,7 @@ class FoodSearch extends Component {
               >
                 {section}
               </CSSTransition>
-              {focusSection}
+                {focusSection}
             </div>
           </div>
         </div>

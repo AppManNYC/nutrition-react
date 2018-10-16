@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import FoodSearch from "./components/FoodSearch";
 import FoodStats from "./components/FoodStats";
-import MyFood from "./components/MyFood";
-import MyFoodTotals from "./components/MyFoodTotals";
-import MyFoodDisclaimer from "./components/MyFoodDisclaimer";
 import Button from "./components/Button";
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import './App.css';
@@ -198,7 +195,7 @@ class App extends Component {
         style = {bgStyle}
       >
       </div>
-    )
+    );
 
     if (!this.state.bg.loaded) {
       display = (
@@ -313,68 +310,19 @@ class App extends Component {
           />
         );
       } else if (this.state.menu.myFood) {
-            let newThing = (
+            display = (
               <FoodStats
                 myFood = {this.state.myFood}
                 myFoodTotal = {this.state.myFoodTotal}
                 userSettings = {this.state.userSettings}
                 portionChange = {this.portionChange.bind(this)}
                 removeFood = {this.removeFood.bind(this)}
-                onSettingschange = {this.onSettingsChange.bind(this)}
+                onSettingsChange = {this.onSettingsChange.bind(this)}
                 updateFoodTotals = {this.updateFoodTotals.bind(this)}
                 toFoodSearch = {this.toFoodSearch.bind(this)}
+                key = "foodStatisticsInOnlyTwoSimpleStepsTheUnabridgedGuide"
               />
             );
-
-            display = newThing;
-            /*
-             let foodList = this.state.myFood;
-             let myFoodSection = [];
-             let myFoods = ((foodList.length > 0) ?
-                  <div className = "food-items scrollable">
-                    {foodList.map((food, i) => <MyFood
-                    total = {this.state.myFoodTotal}
-                    key = {i}
-                    foodString = {JSON.stringify(food)}
-                    pos = {i}
-                    portionChange = {this.portionChange.bind(this)}
-                    removeFood = {this.removeFood.bind(this)} />)}
-                  </div> :
-                    <p className = "dear"> Oh dear, you have no foods on your list! </p>
-              );
-
-
-              let myFoodTotals = ((foodList.length > 0) ?
-                <MyFoodTotals
-                  changeSettings = {this.onSettingsChange.bind(this)}
-                  userSettings = {this.state.userSettings}
-                  foodList = {foodList}
-                  updateTotal = {this.updateFoodTotals.bind(this)}
-                /> : undefined
-              );
-
-              let disclaimer = ((foodList.length > 0) ?
-                <MyFoodDisclaimer/> :
-                  undefined
-              );
-              myFoodSection.push( myFoods);
-              display = (
-                <section className ="my-food">
-                  <div className = "list-and-total">
-                    <div className = "my-food-list">
-                      <h2> My foods </h2>
-                      {myFoodSection}
-                      <Button
-                        onClick = {this.toFoodSearch.bind(this)}
-                        name = "Back to Search"
-                      />
-                    </div>
-                    {myFoodTotals}
-                  </div>
-                  {disclaimer}
-                </section>
-              );
-              */
       }
     }
 

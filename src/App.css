@@ -152,7 +152,7 @@ button {
   z-index: 2;
   height: 100%;
   width: 100%;
-  background-image: url('./assets/foodlist-bg2.jpg');
+  background-image: url('./assets/foodlist-bg.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -355,6 +355,26 @@ input::placeholder{
 }
 
 /* Food stats page styling*/
+
+#foodStats-bg{
+  position: absolute;
+  z-index: 2;
+  width: 100%; height: 100%;
+  background-image: url('./assets/foodstats-bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  filter: brightness(90%) saturate(80%) contrast(80%);
+}
+
+
+#stats-view{
+  height: 100%; width: 100%;
+  background-color: beige;
+  opacity: .8;
+  z-index: 2;
+}
+
 .dear{
   text-align:center;
 }
@@ -686,7 +706,6 @@ button:disabled{
 }
 
 
-
 .fade-exit {
   opacity: 1;
 }
@@ -699,6 +718,32 @@ button:disabled{
 .fade-exit-done{
   opacity: 0;
 }
+
+
+.fade-fast-appear, .fade-fast-enter{
+  opacity: 0;
+}
+
+.fade-fast-appear.fade-fast-appear-active, .fade-fast-enter.fade-fast-enter-active {
+  opacity: 1;
+  transition: all 500ms ease;
+}
+
+
+.grow-appear, .grow-enter{
+  opacity: 0;
+  transform: scaleX(0%) scaleY(0%);
+}
+
+.grow-appear.grow-appear-active, .grow-enter.grow-enter-active {
+  opacity: 1;
+  transform: scaleX(100%) scaleY(100%);
+  transition: all 500ms ease;
+}
+
+
+
+
 
 
 .enter-left-appear{

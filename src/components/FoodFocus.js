@@ -1,6 +1,8 @@
 import React , {Component} from 'react';
 import Button from "./Button";
 
+import {TransitionGroup, CSSTransition} from 'react-transition-group';
+
 class FoodFocus  extends Component {
 
   constructor(props) {
@@ -10,7 +12,8 @@ class FoodFocus  extends Component {
         key: "U1gJ9CuAZPIkNOqFxeKfI7jOat1RPYwUj5gbTsjf",
         name: this.props.name,
         focus: {error: null, isLoaded: false, info: null},
-        current: {name: this.props.name, id: this.props.id, nutrients: {}, ingredients: ""}
+        current: {name: this.props.name, id: this.props.id, nutrients: {}, ingredients: ""},
+        inTest: true
       };
 
   }
@@ -219,12 +222,29 @@ class FoodFocus  extends Component {
           );
         } else if (!isLoaded) {
           section = (
-            <h4>
-              Loading, please wait...
-            </h4>
+            <CSSTransition
+              in = {!isLoaded}
+              appear = {true}
+              classNames = "fade-fast"
+              timeout = {500}
+              unmountOnExit
+            >
+              <h4 key = "oh boy!">
+                Loading, please wait...
+              </h4>
+            </CSSTransition>
           );
         } else {
-          section = (this.processFood());
+          section = (
+            <CSSTransition
+              classNames = "grow"
+              appear = {true}
+              in = {isLoaded}
+              timeout = {500}
+            >
+              {this.processFood()}
+            </CSSTransition>
+          );
         }
         return section;
     }
@@ -233,7 +253,9 @@ class FoodFocus  extends Component {
 
     return(
       <section id = "focus">
-        {section}
+        <TransitionGroup>
+          {section}
+        </TransitionGroup>
       </section>
     );
   }
