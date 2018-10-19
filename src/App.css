@@ -285,9 +285,9 @@ input::placeholder{
 }
 
 .food-list li #check {
-  position: absolute;
-  width: 20px; height: 20px;
-  margin-left: 10px; margin-top: 0px;
+  position: relative;
+  width: 15px; height: 15px;
+  margin-left: 10px;
 }
 
 .food-list li span{
