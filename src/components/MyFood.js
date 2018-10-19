@@ -96,10 +96,6 @@ class MyFood extends Component{
     }
 
 
-
-
-
-
     const tooltipStyle =  {
       display: this.state.hover ? 'block' : 'none'
     };

@@ -67,7 +67,6 @@ class App extends Component {
         myFood: currentList
       });
     }
-
   }
 
   removeFood = (position) => {

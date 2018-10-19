@@ -92,7 +92,7 @@ class FoodFocus  extends Component {
     })
     .catch( error => {
       if (error.name === 'AbortError'){
-        return (console.log("Aborted supposedly"));
+        return
       }
       this.setState({
         focus: {isLoaded: true, error: error}
@@ -223,13 +223,13 @@ class FoodFocus  extends Component {
         } else if (!isLoaded) {
           section = (
             <CSSTransition
-              in = {!isLoaded}
+              key = "is this a key?... You bet!"
+              in = {true}
               appear = {true}
               classNames = "fade-fast"
-              timeout = {500}
-              unmountOnExit
+              timeout = {300, 200}
             >
-              <h4 key = "oh boy!">
+              <h4>
                 Loading, please wait...
               </h4>
             </CSSTransition>
@@ -237,9 +237,10 @@ class FoodFocus  extends Component {
         } else {
           section = (
             <CSSTransition
+              key = "this is a key!"
               classNames = "grow"
               appear = {true}
-              in = {isLoaded}
+              in = {true}
               timeout = {500}
             >
               {this.processFood()}

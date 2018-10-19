@@ -46,18 +46,35 @@ class FoodSearch extends Component {
     });
   }
 
+
+  updateFoodList = () => {
+    let callData = this.state.rawCallData;
+    if (callData !== null) {
+      let newFoodComponents = this.showFoodItems(callData.list.item);
+      this.setState({
+        foodComponents: {isLoaded: true, list: newFoodComponents}
+      });
+    }
+  }
+
+  addFood = (foodString) => {
+    this.props.addFood(foodString);
+    this.updateFoodList();
+  }
+
+
   // Helper function to process API data. Takes JSON format object and
   // returns the food items inside an unordered list of list jsx.
   showFoodItems = (foodList) => {
     let foodItems = [];
     let inner = [];
+    let list = this.state.myFood;
     for (let i = 0; i < foodList.length; i++) {
       let info = foodList[i].name;
       if (!info.includes('\\') && !info.includes("!") &&
           !info.includes('""'))  {
         info = info.slice(0, info.indexOf("UPC") - 2);
         info = info.toLowerCase();
-        let list = this.state.myFood;
         let check = false;
         for (let i = 0; i < list.length; i++) {
           if (list[i].name.toLowerCase() === info) {
@@ -65,28 +82,17 @@ class FoodSearch extends Component {
           }
         }
         let item;
-        if (check) {
-          item = ((
-             <FoodItem
-               className = "added"
-               click= {this.findFood.bind(this)}
-               id = {foodList[i].id}
-               key = {foodList[i].id}
-             >
-              {info}
-             </FoodItem>
-           ));
-        } else {
-          item = ((
-            <FoodItem
-               click= {this.findFood.bind(this)}
-               id = {foodList[i].id}
-               key = {foodList[i].id}
-             >
-               {info}
-            </FoodItem>
-        ));
-        }
+        item = ((
+          <FoodItem
+             click= {this.findFood.bind(this)}
+             id = {foodList[i].id}
+             key = {foodList[i].id}
+             check = {check}
+           >
+             {info}
+           </FoodItem>
+          ));
+
         inner.push(item);
       }
     }
@@ -199,7 +205,13 @@ class FoodSearch extends Component {
     }
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(newProps) {
+    let rawData = newProps.savedData;
+    if (rawData != this.state.rawCallData) {
+      this.setState({
+        rawCallData: rawData
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -236,12 +248,12 @@ class FoodSearch extends Component {
       let focusSection;
       focusSection = ((this.state.focus.id !== "") ?
           <FoodFocus
-            addFood = {this.props.addFood}
+            addFood = {this.addFood.bind(this)}
             goToMyFoods = {this.props.toMyFood}
             name = {this.state.focus.name}
             id = {this.state.focus.id}
           /> : undefined
-      );
+       );
       let searchBar = (
         <form>
             <div id = "search-bar-container">
@@ -268,10 +280,10 @@ class FoodSearch extends Component {
             {searchBar}
             <div id = "section-focus">
               <CSSTransition
-                classNames = "enter-left"
+                classNames = "enter-above"
                 in = {true}
                 appear = {true}
-                timeout = {800}
+                timeout = {1000}
               >
                 {section}
               </CSSTransition>

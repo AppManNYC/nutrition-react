@@ -1,6 +1,10 @@
 import React from 'react';
 
 
+
+import check from '../assets/check.png'
+
+
 const FoodItem = (props) => {
 
   const handleClick = () => {
@@ -9,10 +13,18 @@ const FoodItem = (props) => {
 
   return (
     <li
+      className = {(props.check)? "added" : undefined}
       key = {props.id}
       onClick = {handleClick}
     >
       {props.children}
+      {(props.check) ?
+        (<img id = "check"
+              src = {check}
+              alt = "added!"
+              className = "fade-in"
+         />): undefined
+      }
     </li>
   );
 }
