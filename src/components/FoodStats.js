@@ -20,6 +20,13 @@ class FoodStats extends Component {
     };
   }
 
+  componentWillReceiveProps(newProps){
+    this.setState({
+      totals: newProps.myFoodTotal
+    });
+  }
+
+
 
   render(){
     let display;
@@ -47,7 +54,6 @@ class FoodStats extends Component {
       );
     } else {
       let foodList = this.state.myFood;
-      let myFoodSection = [];
       let myFoods = ((foodList.length > 0) ?
            <div className = "food-items scrollable">
              {foodList.map((food, i) => <MyFood
@@ -56,6 +62,8 @@ class FoodStats extends Component {
              foodString = {JSON.stringify(food)}
              pos = {i}
              portionChange = {this.props.portionChange}
+             portionIncr = {this.props.portionIncr}
+             portionDecr = {this.props.portionDecr}
              removeFood = {this.props.removeFood} />)}
            </div> :
              <p className = "dear"> Oh dear, you have no foods on your list! </p>
@@ -75,15 +83,16 @@ class FoodStats extends Component {
          <MyFoodDisclaimer/> :
            undefined
        );
-       myFoodSection.push( myFoods);
        display = (
          <section className ="my-food" key = "door">
            {background}
            <div id = "stats-view">
-             <div className = "list-and-total">
-               <div className = "my-food-list">
+             <div id = "list-and-total">
+               <div id = "my-food-list"
+                  className = {(foodList.length == 0) ? "no-foods" : undefined}
+               >
                  <h2> My foods </h2>
-                 {myFoodSection}
+                 {myFoods}
                  <Button
                    onClick = {this.props.toFoodSearch}
                    name = "Back to Search"

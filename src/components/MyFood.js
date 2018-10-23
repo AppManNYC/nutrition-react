@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 
 
+import remove from '../assets/remove.png'
+import incr from '../assets/increase.png'
+import decr from '../assets/decrease.png'
 
 class MyFood extends Component{
 
@@ -9,7 +12,7 @@ class MyFood extends Component{
     super(props);
 
     this.state = {
-      hover: false
+      tooltipHover: false
     };
 
   }
@@ -18,11 +21,11 @@ class MyFood extends Component{
 
 
   handleMouseIn() {
-    this.setState({ hover: true })
+    this.setState({ tooltipHover: true })
   }
 
   handleMouseOut() {
-    this.setState({ hover: false })
+    this.setState({ tooltipHover: false })
   }
 
 
@@ -33,6 +36,14 @@ class MyFood extends Component{
 
   onChange = (event) => {
     this.props.portionChange(this.props.pos, event);
+  }
+
+  increaseAmount = () => {
+    this.props.portionIncr(this.props.pos)
+  }
+
+  decreaseAmount = () => {
+    this.props.portionDecr(this.props.pos);
   }
 
 
@@ -97,42 +108,67 @@ class MyFood extends Component{
 
 
     const tooltipStyle =  {
-      display: this.state.hover ? 'block' : 'none'
+      opacity: this.state.tooltipHover ? '1' : '0'
     };
+
+    const removeIconStyle = {
+      opacity: this.state.tooltipHover? '1' : '0'
+    }
 
 
     return(
-      <ul
+      <div
+        className = "food-container"
         onMouseOver = {this.handleMouseIn.bind(this)}
         onMouseOut = {this.handleMouseOut.bind(this)}
       >
-        <p className = "food-name">
-          <span onClick = {this.onClick.bind(this)}> {name} </span>
-        </p>
+        <div>
+          <p onClick = {this.onClick.bind(this)} className = "food-name">
+            <span> {name} </span>
+            <img className = "remove-icon"
+                 src = {remove}
+                 alt = "remove this food"
+                 style = {removeIconStyle}
+             />
+          </p>
+          <div className = "input-container">
+            <input
+              onChange = {this.onChange.bind(this)}
+              type = "number"
+              name = "portion"
+              placeholder = {placeholder}
+              min = "50"
+              max = "500"
+            />
+            <div className = "input-arrow-container">
+              <img src = {incr} alt = "increase"
+                onClick = {this.increaseAmount.bind(this)}
+              />
+              <img src = {decr} alt = "decrease"
+                onClick = {this.decreaseAmount.bind(this)}
+              />
+            </div>
+          </div>
+          <ul>
+            {macros.map((proximate, key) => <li key = {key}> {proximate} </li>)}
+          </ul>
+        </div>
         <div
           style = {tooltipStyle}
           className = "food-tooltip"
         >
+          Currently:
           <ul>
-            Currently:
-            <li> {energyPercent}% of total kcals </li>
-            <li> {proteinPercent}% of total protein </li>
-            <li> {fatPercent}% of total fat </li>
-            <li> {fiberPercent}% of total fiber </li>
-            <li> {sugarPercent}% of total sugar </li>
+            <li> <span>{energyPercent}%</span> of total kcals </li>
+            <li> <span>{proteinPercent}%</span> of total protein </li>
+            <li> <span>{fatPercent}%</span> of total fat </li>
+            <li> <span>{fiberPercent}%</span> of total fiber </li>
+            <li> <span>{sugarPercent}%</span> of total sugar </li>
           </ul>
         </div>
-        <input
-          onChange = {this.onChange.bind(this)}
-          type = "number"
-          name = "portion"
-          placeholder = {placeholder}
-          min = "50"
-          max = "500"
-          step = "50"
-        />
-        {macros.map((proximate, key) => <li key = {key}> {proximate} </li>)}
-      </ul>
+
+
+      </div>
     )
   }
 }

@@ -79,19 +79,14 @@ class App extends Component {
     }
   }
 
-  portionChange = (position, event) => {
-    let value = event.target.value*1;
+
+
+
+  portionChangeMath = (value, position) => {
     let foodList = this.state.myFood;
     let foodObject = foodList[position];
+    let userNutrients = foodObject.userNutrients
 
-    let userNutrients = foodObject.userNutrients;
-
-    if (value > 500) {
-      value = 500;
-      event.target.value = 500;
-    }
-
-    foodObject.amount = value;
 
     for (let i = 0; i < foodObject.nutrients.minerals.length; i++) {
       let originalAmountPer100g = foodObject.nutrients.minerals[i].match("([0-9]+((\.)[0-9]{1,2})?)")[0];
@@ -110,10 +105,47 @@ class App extends Component {
 
     foodObject.userNutrients = userNutrients;
     foodList[position] = foodObject;
+    foodObject.amount = value;
 
     this.setState({
       myFood: foodList
     });
+  }
+
+  portionDecr = (position) => {
+    let foodList = this.state.myFood;
+    let foodObject = foodList[position];
+
+    let currentAmount = foodObject.amount;
+    let value = currentAmount - 50;
+    if(value < 0){
+      value = 0;
+    }
+    this.portionChangeMath(value, position);
+  }
+
+  portionIncr = (position) => {
+    let foodList = this.state.myFood;
+    let foodObject = foodList[position];
+
+    let currentAmount = foodObject.amount;
+    let value = currentAmount + 50;
+    if(value > 500){
+      value = 500;
+    }
+    this.portionChangeMath(value, position);
+  }
+
+  portionChange = (position, event) => {
+    let value = event.target.value*1;
+    let foodList = this.state.myFood;
+
+    if (value > 500) {
+      value = 500;
+      event.target.value = 500;
+    }
+
+    this.portionChangeMath(value, position);
   }
 
   updateFoodTotals = (newTotal) => {
@@ -315,6 +347,8 @@ class App extends Component {
                 myFoodTotal = {this.state.myFoodTotal}
                 userSettings = {this.state.userSettings}
                 portionChange = {this.portionChange.bind(this)}
+                portionIncr = {this.portionIncr.bind(this)}
+                portionDecr = {this.portionDecr.bind(this)}
                 removeFood = {this.removeFood.bind(this)}
                 onSettingsChange = {this.onSettingsChange.bind(this)}
                 updateFoodTotals = {this.updateFoodTotals.bind(this)}
