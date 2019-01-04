@@ -175,15 +175,14 @@ class FoodFocus  extends Component {
       <section>
         <h1>{name}</h1>
         <div className = "info">
+          <div className = "nutrients">
+              {nutrientSection}
+          </div>
           <div className = "ingredients">
             <h2>Ingredients</h2>
             <div className = "scrollable">
               {ingredientSection}
             </div>
-          </div>
-          <div className = "nutrients">
-            <h2>Nutrients</h2>
-              {nutrientSection}
           </div>
         </div>
           <Button

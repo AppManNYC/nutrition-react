@@ -111,6 +111,10 @@ class MyFood extends Component{
       opacity: this.state.tooltipHover ? '1' : '0'
     };
 
+    const reverseStyle = {
+      opacity: this.state.tooltipHover? '0' : '2'
+    }
+
     const removeIconStyle = {
       opacity: this.state.tooltipHover? '1' : '0'
     }
@@ -122,7 +126,7 @@ class MyFood extends Component{
         onMouseOver = {this.handleMouseIn.bind(this)}
         onMouseOut = {this.handleMouseOut.bind(this)}
       >
-        <div>
+        <div style = {reverseStyle}>
           <p onClick = {this.onClick.bind(this)} className = "food-name">
             <span> {name} </span>
             <img className = "remove-icon"
@@ -157,7 +161,6 @@ class MyFood extends Component{
           style = {tooltipStyle}
           className = "food-tooltip"
         >
-          Currently:
           <ul>
             <li> <span>{energyPercent}%</span> of total kcals </li>
             <li> <span>{proteinPercent}%</span> of total protein </li>

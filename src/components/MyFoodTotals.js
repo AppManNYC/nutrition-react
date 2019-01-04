@@ -17,7 +17,7 @@ class MyFoodTotals extends Component {
       limitData: ""
     };
   }
-  
+
   calculateTotals = ( newProps) => {
 
     let newPropsString = JSON.stringify(newProps.foodList);
@@ -107,8 +107,7 @@ class MyFoodTotals extends Component {
 
    return(
      <div id = "my-food-totals">
-       <h2> Totals based on your chosen food </h2>
-       {totals}
+      <h2> Statistics </h2>
        <FoodLimit
         totals = {[this.state.energy,
                    this.state.protein,
@@ -118,7 +117,9 @@ class MyFoodTotals extends Component {
                  ]}
        userSettings = {this.props.userSettings}
        changeSettings = {this.props.changeSettings}
-       />
+       >
+        {totals}
+      </FoodLimit>
      </div>
    );
  }

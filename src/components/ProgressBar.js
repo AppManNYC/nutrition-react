@@ -29,14 +29,6 @@ const ProgressBar = (props) => {
             <p> Target </p>
           </div>
         </div>
-
-        <p className = "scale-origin">
-          0
-        </p>
-
-        <p className = "scale-end">
-         4500 kcals
-        </p>
       </div>
     );
   } else if (props.set) {
@@ -75,14 +67,6 @@ const ProgressBar = (props) => {
             <p> High </p>
           </div>
         </div>
-
-        <p className = "scale-origin">
-          0
-        </p>
-
-        <p className = "scale-end">
-         {scaleEnd} grams
-        </p>
       </div>);
   } else {
     numberLine = ( <h3> Working on your settings!  </h3>);

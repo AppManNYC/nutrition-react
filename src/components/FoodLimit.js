@@ -483,73 +483,75 @@ class foodLimit extends Component {
              onClick = {this.handleMouseClick.bind(this)}
         >
           <div>
-            <h2>There are Many ways of calculting macro nurient ratios</h2>
-            <fieldset>
-              <legend> Calories </legend>
-              <p>
-                So please stay critical! \n One of most (historically) used
-                methods is the Harris-Benedict equation (originally introduced in the early
-                1900s but revised multiple times through the early 2000s)--
-                due to its simplicity and relative accuracy.
-              </p>
-              <p>
-                <strong>Note:</strong> this method is general and mostly applies for
-                average body compositions (neither largely overweight nor largely underweight,
-                not largely fat nor largely muscular). No difference is accounted for
-                body fat percentage for instance. Use this as a starting point.
-              </p>
-              <p className = "equation">
-                Basal Metabolic Rate<span>kcals</span> =
-                (10 * weight<span>kg</span>) + (6.25 * height<span>cm</span>) -
-                (5 * age<span>years</span>) + (constant<span>gender</span>).
-                w/ constant<span>male</span> = 5 and
-                constant<span>female</span> = -161
-              </p>
-              <p className = "equation">
-                Then, Total Energy Expenditure<span>kcals</span> =
-                BMR<span>kcals</span> * (Physical Activity Multiplier)
+            <h2>There are a many ways of calculting macro nurient ratios</h2>
+            <div id = "field-container"
+              className = "scrollable"
+            >
+              <fieldset>
+                <legend> Calories </legend>
+                <p>
+                  One of most widely used
+                  methods is the Harris-Benedict equation (originally introduced in the early
+                  1900s but revised multiple times through the early 2000s). This equation
+                  is relatively accurate but more importantly uses simple markers such as
+                  height, weight, and age.
+                </p>
+                <p>
+                  <strong>Note:</strong> The HB eqn is an approximation and is most accurate
+                  for average body types (i.e. not extremely massive nor extremely light)
+                </p>
+                <p className = "equation">
+                  Basal Metabolic Rate<span>kcals</span> =
+                  (10 * weight<span>kg</span>) + (6.25 * height<span>cm</span>) -
+                  (5 * age<span>years</span>) + (constant<span>gender</span>).
+                  w/ constant<span>male</span> = 5 and
+                  constant<span>female</span> = -161
+                </p>
+                <p className = "equation">
+                  Then, Total Energy Expenditure<span>kcals</span> =
+                  BMR<span>kcals</span> * (Physical Activity Multiplier)
 
-                where PAM could be between 1.5 (for low-sedentary activity) and
-                2.25 (for highly extensive daily exertion)
-              </p>
+                  where PAM could be between 1.5 (for low-sedentary activity) and
+                  2.25 (for highly extensive daily exertion)
+                </p>
+                <p>
+                  TEE assumes weight maintenance. For loss or gain, +- 10 - 20% is recommended.
+                </p>
+              </fieldset>
+              <fieldset>
+                <legend> Macro ratios </legend>
+                <p>
+                  As for carbohydrate, protein, and fat ratios, these depend on
+                  personal body composition, age, and a ton of other factors. We perform
+                  crude approximations based on the following ranges and information about
+                  activity level/goals.
+                </p>
+                <p>
+                  <strong>For proteins</strong>, intake ratios range from .79 to 1.76 grams per kg
+                  of bodyweight. With the higher end recommended for weight
+                  loss and muscle gain goals.
+                </p>
+                <p>
+                  <strong>In terms of fat</strong>, recommended ratios are .6 - 1.2 grams per kg of
+                  bodyweight. Keep in mind however that this ratio will be
+                  doubled or tripled for ketogenic diets (and carb ratio will
+                  proportionally decreased).
+                </p>
+                <p>
+                  <strong>For carbs</strong>, the recommended values range from 3.3 to 11.9
+                  grams per kg of bodyweight. The value will depend on many things,
+                  but most importantly physical activity levels conditions such as
+                  diabetes.
+                </p>
+              </fieldset>
               <p>
-                TEE assumes weight maintenance. For loss or gain, +- 10 - 20% is recommended.
+                Some secondary literature readings:
+                <ul>
+                  <li> <a href = "https://shapescale.com/blog/health/nutrition/calculate-macronutrient-ratio"> One </a> </li>
+                  <li> <a href = "http://sportsmedicinebhs.weebly.com/nutrition-guidelines.html"> Two </a> </li>
+                </ul>
               </p>
-            </fieldset>
-            <fieldset>
-              <legend> Macro ratios </legend>
-              <p>
-                As for carbohydrate, protein, and fat ratios, these depend on
-                personal body composition, age, and a ton of other factors. We perform
-                crude approximations based on the following ranges and information about
-                activity level/goals.
-              </p>
-              <p>
-                <strong>For proteins</strong>, intake ratios range from .79 to 1.76 grams per kg
-                of bodyweight. With the higher end recommended for weight
-                loss and muscle gain goals.
-              </p>
-              <p>
-                <strong>In terms of fat</strong>, recommended ratios are .6 - 1.2 grams per kg of
-                bodyweight. Keep in mind however that this ratio will be
-                doubled or tripled for ketogenic diets (and carb ratio will
-                proportionally decreased).
-              </p>
-              <p>
-                <strong>For carbs</strong>, the recommended values range from 3.3 to 11.9
-                grams per kg of bodyweight. The value will depend on many things,
-                but most importantly physical activity levels and diabetic conditions.
-              </p>
-            </fieldset>
-            <p>
-              Some secondary literature readings:
-              <ul>
-                <li> <a href = "https://shapescale.com/blog/health/nutrition/calculate-macronutrient-ratio"> One </a> </li>
-                <li> <a href = "http://sportsmedicinebhs.weebly.com/nutrition-guidelines.html"> Two </a> </li>
-              </ul>
-
-
-            </p>
+            </div>
           </div>
         </div>
       </div>);
@@ -587,7 +589,6 @@ class foodLimit extends Component {
                   disabled = {this.state.settings.calculator}
                 />
                 <form>
-                  <br/>
                   <label> Imperial </label>
                   <input className = "radio-btn"
                     type = "radio" name = "unit"
@@ -602,9 +603,12 @@ class foodLimit extends Component {
                     onChange = {this.handleUnitChange.bind(this)}
                   />
                 </form>
-                <form id = "calculator" style = {calculatorStyle}>
+                <form id = "calculator"
+                  style = {calculatorStyle}
+                  className = "scrollable"
+                >
 
-                  Biological gender:
+                  Gender:
                   <label> Female </label>
                   <input className = "radio-btn"
                           checked = {this.state.data.gender === "female"}
@@ -617,9 +621,8 @@ class foodLimit extends Component {
                          type = "radio" name = "gender" value = "male"
                          onChange = {this.handleGenderChange.bind(this)}
                   />
+
                   <br/>
-
-
                   <label> Weight: </label>
                   <input type = "number"
                          name = "weight"
@@ -646,7 +649,6 @@ class foodLimit extends Component {
                          min = "18"
                          value = {"" + this.state.data.age}
                          onChange = {this.handleAge.bind(this)}/>
-                  <br/>
 
                   Activity levels:
                   <label> Low  </label>
@@ -671,7 +673,6 @@ class foodLimit extends Component {
                          onChange = {this.handleActivity.bind(this)}
                   />
                   <br/>
-
                   Weight goals:
                   <label> Loss </label>
                   <input className = "radio-btn"
@@ -694,15 +695,9 @@ class foodLimit extends Component {
                          checked = {this.state.goal === "gain"}
                          onChange = {this.handleGoal.bind(this)}
                   />
-                  <br/>
-
-
-
                 </form>
 
                 <form id = "own-calories" style = {ownStyle}>
-
-
                   <label> Caloric intake goal: </label>
                   <input type = "number"
                     name = "kcals"
@@ -712,7 +707,6 @@ class foodLimit extends Component {
                     placeholder = "daily value in kcals"
                     onChange = {this.handleOwnCals.bind(this)}
                   />
-                  <br/>
                   <label> Weight: </label>
                   <input type = "number"
                          name = "weight"
@@ -722,7 +716,6 @@ class foodLimit extends Component {
                          min = "0"
                          onChange = {this.handleWeight.bind(this)}
                   />
-                  <br/>
                 </form>
                 <Button name = "Set" onClick = {this.handleSet.bind(this)}/>
               </section>
@@ -734,13 +727,16 @@ class foodLimit extends Component {
 
 
     return(
-
-      <div id = "food-limit">
-        <h2>Breakdown suggestions:</h2>
-        {section}
-        {how}
-        {settings}
-      </div>
+     <div>
+        <div id = "food-limit" className = "scrollable">
+          {this.props.children}
+          {section}
+        </div>
+        <div id = "settings-info">
+          {settings}
+          {how}
+        </div>
+     </div>
     )
   }
 }

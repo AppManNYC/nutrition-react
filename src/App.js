@@ -3,7 +3,7 @@ import FoodSearch from "./components/FoodSearch";
 import FoodStats from "./components/FoodStats";
 import Button from "./components/Button";
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
-import './App.css';
+import './output.css';
 
 
 

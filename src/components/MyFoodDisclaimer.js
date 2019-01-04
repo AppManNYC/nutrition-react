@@ -9,7 +9,7 @@ const MyFoodDisclaimer = () => {
   return(
     <div id = "my-food-disclaimer">
       <p>
-        <strong>Disclaimer:</strong>
+        <strong>Disclaimer: <br/></strong>
         Metabolic rates vary between individuals by age, height,
         weight, gender, physical activity, health conditions,
         and many other obscure things (such as weather, season, time of day).
