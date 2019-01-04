@@ -253,11 +253,18 @@ button {
   font-size: 18pt;
 }
 #food-list-view #focus {
+  margin: auto;
   margin-left: auto;
   margin-right: auto;
   font-size: 0.8em;
   width: 80%;
   height: 50%;
+}
+@media only screen and (min-width: 768px) {
+  #food-list-view #focus {
+    height: 60%;
+    width: 50%;
+  }
 }
 #food-list-view #focus section {
   background-color: beige;
@@ -324,12 +331,25 @@ input::placeholder {
   -ms-flex-pack: distribute;
   justify-content: space-around;
 }
+@media only screen and (min-width: 768px) {
+  #section-focus {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+    -ms-flex-line-pack: center;
+    align-content: center;
+  }
+}
 
 .capitalize {
   text-transform: capitalize;
 }
 
 #food-list-container {
+  margin: auto;
   height: 40%;
   margin-left: auto;
   margin-right: auto;
@@ -339,6 +359,12 @@ input::placeholder {
 }
 #food-list-container h1 {
   padding: 5px;
+}
+@media only screen and (min-width: 768px) {
+  #food-list-container {
+    width: 45%;
+    height: 60%;
+  }
 }
 
 .added, .food-list li.added:hover {
@@ -413,6 +439,7 @@ input::placeholder {
 }
 
 #stats-view {
+  font-family: "PT Sans", Arial, sans-serif;
   height: 100vh;
   width: 100vw;
   z-index: 2;
@@ -457,6 +484,13 @@ input::placeholder {
   margin-left: auto;
   margin-right: auto;
 }
+@media only screen and (min-width: 768px) {
+  #my-food-totals, #my-food-list {
+    height: 60%;
+    width: 40%;
+    margin: auto;
+  }
+}
 
 #my-food-totals {
   position: relative;
@@ -485,6 +519,18 @@ input::placeholder {
   -ms-flex-pack: distribute;
   justify-content: space-around;
   height: 100%;
+}
+@media only screen and (min-width: 768px) {
+  #list-and-total {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+    -ms-flex-line-pack: center;
+    align-content: center;
+  }
 }
 
 .food-container {
