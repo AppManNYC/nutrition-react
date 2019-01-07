@@ -187,11 +187,11 @@ class FoodFocus  extends Component {
         </div>
           <Button
             onClick = {this.addToList.bind(this)}
-            name = "add"
+            name = "ADD"
            />
            <Button
              onClick = {this.props.goToMyFoods}
-             name = "back"
+             name = "BACK"
            />
         <div id = "buttons">
         </div>

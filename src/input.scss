@@ -221,6 +221,19 @@ button {
   position: relative;
 }
 
+#search-disclaimer{
+  position: absolute;
+  text-align: center;
+  opacity: .65;
+  background-color: color(primary);
+  font-size: 7pt;
+  bottom: 0px;
+  z-index: -1;
+  @media only screen and (min-width: 768px){
+    z-index: 100;
+  }
+}
+
 #food-list-view{
   height: 100vh; width: 100vw;
   position: absolute;
@@ -490,7 +503,10 @@ input{
   button{
     width: 150px;
     margin: auto;
-    height: 30px;
+    margin-top: 2px;
+    height: 25px;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
   }
 }
 
@@ -514,7 +530,8 @@ input{
   @extend %flex-col;
   position: relative;
   margin-bottom: 20px;
-  h2{
+  @media only screen and (min-width: 768px){
+    margin: auto;
   }
   >div{
     @extend %flex-col;
@@ -745,12 +762,12 @@ button:disabled{
 }
 
 .macro-suggestion {
-  display: flex; flex-direction: column;
+  @extend %flex-col;
+  >strong{
+    text-align: left;
+  }
 }
 
-.macro-suggestion > strong {
-  text-align:left;
-}
 
 .within-goal, .not-within-goal {
   position:relative;
@@ -766,13 +783,15 @@ button:disabled{
 }
 
 .within-goal > img, .not-within-goal img {
-  left: 0;
+  left: 25px;
+  top: -60px;
 }
 
 
 
 #my-food-disclaimer {
   @extend %tight;
+  opacity: .6;
   overflow-y:hidden;
   overflow-x: hidden;
   position: absolute;
@@ -785,14 +804,27 @@ button:disabled{
   p{
     @extend %tight;
   }
-
+  @media only screen and (min-width: 768px){
+    text-align: center;
+    width: 100%; height: auto;
+    opacity: .6;
+    background-color: color(primary);
+    font-size: 7pt;
+    bottom: 0px;
+    z-index: -1;
+    p{
+      padding: 5px;
+    }
+  }
   &:hover{
+    opacity: .9;
+    z-index: 100;
     width: 100vw;
     height: 40vh;
     @media only screen and (min-width: 768px){
-      bottom: 0px;
-      width: 100vw;
-      height: 125px;
+      opacity: .65;
+      z-index: -1;
+      width: 100%; height: auto;
     }
   }
 }

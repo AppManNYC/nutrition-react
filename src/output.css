@@ -18,7 +18,7 @@
   align-content: center;
 }
 
-#macro-help div, #settings div, .input-arrow-container, #list-and-total, #my-food-totals > div, #my-food-totals, .food-items, .my-food, #my-food-list, .info, #section-focus, #landing #landing-info, #landing, #loading, .App {
+.macro-suggestion, #macro-help div, #settings div, .input-arrow-container, #list-and-total, #my-food-totals > div, #my-food-totals, .food-items, .my-food, #my-food-list, .info, #section-focus, #landing #landing-info, #landing, #loading, .App {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -207,6 +207,21 @@ button {
   height: 100vh;
   width: 100vw;
   position: relative;
+}
+
+#search-disclaimer {
+  position: absolute;
+  text-align: center;
+  opacity: 0.65;
+  background-color: white;
+  font-size: 7pt;
+  bottom: 0px;
+  z-index: -1;
+}
+@media only screen and (min-width: 768px) {
+  #search-disclaimer {
+    z-index: 100;
+  }
 }
 
 #food-list-view {
@@ -472,7 +487,10 @@ input::placeholder {
 #my-food-list button {
   width: 150px;
   margin: auto;
-  height: 30px;
+  margin-top: 2px;
+  height: 25px;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
 }
 
 #my-food-totals, #my-food-list {
@@ -495,6 +513,11 @@ input::placeholder {
 #my-food-totals {
   position: relative;
   margin-bottom: 20px;
+}
+@media only screen and (min-width: 768px) {
+  #my-food-totals {
+    margin: auto;
+  }
 }
 #my-food-totals > div {
   width: 100%;
@@ -706,11 +729,6 @@ button:disabled {
   opacity: 0.5;
 }
 
-.macro-suggestion {
-  display: flex;
-  flex-direction: column;
-}
-
 .macro-suggestion > strong {
   text-align: left;
 }
@@ -729,10 +747,12 @@ button:disabled {
 }
 
 .within-goal > img, .not-within-goal img {
-  left: 0;
+  left: 25px;
+  top: -60px;
 }
 
 #my-food-disclaimer {
+  opacity: 0.6;
   overflow-y: hidden;
   overflow-x: hidden;
   position: absolute;
@@ -743,15 +763,33 @@ button:disabled {
   width: 60px;
   transition: all 0.5s ease;
 }
+@media only screen and (min-width: 768px) {
+  #my-food-disclaimer {
+    text-align: center;
+    width: 100%;
+    height: auto;
+    opacity: 0.6;
+    background-color: white;
+    font-size: 7pt;
+    bottom: 0px;
+    z-index: -1;
+  }
+  #my-food-disclaimer p {
+    padding: 5px;
+  }
+}
 #my-food-disclaimer:hover {
+  opacity: 0.9;
+  z-index: 100;
   width: 100vw;
   height: 40vh;
 }
 @media only screen and (min-width: 768px) {
   #my-food-disclaimer:hover {
-    bottom: 0px;
-    width: 100vw;
-    height: 125px;
+    opacity: 0.65;
+    z-index: -1;
+    width: 100%;
+    height: auto;
   }
 }
 

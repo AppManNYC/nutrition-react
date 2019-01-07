@@ -84,25 +84,32 @@ class FoodStats extends Component {
            undefined
        );
        display = (
-         <section className ="my-food" key = "door">
-           {background}
-           <div id = "stats-view">
-             <div id = "list-and-total">
-               <div id = "my-food-list"
-                  className = {(foodList.length == 0) ? "no-foods" : undefined}
-               >
-                 <h2> My foods </h2>
-                 {myFoods}
-                 <Button
-                   onClick = {this.props.toFoodSearch}
-                   name = "Back to Search"
-                 />
+         <CSSTransition
+           in = {true}
+           classNames = "fade"
+           appear = {true}
+           timeout = {1000}
+         >
+           <section className ="my-food" key = "door">
+             {background}
+             <div id = "stats-view">
+               <div id = "list-and-total">
+                 <div id = "my-food-list"
+                    className = {(foodList.length == 0) ? "no-foods" : undefined}
+                 >
+                   <h2> My foods </h2>
+                   {myFoods}
+                   <Button
+                     onClick = {this.props.toFoodSearch}
+                     name = "BACK"
+                   />
+                 </div>
+                 {myFoodTotals}
                </div>
-               {myFoodTotals}
+               {disclaimer}
              </div>
-             {disclaimer}
-           </div>
-         </section>
+           </section>
+          </CSSTransition>
        );
     }
 
@@ -111,16 +118,15 @@ class FoodStats extends Component {
     return(
       <TransitionGroup>
         <CSSTransition
-          classNames = "fade"
+          in = {true}
           appear = {true}
+          classNames= 'fade'
           timeout = {1000}
           onEntered = {
-            () =>{
-              (!this.state.bg.isLoaded) ?
-                this.setState({
-                  bg: {isLoaded: true, style: "visible"}
-                })
-               : undefined
+            () => {
+              this.setState({
+                bg: {isLoaded: true, style: 'visible' }
+              });
             }
           }
         >

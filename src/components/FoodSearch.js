@@ -271,7 +271,6 @@ class FoodSearch extends Component {
           in = {true}
           appear = {true}
           classNames = "fade"
-          appear = {true}
           timeout = {1000}
         >
         <div id = "food-list-page">
@@ -287,8 +286,26 @@ class FoodSearch extends Component {
               >
                 {section}
               </CSSTransition>
-                {focusSection}
+              {focusSection}
             </div>
+            <footer id = "search-disclaimer">
+              <p>
+                <strong>Note</strong> Nutrition can seem an obscure art. Horn of Plenty
+                can help provide a starting point, and hopefully make the process less
+                daunting. Ultimately you will have to find what
+                works for you. Please be creative and experiment!
+              </p>
+              <p>
+                <strong>Caution:</strong> Please be aware that what is considered a 'healthy'
+                weight can have different connotations based on who you ask (a health professional,
+                a body positive person, an athlete, your next door neighbor-- who incidentally
+                has a very sensible middle-of-the-road outlook on controversial topics, what
+                a good bloke).
+                In general, extreme weight (both low and high) increases health risks
+                in different ways. Please exercise common sense when setting your targets,
+                best of luck!
+              </p>
+            </footer>
           </div>
         </div>
         </CSSTransition>
@@ -301,9 +318,9 @@ class FoodSearch extends Component {
         id = "css-transitions"
       >
         <CSSTransition
-          classNames = "fade"
           in = {true}
           appear = {true}
+          classNames = {'fade'}
           timeout = {1000}
         >
           {display}

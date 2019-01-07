@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from './Button'
 import ProgressBar from './ProgressBar';
+import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 
 import star from '../assets/star.png'
@@ -30,16 +31,23 @@ class foodLimit extends Component {
         currentTotals: [],
         help: false,
         settings: {menu: false, own: false, calculator: false},
+        transition: {how: false, settings: false}
       }
     }
   }
 
   handleMouseClick() {
-    this.setState({ help: !this.state.help });
+    this.setState({
+      help: !this.state.help,
+      transition: {...this.state.transition, how: !this.state.transition.how}
+     });
   }
 
   handleMouseClick2() {
-    this.setState({ settings: {...this.state.settings, menu: !this.state.settings.menu} });
+    this.setState({
+      settings: {...this.state.settings, menu: !this.state.settings.menu},
+      transition: {...this.state.transition, settings: !this.state.transition.settings}
+    });
   }
 
   handleMouseClick3() {
@@ -207,7 +215,8 @@ class foodLimit extends Component {
         default: false,
         set: true,
         suggestedCalories: newSuggestion,
-        settings: {menu: false, own: false, calculator: false}
+        settings: {menu: false, own: false, calculator: false},
+        transition: {...this.state.transition, settings: false}
       });
 
       let newSettings = JSON.stringify(this.state);
@@ -226,7 +235,8 @@ class foodLimit extends Component {
                height: 1.6,
                activity: "moderate"
              },
-       settings: {menu: false, own: false, calculator: false}
+       settings: {menu: false, own: false, calculator: false},
+       transition: { ...this.state.transition, settings: false}
       });
     }
 
@@ -476,85 +486,94 @@ class foodLimit extends Component {
     };
 
     let how;
-      how = ( <div>
-        <Button onClick = {this.handleMouseClick.bind(this)} name = "More info"/>
-        <div id = "macro-help"
-             style = {helptipStyle}
-             onClick = {this.handleMouseClick.bind(this)}
-        >
-          <div>
-            <h2>There are a many ways of calculting macro nurient ratios</h2>
-            <div id = "field-container"
-              className = "scrollable"
-            >
-              <fieldset>
-                <legend> Calories </legend>
-                <p>
-                  One of most widely used
-                  methods is the Harris-Benedict equation (originally introduced in the early
-                  1900s but revised multiple times through the early 2000s). This equation
-                  is relatively accurate but more importantly uses simple markers such as
-                  height, weight, and age.
-                </p>
-                <p>
-                  <strong>Note:</strong> The HB eqn is an approximation and is most accurate
-                  for average body types (i.e. not extremely massive nor extremely light)
-                </p>
-                <p className = "equation">
-                  Basal Metabolic Rate<span>kcals</span> =
-                  (10 * weight<span>kg</span>) + (6.25 * height<span>cm</span>) -
-                  (5 * age<span>years</span>) + (constant<span>gender</span>).
-                  w/ constant<span>male</span> = 5 and
-                  constant<span>female</span> = -161
-                </p>
-                <p className = "equation">
-                  Then, Total Energy Expenditure<span>kcals</span> =
-                  BMR<span>kcals</span> * (Physical Activity Multiplier)
+      how = (
+        <div>
+          <Button onClick = {this.handleMouseClick.bind(this)} name = "MORE INFO"/>
+          <CSSTransition
+            in = {this.state.transition.how}
+            appear = {true}
+            classNames = 'fade'
+            timeout = {1000}
+          >
+          <div id = "macro-help"
+               style = {helptipStyle}
+               onClick = {this.handleMouseClick.bind(this)}
+          >
+            <div>
+              <h2>There are a many ways of calculting macro nurient ratios</h2>
+              <div id = "field-container"
+                className = "scrollable"
+              >
+                <fieldset>
+                  <legend> Calories </legend>
+                  <p>
+                    One of most widely used
+                    methods is the Harris-Benedict equation (originally introduced in the early
+                    1900s but revised multiple times through the early 2000s). This equation
+                    is relatively accurate but more importantly uses simple markers such as
+                    height, weight, and age.
+                  </p>
+                  <p>
+                    <strong>Note:</strong> The HB eqn is an approximation and is most accurate
+                    for average body types (i.e. not extremely massive nor extremely light)
+                  </p>
+                  <p className = "equation">
+                    Basal Metabolic Rate<span>kcals</span> =
+                    (10 * weight<span>kg</span>) + (6.25 * height<span>cm</span>) -
+                    (5 * age<span>years</span>) + (constant<span>gender</span>).
+                    w/ constant<span>male</span> = 5 and
+                    constant<span>female</span> = -161
+                  </p>
+                  <p className = "equation">
+                    Then, Total Energy Expenditure<span>kcals</span> =
+                    BMR<span>kcals</span> * (Physical Activity Multiplier)
 
-                  where PAM could be between 1.5 (for low-sedentary activity) and
-                  2.25 (for highly extensive daily exertion)
-                </p>
+                    where PAM could be between 1.5 (for low-sedentary activity) and
+                    2.25 (for highly extensive daily exertion)
+                  </p>
+                  <p>
+                    TEE assumes weight maintenance. For loss or gain, +- 10 - 20% is recommended.
+                  </p>
+                </fieldset>
+                <fieldset>
+                  <legend> Macro ratios </legend>
+                  <p>
+                    As for carbohydrate, protein, and fat ratios, these depend on
+                    personal body composition, age, and a ton of other factors. We perform
+                    crude approximations based on the following ranges and information about
+                    activity level/goals.
+                  </p>
+                  <p>
+                    <strong>For proteins</strong>, intake ratios range from .79 to 1.76 grams per kg
+                    of bodyweight. With the higher end recommended for weight
+                    loss and muscle gain goals.
+                  </p>
+                  <p>
+                    <strong>In terms of fat</strong>, recommended ratios are .6 - 1.2 grams per kg of
+                    bodyweight. Keep in mind however that this ratio will be
+                    doubled or tripled for ketogenic diets (and carb ratio will
+                    proportionally decreased).
+                  </p>
+                  <p>
+                    <strong>For carbs</strong>, the recommended values range from 3.3 to 11.9
+                    grams per kg of bodyweight. The value will depend on many things,
+                    but most importantly physical activity levels conditions such as
+                    diabetes.
+                  </p>
+                </fieldset>
                 <p>
-                  TEE assumes weight maintenance. For loss or gain, +- 10 - 20% is recommended.
+                  Some secondary literature readings:
+                  <ul>
+                    <li> <a href = "https://shapescale.com/blog/health/nutrition/calculate-macronutrient-ratio"> One </a> </li>
+                    <li> <a href = "http://sportsmedicinebhs.weebly.com/nutrition-guidelines.html"> Two </a> </li>
+                  </ul>
                 </p>
-              </fieldset>
-              <fieldset>
-                <legend> Macro ratios </legend>
-                <p>
-                  As for carbohydrate, protein, and fat ratios, these depend on
-                  personal body composition, age, and a ton of other factors. We perform
-                  crude approximations based on the following ranges and information about
-                  activity level/goals.
-                </p>
-                <p>
-                  <strong>For proteins</strong>, intake ratios range from .79 to 1.76 grams per kg
-                  of bodyweight. With the higher end recommended for weight
-                  loss and muscle gain goals.
-                </p>
-                <p>
-                  <strong>In terms of fat</strong>, recommended ratios are .6 - 1.2 grams per kg of
-                  bodyweight. Keep in mind however that this ratio will be
-                  doubled or tripled for ketogenic diets (and carb ratio will
-                  proportionally decreased).
-                </p>
-                <p>
-                  <strong>For carbs</strong>, the recommended values range from 3.3 to 11.9
-                  grams per kg of bodyweight. The value will depend on many things,
-                  but most importantly physical activity levels conditions such as
-                  diabetes.
-                </p>
-              </fieldset>
-              <p>
-                Some secondary literature readings:
-                <ul>
-                  <li> <a href = "https://shapescale.com/blog/health/nutrition/calculate-macronutrient-ratio"> One </a> </li>
-                  <li> <a href = "http://sportsmedicinebhs.weebly.com/nutrition-guidelines.html"> Two </a> </li>
-                </ul>
-              </p>
+              </div>
             </div>
           </div>
+          </CSSTransition>
         </div>
-      </div>);
+      );
 
       const settingsStyle =  {
         display: this.state.settings.menu ? 'block' : 'none'
@@ -571,158 +590,164 @@ class foodLimit extends Component {
 
       let settings;
       settings = (
-        <div>
-          <Button name = "Change Settings" onClick = {this.handleMouseClick2.bind(this)} />
-          <div id = "settings"
-            style = {settingsStyle}
-          >
-            <div>
-              <h2> Change your settings here </h2>
-              <section>
+          <div>
+            <Button name = "SETTINGS" onClick = {this.handleMouseClick2.bind(this)} />
+            <CSSTransition
+              in = {this.state.transition.settings}
+              appear = {true}
+              classNames = 'fade'
+              timeout = {1000}
+            >
+              <div id = "settings"
+                style = {settingsStyle}
+              >
+                <div>
+                  <h2> Change your settings here </h2>
+                  <section>
 
-                <Button name = "Set your own goal"
-                  onClick = {this.handleMouseClick3.bind(this)}
-                  disabled = {this.state.settings.own}
-                />
-                <Button name = "Use the calculator"
-                  onClick = {this.handleMouseClick4.bind(this)}
-                  disabled = {this.state.settings.calculator}
-                />
-                <form>
-                  <label> Imperial </label>
-                  <input className = "radio-btn"
-                    type = "radio" name = "unit"
-                    value = "imperial"
-                    onChange = {this.handleUnitChange.bind(this)}
-                  />
-                  <label> Metric </label>
-                  <input className = "radio-btn"
-                    checked
-                    type = "radio" name = "unit"
-                    value = "metric"
-                    onChange = {this.handleUnitChange.bind(this)}
-                  />
-                </form>
-                <form id = "calculator"
-                  style = {calculatorStyle}
-                  className = "scrollable"
-                >
+                    <Button name = "Set your own goal"
+                      onClick = {this.handleMouseClick3.bind(this)}
+                      disabled = {this.state.settings.own}
+                    />
+                    <Button name = "Use the calculator"
+                      onClick = {this.handleMouseClick4.bind(this)}
+                      disabled = {this.state.settings.calculator}
+                    />
+                    <form>
+                      <label> Imperial </label>
+                      <input className = "radio-btn"
+                        type = "radio" name = "unit"
+                        value = "imperial"
+                        onChange = {this.handleUnitChange.bind(this)}
+                      />
+                      <label> Metric </label>
+                      <input className = "radio-btn"
+                        checked
+                        type = "radio" name = "unit"
+                        value = "metric"
+                        onChange = {this.handleUnitChange.bind(this)}
+                      />
+                    </form>
+                    <form id = "calculator"
+                      style = {calculatorStyle}
+                      className = "scrollable"
+                    >
 
-                  Gender:
-                  <label> Female </label>
-                  <input className = "radio-btn"
-                          checked = {this.state.data.gender === "female"}
-                          type = "radio" name = "gender" value = "female"
-                          onChange = {this.handleGenderChange.bind(this)}
-                  />
-                  <label> Male </label>
-                  <input className = "radio-btn"
-                         checked = {this.state.data.gender === "male"}
-                         type = "radio" name = "gender" value = "male"
-                         onChange = {this.handleGenderChange.bind(this)}
-                  />
+                      Gender:
+                      <label> Female </label>
+                      <input className = "radio-btn"
+                              checked = {this.state.data.gender === "female"}
+                              type = "radio" name = "gender" value = "female"
+                              onChange = {this.handleGenderChange.bind(this)}
+                      />
+                      <label> Male </label>
+                      <input className = "radio-btn"
+                             checked = {this.state.data.gender === "male"}
+                             type = "radio" name = "gender" value = "male"
+                             onChange = {this.handleGenderChange.bind(this)}
+                      />
 
-                  <br/>
-                  <label> Weight: </label>
-                  <input type = "number"
-                         name = "weight"
-                         placeholder = "in kg or lbs"
-                         min = "0"
-                         value = {this.state.data.weight}
-                         onChange = {this.handleWeight.bind(this)}
-                  />
-                  <br/>
-                  <label> Height: </label>
-                  <input type = "number"
-                         name = "height"
-                         placeholder = "in ft or m"
-                         step = ".01"
-                         min = "0"
-                         value = {this.state.data.height}
-                         onChange = {this.handleHeight.bind(this)}
-                  />
-                  <br/>
-                  <label> Age: </label>
-                  <input type = "number"
-                         name = "age"
-                         placeholder = "in years"
-                         min = "18"
-                         value = {"" + this.state.data.age}
-                         onChange = {this.handleAge.bind(this)}/>
+                      <br/>
+                      <label> Weight: </label>
+                      <input type = "number"
+                             name = "weight"
+                             placeholder = "in kg or lbs"
+                             min = "0"
+                             value = {this.state.data.weight}
+                             onChange = {this.handleWeight.bind(this)}
+                      />
+                      <br/>
+                      <label> Height: </label>
+                      <input type = "number"
+                             name = "height"
+                             placeholder = "in ft or m"
+                             step = ".01"
+                             min = "0"
+                             value = {this.state.data.height}
+                             onChange = {this.handleHeight.bind(this)}
+                      />
+                      <br/>
+                      <label> Age: </label>
+                      <input type = "number"
+                             name = "age"
+                             placeholder = "in years"
+                             min = "18"
+                             value = {"" + this.state.data.age}
+                             onChange = {this.handleAge.bind(this)}/>
 
-                  Activity levels:
-                  <label> Low  </label>
-                  <input className = "radio-btn"
-                         type = "radio"
-                         name = "activity" value = "low"
-                         checked = {this.state.data.activity === "low"}
-                         onChange = {this.handleActivity.bind(this)}
-                  />
-                  <label> Moderate </label>
-                  <input className = "radio-btn"
-                         type = "radio"
-                         name = "activity" value = "moderate"
-                         checked = {this.state.data.activity === "moderate"}
-                         onChange = {this.handleActivity.bind(this)}
-                  />
-                  <label> High </label>
-                  <input className = "radio-btn"
-                         type = "radio"
-                         name = "activity" value = "high"
-                         checked = {this.state.data.activity === "high"}
-                         onChange = {this.handleActivity.bind(this)}
-                  />
-                  <br/>
-                  Weight goals:
-                  <label> Loss </label>
-                  <input className = "radio-btn"
-                         type = "radio"
-                         name = "goal" value = "lose"
-                         checked = {this.state.goal === "lose"}
-                         onChange = {this.handleGoal.bind(this)}
-                  />
-                  <label> Maintenance </label>
-                  <input className = "radio-btn"
-                         type = "radio"
-                         name = "goal" value = "maintain"
-                         checked = {this.state.goal === "maintain"}
-                         onChange = {this.handleGoal.bind(this)}
-                  />
-                  <label> Gain </label>
-                  <input className = "radio-btn"
-                         type = "radio"
-                         name = "goal" value = "gain"
-                         checked = {this.state.goal === "gain"}
-                         onChange = {this.handleGoal.bind(this)}
-                  />
-                </form>
+                      Activity levels:
+                      <label> Low  </label>
+                      <input className = "radio-btn"
+                             type = "radio"
+                             name = "activity" value = "low"
+                             checked = {this.state.data.activity === "low"}
+                             onChange = {this.handleActivity.bind(this)}
+                      />
+                      <label> Moderate </label>
+                      <input className = "radio-btn"
+                             type = "radio"
+                             name = "activity" value = "moderate"
+                             checked = {this.state.data.activity === "moderate"}
+                             onChange = {this.handleActivity.bind(this)}
+                      />
+                      <label> High </label>
+                      <input className = "radio-btn"
+                             type = "radio"
+                             name = "activity" value = "high"
+                             checked = {this.state.data.activity === "high"}
+                             onChange = {this.handleActivity.bind(this)}
+                      />
+                      <br/>
+                      Weight goals:
+                      <label> Loss </label>
+                      <input className = "radio-btn"
+                             type = "radio"
+                             name = "goal" value = "lose"
+                             checked = {this.state.goal === "lose"}
+                             onChange = {this.handleGoal.bind(this)}
+                      />
+                      <label> Maintenance </label>
+                      <input className = "radio-btn"
+                             type = "radio"
+                             name = "goal" value = "maintain"
+                             checked = {this.state.goal === "maintain"}
+                             onChange = {this.handleGoal.bind(this)}
+                      />
+                      <label> Gain </label>
+                      <input className = "radio-btn"
+                             type = "radio"
+                             name = "goal" value = "gain"
+                             checked = {this.state.goal === "gain"}
+                             onChange = {this.handleGoal.bind(this)}
+                      />
+                    </form>
 
-                <form id = "own-calories" style = {ownStyle}>
-                  <label> Caloric intake goal: </label>
-                  <input type = "number"
-                    name = "kcals"
-                    step = "50"
-                    min = "0"
-                    value = {this.state.suggestedCalories}
-                    placeholder = "daily value in kcals"
-                    onChange = {this.handleOwnCals.bind(this)}
-                  />
-                  <label> Weight: </label>
-                  <input type = "number"
-                         name = "weight"
-                         step = "5"
-                         placeholder = "in kg or lbs"
-                         value = {this.state.data.weight}
-                         min = "0"
-                         onChange = {this.handleWeight.bind(this)}
-                  />
-                </form>
-                <Button name = "Set" onClick = {this.handleSet.bind(this)}/>
-              </section>
-            </div>
+                    <form id = "own-calories" style = {ownStyle}>
+                      <label> Caloric intake goal: </label>
+                      <input type = "number"
+                        name = "kcals"
+                        step = "50"
+                        min = "0"
+                        value = {this.state.suggestedCalories}
+                        placeholder = "daily value in kcals"
+                        onChange = {this.handleOwnCals.bind(this)}
+                      />
+                      <label> Weight: </label>
+                      <input type = "number"
+                             name = "weight"
+                             step = "5"
+                             placeholder = "in kg or lbs"
+                             value = {this.state.data.weight}
+                             min = "0"
+                             onChange = {this.handleWeight.bind(this)}
+                      />
+                    </form>
+                    <Button name = "SET" onClick = {this.handleSet.bind(this)}/>
+                  </section>
+                </div>
+              </div>
+            </CSSTransition>
           </div>
-        </div>
-
       );
 
 
