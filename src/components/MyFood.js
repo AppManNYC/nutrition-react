@@ -12,7 +12,8 @@ class MyFood extends Component{
     super(props);
 
     this.state = {
-      tooltipHover: false
+      tooltipHover: false,
+      clicked: false
     };
 
   }
@@ -21,14 +22,27 @@ class MyFood extends Component{
 
 
   handleMouseIn() {
-    this.setState({ tooltipHover: true })
+    if(!this.state.clicked){
+      this.setState({ tooltipHover: true });
+    }
   }
 
   handleMouseOut() {
-    this.setState({ tooltipHover: false })
+    if(!this.state.clicked){
+      this.setState({
+         tooltipHover: false,
+         clicked: false
+      });
+    }
   }
 
-
+  handleMouseClick(e) {
+    e.stopPropagation();
+    this.setState({
+      tooltipHover: !this.state.tooltipHover,
+      clicked: !this.state.clicked
+    });
+  }
 
   onClick = () => {
     this.props.removeFood(this.props.pos);
@@ -108,6 +122,7 @@ class MyFood extends Component{
 
 
     const tooltipStyle =  {
+      zIndex: this.state.tooltipHover ? '200': '-1',
       opacity: this.state.tooltipHover ? '1' : '0'
     };
 
@@ -153,13 +168,14 @@ class MyFood extends Component{
               />
             </div>
           </div>
-          <ul>
+          <ul onClick= {this.handleMouseClick.bind(this)}>
             {macros.map((proximate, key) => <li key = {key}> {proximate} </li>)}
           </ul>
         </div>
         <div
           style = {tooltipStyle}
           className = "food-tooltip"
+          onClick = {this.handleMouseClick.bind(this)}
         >
           <ul>
             <li> <span>{energyPercent}%</span> of total kcals </li>
